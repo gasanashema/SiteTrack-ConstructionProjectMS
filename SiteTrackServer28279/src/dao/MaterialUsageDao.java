@@ -1,0 +1,41 @@
+package dao;
+
+import java.util.Collections;
+import java.util.List;
+import java.time.LocalDate;
+import model.*;
+import org.hibernate.*;
+import util.HibernateUtil;
+
+public class MaterialUsageDao {
+    public MaterialUsage save(MaterialUsage obj) {
+        try { Session ss = HibernateUtil.getSessionFactory().openSession(); Transaction tr = ss.beginTransaction(); ss.save(obj); tr.commit(); ss.close(); return obj; } catch (Exception e) { e.printStackTrace(); } return null;
+    }
+    public MaterialUsage update(MaterialUsage obj) {
+        try { Session ss = HibernateUtil.getSessionFactory().openSession(); Transaction tr = ss.beginTransaction(); ss.update(obj); tr.commit(); ss.close(); return obj; } catch (Exception e) { e.printStackTrace(); } return null;
+    }
+    public MaterialUsage findById(String id) {
+        try { Session ss = HibernateUtil.getSessionFactory().openSession(); MaterialUsage obj = (MaterialUsage) ss.get(MaterialUsage.class, id); ss.close(); return obj; } catch (Exception e) { e.printStackTrace(); } return null;
+    }
+    public MaterialUsage delete(String id) {
+        try { Session ss = HibernateUtil.getSessionFactory().openSession(); Transaction tr = ss.beginTransaction(); MaterialUsage obj = (MaterialUsage) ss.get(MaterialUsage.class, id); if(obj != null) { ss.delete(obj); } tr.commit(); ss.close(); return obj; } catch (Exception e) { e.printStackTrace(); } return null;
+    }
+    public List<MaterialUsage> findAll() {
+        try { Session ss = HibernateUtil.getSessionFactory().openSession(); Query q = ss.createQuery("FROM MaterialUsage ORDER BY usageDate DESC"); List<MaterialUsage> list = q.list(); ss.close(); return list; } catch (Exception e) { e.printStackTrace(); } return Collections.EMPTY_LIST;
+    }
+    public List<MaterialUsage> findByProject(String projectId) {
+        try { Session ss = HibernateUtil.getSessionFactory().openSession(); Query q = ss.createQuery("FROM MaterialUsage WHERE project.id = :projectId ORDER BY usageDate DESC"); q.setParameter("projectId", projectId); List<MaterialUsage> list = q.list(); ss.close(); return list; } catch (Exception e) { e.printStackTrace(); } return Collections.EMPTY_LIST;
+    }
+    public List<MaterialUsage> findByMaterial(String materialId) {
+        try { Session ss = HibernateUtil.getSessionFactory().openSession(); Query q = ss.createQuery("FROM MaterialUsage WHERE material.id = :materialId ORDER BY usageDate DESC"); q.setParameter("materialId", materialId); List<MaterialUsage> list = q.list(); ss.close(); return list; } catch (Exception e) { e.printStackTrace(); } return Collections.EMPTY_LIST;
+    }
+    public List<MaterialUsage> findByProjectAndMaterial(String projectId, String materialId) {
+        try { Session ss = HibernateUtil.getSessionFactory().openSession(); Query q = ss.createQuery("FROM MaterialUsage WHERE project.id = :projectId AND material.id = :materialId ORDER BY usageDate DESC"); q.setParameter("projectId", projectId); q.setParameter("materialId", materialId); List<MaterialUsage> list = q.list(); ss.close(); return list; } catch (Exception e) { e.printStackTrace(); } return Collections.EMPTY_LIST;
+    }
+    public List<MaterialUsage> findByProjectAndDateRange(String projectId, LocalDate from, LocalDate to) {
+        try { Session ss = HibernateUtil.getSessionFactory().openSession(); Query q = ss.createQuery("FROM MaterialUsage WHERE project.id = :projectId AND usageDate BETWEEN :from AND :to ORDER BY usageDate DESC"); q.setParameter("projectId", projectId); q.setParameter("from", from); q.setParameter("to", to); List<MaterialUsage> list = q.list(); ss.close(); return list; } catch (Exception e) { e.printStackTrace(); } return Collections.EMPTY_LIST;
+    }
+    public List<MaterialUsage> findByRecordedBy(String userId) {
+        try { Session ss = HibernateUtil.getSessionFactory().openSession(); Query q = ss.createQuery("FROM MaterialUsage WHERE recordedBy.id = :userId ORDER BY usageDate DESC"); q.setParameter("userId", userId); List<MaterialUsage> list = q.list(); ss.close(); return list; } catch (Exception e) { e.printStackTrace(); } return Collections.EMPTY_LIST;
+    }
+}
