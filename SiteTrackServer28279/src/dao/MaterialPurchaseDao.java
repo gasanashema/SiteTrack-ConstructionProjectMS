@@ -5,7 +5,6 @@ import java.util.List;
 import java.time.LocalDate;
 import model.*;
 import org.hibernate.*;
-import util.HibernateUtil;
 
 public class MaterialPurchaseDao {
     public MaterialPurchase save(MaterialPurchase obj) {
@@ -37,5 +36,8 @@ public class MaterialPurchaseDao {
     }
     public List<MaterialPurchase> findByRecordedBy(String userId) {
         try { Session ss = HibernateUtil.getSessionFactory().openSession(); Query q = ss.createQuery("FROM MaterialPurchase WHERE recordedBy.id = :userId ORDER BY purchaseDate DESC"); q.setParameter("userId", userId); List<MaterialPurchase> list = q.list(); ss.close(); return list; } catch (Exception e) { e.printStackTrace(); } return Collections.EMPTY_LIST;
+    }
+    public MaterialPurchase saveWithSession(MaterialPurchase obj, Session ss) {
+        try { ss.save(obj); return obj; } catch (Exception e) { e.printStackTrace(); throw e; }
     }
 }

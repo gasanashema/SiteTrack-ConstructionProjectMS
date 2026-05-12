@@ -12,6 +12,13 @@ public class WorkerAttendance implements Serializable {
     public static final long serialVersionUID = 1L;
 
     @Id
+    @GeneratedValue(generator = "custom-id")
+    @org.hibernate.annotations.GenericGenerator(name = "custom-id", strategy = "util.CustomIdGenerator", 
+        parameters = {
+            @org.hibernate.annotations.Parameter(name = "prefix", value = "ATT"),
+            @org.hibernate.annotations.Parameter(name = "sequence_name", value = "seq_worker_attendance_id")
+        }
+    )
     @Column(name = "id")
     private String id;
 

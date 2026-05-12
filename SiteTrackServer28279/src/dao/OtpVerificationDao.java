@@ -2,10 +2,8 @@ package dao;
 
 import java.util.Collections;
 import java.util.List;
-import java.time.LocalDate;
 import model.*;
 import org.hibernate.*;
-import util.HibernateUtil;
 
 public class OtpVerificationDao {
     public OtpVerification save(OtpVerification obj) {
@@ -37,5 +35,8 @@ public class OtpVerificationDao {
     }
     public void markAllUsedForUser(String userId) {
         try { Session ss = HibernateUtil.getSessionFactory().openSession(); Transaction tr = ss.beginTransaction(); Query q = ss.createQuery("UPDATE OtpVerification SET isUsed = true WHERE user.id = :uid AND isUsed = false"); q.setParameter("uid", userId); q.executeUpdate(); tr.commit(); ss.close(); } catch (Exception e) { e.printStackTrace(); }
+    }
+    public OtpVerification saveWithSession(OtpVerification obj, Session ss) {
+        try { ss.save(obj); return obj; } catch (Exception e) { e.printStackTrace(); throw e; }
     }
 }

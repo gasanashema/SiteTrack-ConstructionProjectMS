@@ -5,7 +5,6 @@ import java.util.List;
 import java.time.LocalDate;
 import model.*;
 import org.hibernate.*;
-import util.HibernateUtil;
 
 public class MaterialStockMovementDao {
     public MaterialStockMovement save(MaterialStockMovement obj) {
@@ -37,5 +36,8 @@ public class MaterialStockMovementDao {
     }
     public List<MaterialStockMovement> findByReference(String referenceType, String referenceId) {
         try { Session ss = HibernateUtil.getSessionFactory().openSession(); Query q = ss.createQuery("FROM MaterialStockMovement WHERE referenceType = :referenceType AND referenceId = :referenceId"); q.setParameter("referenceType", referenceType); q.setParameter("referenceId", referenceId); List<MaterialStockMovement> list = q.list(); ss.close(); return list; } catch (Exception e) { e.printStackTrace(); } return Collections.EMPTY_LIST;
+    }
+    public MaterialStockMovement saveWithSession(MaterialStockMovement obj, Session ss) {
+        try { ss.save(obj); return obj; } catch (Exception e) { e.printStackTrace(); throw e; }
     }
 }
