@@ -10,6 +10,13 @@ public class OtpVerification implements Serializable {
     public static final long serialVersionUID = 1L;
 
     @Id
+    @GeneratedValue(generator = "custom-id")
+    @org.hibernate.annotations.GenericGenerator(name = "custom-id", strategy = "util.CustomIdGenerator", 
+        parameters = {
+            @org.hibernate.annotations.Parameter(name = "prefix", value = "OTP"),
+            @org.hibernate.annotations.Parameter(name = "sequence_name", value = "seq_otp_verifications_id")
+        }
+    )
     @Column(name = "id")
     private String id;
 

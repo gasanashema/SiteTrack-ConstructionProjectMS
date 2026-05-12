@@ -13,6 +13,13 @@ public class SiteWorker implements Serializable {
     public static final long serialVersionUID = 1L;
 
     @Id
+    @GeneratedValue(generator = "custom-id")
+    @org.hibernate.annotations.GenericGenerator(name = "custom-id", strategy = "util.CustomIdGenerator", 
+        parameters = {
+            @org.hibernate.annotations.Parameter(name = "prefix", value = "WKR"),
+            @org.hibernate.annotations.Parameter(name = "sequence_name", value = "seq_site_workers_id")
+        }
+    )
     @Column(name = "id")
     private String id;
 

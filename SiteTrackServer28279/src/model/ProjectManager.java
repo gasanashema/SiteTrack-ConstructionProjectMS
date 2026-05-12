@@ -11,6 +11,13 @@ public class ProjectManager implements Serializable {
     public static final long serialVersionUID = 1L;
 
     @Id
+    @GeneratedValue(generator = "custom-id")
+    @org.hibernate.annotations.GenericGenerator(name = "custom-id", strategy = "util.CustomIdGenerator", 
+        parameters = {
+            @org.hibernate.annotations.Parameter(name = "prefix", value = "PMG"),
+            @org.hibernate.annotations.Parameter(name = "sequence_name", value = "seq_project_managers_id")
+        }
+    )
     @Column(name = "id")
     private String id;
 

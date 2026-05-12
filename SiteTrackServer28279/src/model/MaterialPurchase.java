@@ -12,6 +12,13 @@ public class MaterialPurchase implements Serializable {
     public static final long serialVersionUID = 1L;
 
     @Id
+    @GeneratedValue(generator = "custom-id")
+    @org.hibernate.annotations.GenericGenerator(name = "custom-id", strategy = "util.CustomIdGenerator", 
+        parameters = {
+            @org.hibernate.annotations.Parameter(name = "prefix", value = "MPU"),
+            @org.hibernate.annotations.Parameter(name = "sequence_name", value = "seq_material_purchases_id")
+        }
+    )
     @Column(name = "id")
     private String id;
 
