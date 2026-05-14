@@ -143,7 +143,11 @@ public class OtpPanel extends JPanel {
             if (success) {
                 if (countdownTimer != null) countdownTimer.stop();
                 DashboardPanel dashboard = new DashboardPanel(mainFrame);
+                view.projects.ProjectListPanel projectList = new view.projects.ProjectListPanel(mainFrame);
+                
                 mainFrame.addPanel("DashboardPanel", dashboard);
+                mainFrame.addPanel("ProjectPanel", projectList);
+                
                 mainFrame.switchPanel("DashboardPanel");
             } else {
                 errorLabel.setText("Invalid OTP");

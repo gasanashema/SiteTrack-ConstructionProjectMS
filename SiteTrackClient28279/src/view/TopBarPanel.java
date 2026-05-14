@@ -57,7 +57,7 @@ public class TopBarPanel extends JPanel {
     
     public void updateUserInfo() {
         if (SessionManager.getInstance().isLoggedIn()) {
-            String name = SessionManager.getInstance().getCurrentUserFullName();
+            String name = SessionManager.getInstance().getCurrentUserName();
             String role = SessionManager.getInstance().getCurrentUserRole();
             userInfoLabel.setText("Welcome, " + name + " (" + role + ")");
         } else {
