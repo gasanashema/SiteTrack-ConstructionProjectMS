@@ -3,6 +3,7 @@ package view;
 import session.SessionManager;
 import javax.swing.*;
 import java.awt.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,21 @@ public class SidebarPanel extends JPanel {
         removeAll();
         menuButtons.clear();
         
+        // Add Logo
+        try {
+            URL logoUrl = getClass().getResource("/resources/logo.png");
+            if (logoUrl != null) {
+                ImageIcon originalIcon = new ImageIcon(logoUrl);
+                Image scaledImg = originalIcon.getImage().getScaledInstance(160, -1, Image.SCALE_SMOOTH);
+                JLabel logoLabel = new JLabel(new ImageIcon(scaledImg));
+                logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+                add(logoLabel);
+                add(Box.createRigidArea(new Dimension(0, 10)));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         JLabel menuLabel = new JLabel("MAIN MENU");
         menuLabel.setFont(new Font("Ubuntu", Font.BOLD, 12));
         menuLabel.setForeground(Color.decode("#8A94A6")); // muted gray
@@ -32,38 +48,40 @@ public class SidebarPanel extends JPanel {
         add(Box.createRigidArea(new Dimension(0, 15)));
         
         if (SessionManager.getInstance().isAdmin()) {
-            addMenuButton("📊 Dashboard", "DashboardPanel");
-            addMenuButton("👥 Users", "UserPanel");
-            addMenuButton("📁 Projects", "ProjectPanel");
-            addMenuButton("📦 Materials", "MaterialPanel");
-            addMenuButton("📈 Stock & Usage", "StockPanel");
-            addMenuButton("🏗️ Workers", "WorkerPanel");
-            addMenuButton("💰 Payroll", "PayrollPanel");
-            addMenuButton("📋 Reports", "ReportPanel");
+            addMenuButton("📊", "Dashboard", "DashboardPanel");
+            addMenuButton("👥", "Users", "UserPanel");
+            addMenuButton("📁", "Projects", "ProjectPanel");
+            addMenuButton("📦", "Materials", "MaterialPanel");
+            addMenuButton("📈", "Stock & Usage", "StockPanel");
+            addMenuButton("🏗", "Workers", "WorkerPanel");
+            addMenuButton("💰", "Payroll", "PayrollPanel");
+            addMenuButton("📋", "Reports", "ReportPanel");
         } else if (SessionManager.getInstance().isSiteManager()) {
-            addMenuButton("📊 Dashboard", "DashboardPanel");
-            addMenuButton("📁 My Projects", "ProjectPanel");
-            addMenuButton("📦 Materials", "MaterialPanel");
-            addMenuButton("📈 Stock & Usage", "StockPanel");
-            addMenuButton("🏗️ Workers", "WorkerPanel");
-            addMenuButton("✓ Attendance", "AttendancePanel");
-            addMenuButton("💰 Payroll", "PayrollPanel");
+            addMenuButton("📊", "Dashboard", "DashboardPanel");
+            addMenuButton("📁", "My Projects", "ProjectPanel");
+            addMenuButton("📦", "Materials", "MaterialPanel");
+            addMenuButton("📈", "Stock & Usage", "StockPanel");
+            addMenuButton("🏗", "Workers", "WorkerPanel");
+            addMenuButton("✓", "Attendance", "AttendancePanel");
+            addMenuButton("💰", "Payroll", "PayrollPanel");
         }
         
         revalidate();
         repaint();
     }
 
-    private void addMenuButton(String title, String panelName) {
-        JButton btn = new JButton("  " + title);
+    private void addMenuButton(String emoji, String title, String panelName) {
+        JButton btn = new JButton(" " + title);
+        btn.setIcon(new EmojiIcon(emoji, 16));
         btn.setMaximumSize(new Dimension(220, 45));
         btn.setPreferredSize(new Dimension(220, 45));
         btn.setHorizontalAlignment(SwingConstants.LEFT);
-        btn.setFont(new Font("Ubuntu", Font.PLAIN, 15));
+        // Use Segoe UI for the text
+        btn.setFont(new Font("Segoe UI", Font.PLAIN, 15));
         btn.setFocusPainted(false);
         btn.setBackground(Color.decode("#1f242e")); 
         btn.setForeground(Color.WHITE);
-        btn.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+        btn.setBorder(BorderFactory.createEmptyBorder(0, 15, 0, 0));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
         btn.addActionListener(e -> {
@@ -79,14 +97,52 @@ public class SidebarPanel extends JPanel {
     private void highlightButton(JButton activeBtn) {
         for (JButton btn : menuButtons) {
             if (btn == activeBtn) {
-                btn.setFont(new Font("Ubuntu", Font.BOLD, 15));
+                btn.setFont(new Font("Segoe UI", Font.BOLD, 15));
                 btn.setBackground(Color.decode("#FF5E14")); 
                 btn.setForeground(Color.WHITE);
             } else {
-                btn.setFont(new Font("Ubuntu", Font.PLAIN, 15));
+                btn.setFont(new Font("Segoe UI", Font.PLAIN, 15));
                 btn.setBackground(Color.decode("#1f242e"));
                 btn.setForeground(Color.WHITE);
             }
+        }
+    }
+
+    // Custom Icon to safely draw emojis using Segoe UI Emoji font
+    private static class EmojiIcon implements Icon {
+        private String emoji;
+        private int size;
+        private Font font;
+
+        public EmojiIcon(String emoji, int size) {
+            this.emoji = emoji;
+            this.size = size;
+            this.font = new Font("Segoe UI Emoji", Font.PLAIN, size);
+        }
+
+        @Override
+        public void paintIcon(Component c, Graphics g, int x, int y) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            g2.setFont(font);
+            // On Windows, Segoe UI Emoji automatically handles its own colors for standard emojis
+            // But we set the foreground just in case for monochromatic symbols
+            g2.setColor(c.getForeground());
+            FontMetrics fm = g2.getFontMetrics();
+            // Draw vertically centered
+            int textY = y + ((size - fm.getHeight()) / 2) + fm.getAscent();
+            g2.drawString(emoji, x, textY);
+            g2.dispose();
+        }
+
+        @Override
+        public int getIconWidth() {
+            return size + 4; // Add a little padding to the right
+        }
+
+        @Override
+        public int getIconHeight() {
+            return size;
         }
     }
 }

@@ -22,7 +22,6 @@ public class Client {
             UIManager.put("defaultFont", new Font("Ubuntu", Font.PLAIN, 14));
             
             // Override FlatLaf defaults
-            UIManager.put("Panel.background", Color.WHITE);
             UIManager.put("Button.background", Color.decode("#FF5E14")); // Primary Orange
             UIManager.put("Button.foreground", Color.WHITE);
             UIManager.put("Button.arc", 8); // slightly rounded

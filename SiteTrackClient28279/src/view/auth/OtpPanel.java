@@ -29,11 +29,9 @@ public class OtpPanel extends JPanel {
         this.loginData = loginData;
         this.authController = new AuthController();
         
-        setBackground(Color.WHITE);
         setLayout(new GridBagLayout());
         
         JPanel formPanel = new JPanel(new GridBagLayout());
-        formPanel.setBackground(Color.WHITE);
         formPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.decode("#E0E0E0"), 1, true),
                 BorderFactory.createEmptyBorder(40, 40, 40, 40)));
@@ -50,7 +48,7 @@ public class OtpPanel extends JPanel {
             if (logoUrl != null) {
                 ImageIcon originalIcon = new ImageIcon(logoUrl);
                 Image img = originalIcon.getImage();
-                Image resizedImg = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+                Image resizedImg = img.getScaledInstance(180, -1, Image.SCALE_SMOOTH);
                 JLabel logoLabel = new JLabel(new ImageIcon(resizedImg));
                 logoLabel.setHorizontalAlignment(SwingConstants.CENTER);
                 formPanel.add(logoLabel, gbc);
@@ -106,8 +104,6 @@ public class OtpPanel extends JPanel {
         
         resendButton = new JButton("Resend OTP");
         resendButton.setPreferredSize(new Dimension(0, 35));
-        resendButton.setBackground(Color.WHITE);
-        resendButton.setForeground(Color.decode("#1f242e"));
         resendButton.addActionListener(e -> resendOtp());
         formPanel.add(resendButton, gbc);
         gbc.gridy++;
@@ -146,7 +142,7 @@ public class OtpPanel extends JPanel {
                                 loginData.getRole(), loginData.getFullName(), loginData.getOtpId());
             if (success) {
                 if (countdownTimer != null) countdownTimer.stop();
-                DashboardPanel dashboard = new DashboardPanel();
+                DashboardPanel dashboard = new DashboardPanel(mainFrame);
                 mainFrame.addPanel("DashboardPanel", dashboard);
                 mainFrame.switchPanel("DashboardPanel");
             } else {

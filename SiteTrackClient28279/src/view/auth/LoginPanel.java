@@ -19,11 +19,9 @@ public class LoginPanel extends JPanel {
         this.mainFrame = mainFrame;
         this.authController = new AuthController();
         
-        setBackground(Color.WHITE);
         setLayout(new GridBagLayout());
         
         JPanel formPanel = new JPanel(new GridBagLayout());
-        formPanel.setBackground(Color.WHITE);
         formPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(Color.decode("#E0E0E0"), 1, true),
                 BorderFactory.createEmptyBorder(40, 40, 40, 40)));
@@ -41,7 +39,7 @@ public class LoginPanel extends JPanel {
             if (logoUrl != null) {
                 ImageIcon originalIcon = new ImageIcon(logoUrl);
                 Image img = originalIcon.getImage();
-                Image resizedImg = img.getScaledInstance(120, 120, Image.SCALE_SMOOTH);
+                Image resizedImg = img.getScaledInstance(180, -1, Image.SCALE_SMOOTH);
                 JLabel logoLabel = new JLabel(new ImageIcon(resizedImg));
                 logoLabel.setHorizontalAlignment(SwingConstants.CENTER);
                 formPanel.add(logoLabel, gbc);
