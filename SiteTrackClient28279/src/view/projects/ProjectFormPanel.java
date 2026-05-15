@@ -10,6 +10,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import com.toedter.calendar.JDateChooser;
+import java.util.Date;
 
 public class ProjectFormPanel extends JDialog {
     private ProjectDTO project;
@@ -19,8 +21,8 @@ public class ProjectFormPanel extends JDialog {
     private JTextField nameField;
     private JTextField locationField;
     private JTextArea descArea;
-    private JTextField startDateField;
-    private JTextField endDateField;
+    private JDateChooser startDateField;
+    private JDateChooser endDateField;
     private JComboBox<String> statusCombo;
     private JLabel createdByLabel;
     private JLabel createdAtLabel;
@@ -59,11 +61,13 @@ public class ProjectFormPanel extends JDialog {
         descArea.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         descArea.setBorder(BorderFactory.createLineBorder(UIManager.getColor("Component.borderColor")));
         
-        startDateField = createTextField();
-        startDateField.putClientProperty("JTextField.placeholderText", "YYYY-MM-DD");
+        startDateField = new JDateChooser();
+        startDateField.setPreferredSize(new Dimension(0, 35));
+        startDateField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         
-        endDateField = createTextField();
-        endDateField.putClientProperty("JTextField.placeholderText", "YYYY-MM-DD");
+        endDateField = new JDateChooser();
+        endDateField.setPreferredSize(new Dimension(0, 35));
+        endDateField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         
         statusCombo = new JComboBox<>(new String[]{"PLANNING", "ONGOING", "COMPLETED", "CANCELLED"});
         statusCombo.setPreferredSize(new Dimension(0, 35));
@@ -82,7 +86,7 @@ public class ProjectFormPanel extends JDialog {
         formPanel.add(new JScrollPane(descArea), gbc);
         row++;
 
-        addFormField(formPanel, "Start Date (YYYY-MM-DD) *", startDateField, gbc, row++);
+        addFormField(formPanel, "Start Date *", startDateField, gbc, row++);
         addFormField(formPanel, "Expected End Date *", endDateField, gbc, row++);
         addFormField(formPanel, "Status", statusCombo, gbc, row++);
         addFormField(formPanel, "Created By", createdByLabel, gbc, row++);
@@ -147,14 +151,14 @@ public class ProjectFormPanel extends JDialog {
             statusCombo.setSelectedItem("PLANNING");
             createdByLabel.setText(SessionManager.getInstance().getCurrentUserName());
             createdAtLabel.setText(LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm")));
-            startDateField.setText(LocalDate.now().toString());
+            startDateField.setDate(java.sql.Date.valueOf(LocalDate.now()));
         } else {
             // EDIT MODE
             nameField.setText(project.getProjectName());
             locationField.setText(project.getLocation());
             descArea.setText(project.getDescription());
-            startDateField.setText(project.getStartDate().toString());
-            endDateField.setText(project.getExpectedEndDate().toString());
+            startDateField.setDate(java.sql.Date.valueOf(project.getStartDate()));
+            endDateField.setDate(java.sql.Date.valueOf(project.getExpectedEndDate()));
             statusCombo.setSelectedItem(project.getStatus());
             createdByLabel.setText(project.getCreatedByName());
             
@@ -176,8 +180,14 @@ public class ProjectFormPanel extends JDialog {
             String name = nameField.getText().trim();
             String location = locationField.getText().trim();
             String desc = descArea.getText().trim();
-            LocalDate start = LocalDate.parse(startDateField.getText().trim());
-            LocalDate end = LocalDate.parse(endDateField.getText().trim());
+            
+            if (startDateField.getDate() == null || endDateField.getDate() == null) {
+                JOptionPane.showMessageDialog(this, "Please select both Start Date and End Date.", "Validation Error", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
+            LocalDate start = new java.sql.Date(startDateField.getDate().getTime()).toLocalDate();
+            LocalDate end = new java.sql.Date(endDateField.getDate().getTime()).toLocalDate();
             String status = (String) statusCombo.getSelectedItem();
 
             ProjectDTO dto = project == null ? new ProjectDTO() : project;
@@ -201,8 +211,8 @@ public class ProjectFormPanel extends JDialog {
                     dispose();
                 }
             }
-        } catch (DateTimeParseException ex) {
-            JOptionPane.showMessageDialog(this, "Dates must be in YYYY-MM-DD format.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "An error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 

@@ -37,6 +37,7 @@ public class ProjectListPanel extends JPanel {
         this.mainFrame = mainFrame;
         this.controller = new ProjectController();
         initUI();
+        loadData();
     }
 
     private void initUI() {
@@ -90,7 +91,7 @@ public class ProjectListPanel extends JPanel {
         add(actionBar, BorderLayout.NORTH);
 
         // 2. Table (Center)
-        String[] columns = {"ID", "Project Name", "Location", "Status", "Progress", "Created By"};
+        String[] columns = {"ID", "Project Name", "Location", "Description", "Start Date", "End Date", "Status", "Progress", "Created By"};
         tableModel = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) { return false; }
@@ -107,8 +108,8 @@ public class ProjectListPanel extends JPanel {
         table.getColumnModel().getColumn(0).setMaxWidth(0);
         table.getColumnModel().getColumn(0).setWidth(0);
         
-        // Custom renderer for Progress column
-        table.getColumnModel().getColumn(4).setCellRenderer(new ProgressCellRenderer());
+        // Custom renderer for Progress column (now at index 7)
+        table.getColumnModel().getColumn(7).setCellRenderer(new ProgressCellRenderer());
         
         rowSorter = new TableRowSorter<>(tableModel);
         table.setRowSorter(rowSorter);
@@ -152,6 +153,9 @@ public class ProjectListPanel extends JPanel {
                     p.getId(),
                     p.getProjectName(),
                     p.getLocation(),
+                    p.getDescription(),
+                    p.getStartDate(),
+                    p.getExpectedEndDate(),
                     p.getStatus(),
                     progress,
                     p.getCreatedByName()
@@ -170,7 +174,7 @@ public class ProjectListPanel extends JPanel {
             public boolean include(Entry<? extends DefaultTableModel, ? extends Object> entry) {
                 String rowName = entry.getStringValue(1).toLowerCase();
                 String rowLocation = entry.getStringValue(2).toLowerCase();
-                String rowStatus = entry.getStringValue(3);
+                String rowStatus = entry.getStringValue(6); // Status is now at index 6
                 
                 boolean matchesSearch = text.isEmpty() || rowName.contains(text) || rowLocation.contains(text);
                 boolean matchesStatus = "All".equals(status) || rowStatus.equals(status);
