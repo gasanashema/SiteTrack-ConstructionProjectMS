@@ -50,20 +50,26 @@ public class ProjectDao {
 
     public Project delete(String id) {
         try {
+            if (hasAssociatedRecords(id)) {
+                throw new RuntimeException("Cannot delete project with existing purchases, usage, or attendance records.");
+            }
             Session ss = HibernateUtil.getSessionFactory().openSession();
             Transaction tr = ss.beginTransaction();
             Project obj = (Project) ss.get(Project.class, id);
             if (obj != null) {
-                obj.setStatus(EProjectStatus.CANCELLED);
-                ss.update(obj);
+                Query q = ss.createQuery("DELETE FROM ProjectManager WHERE project.id = :pid");
+                q.setParameter("pid", id);
+                q.executeUpdate();
+                
+                ss.delete(obj);
             }
             tr.commit();
             ss.close();
             return obj;
         } catch (Exception e) {
             e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
-        return null;
     }
 
     public List<Project> findAll() {

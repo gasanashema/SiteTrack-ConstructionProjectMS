@@ -48,5 +48,21 @@ Contributor(s):
     <property name="hibernate.connection.password">disaster</property>
     <property name="hibernate.show_sql">true</property>
     <property name="hibernate.hbm2ddl.auto">update</property>
+    <mapping class="model.Material"/>
+    <mapping class="model.MaterialCategory"/>
+    <mapping class="model.MaterialPurchase"/>
+    <mapping class="model.MaterialStockMovement"/>
+    <mapping class="model.MaterialUsage"/>
+    <mapping class="model.NotificationLog"/>
+    <mapping class="model.OtpVerification"/>
+    <mapping class="model.Project"/>
+    <mapping class="model.ProjectActivity"/>
+    <mapping class="model.ProjectManager"/>
+    <mapping class="model.ProjectMaterialStock"/>
+    <mapping class="model.SiteWorker"/>
+    <mapping class="model.User"/>
+    <mapping class="model.WorkerAttendance"/>
+    <mapping class="model.WorkerPayment"/>
+    <mapping class="model.WorkerType"/>
   </session-factory>
 </hibernate-configuration>
