@@ -40,4 +40,10 @@ public class MaterialPurchaseDao {
     public MaterialPurchase saveWithSession(MaterialPurchase obj, Session ss) {
         try { ss.save(obj); return obj; } catch (Exception e) { e.printStackTrace(); throw e; }
     }
+    public MaterialPurchase updateWithSession(MaterialPurchase obj, Session ss) {
+        try { ss.update(obj); return obj; } catch (Exception e) { e.printStackTrace(); throw e; }
+    }
+    public List<MaterialPurchase> findAvailablePurchases(String projectId, String materialId) {
+        try { Session ss = HibernateUtil.getSessionFactory().openSession(); Query q = ss.createQuery("FROM MaterialPurchase WHERE project.id = :projectId AND material.id = :materialId AND stockStatus != 'DEPLETED' ORDER BY purchaseDate ASC, createdAt ASC"); q.setParameter("projectId", projectId); q.setParameter("materialId", materialId); List<MaterialPurchase> list = q.list(); ss.close(); return list; } catch (Exception e) { e.printStackTrace(); } return Collections.EMPTY_LIST;
+    }
 }

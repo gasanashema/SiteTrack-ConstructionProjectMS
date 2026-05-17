@@ -64,12 +64,10 @@ public class ProjectFormPanel extends JDialog {
         startDateField = new JDateChooser();
         startDateField.setPreferredSize(new Dimension(0, 35));
         startDateField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        ((JTextField) startDateField.getDateEditor().getUiComponent()).setEditable(false);
         
         endDateField = new JDateChooser();
         endDateField.setPreferredSize(new Dimension(0, 35));
         endDateField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        ((JTextField) endDateField.getDateEditor().getUiComponent()).setEditable(false);
         
         statusCombo = new JComboBox<>(new String[]{"PLANNING", "ONGOING", "COMPLETED", "CANCELLED"});
         statusCombo.setPreferredSize(new Dimension(0, 35));
@@ -175,6 +173,9 @@ public class ProjectFormPanel extends JDialog {
                 manageManagersBtn.setVisible(true);
             }
         }
+        
+        ((JTextField) startDateField.getDateEditor().getUiComponent()).setEditable(false);
+        ((JTextField) endDateField.getDateEditor().getUiComponent()).setEditable(false);
     }
 
     private void saveProject() {

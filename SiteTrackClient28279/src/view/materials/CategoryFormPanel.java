@@ -11,6 +11,7 @@ public class CategoryFormPanel extends JDialog {
     private boolean isSaved = false;
 
     private JTextField nameField;
+    private JTextField unitField;
     private JTextArea descArea;
 
     public CategoryFormPanel(JFrame parent, MaterialController controller) {
@@ -36,6 +37,10 @@ public class CategoryFormPanel extends JDialog {
         nameField.setPreferredSize(new Dimension(0, 35));
         nameField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 
+        unitField = new JTextField();
+        unitField.setPreferredSize(new Dimension(0, 35));
+        unitField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+
         descArea = new JTextArea(4, 20);
         descArea.setLineWrap(true);
         descArea.setWrapStyleWord(true);
@@ -48,6 +53,11 @@ public class CategoryFormPanel extends JDialog {
         formPanel.add(nameField, gbc);
 
         gbc.gridx = 0; gbc.gridy = 1; gbc.weightx = 0.3;
+        formPanel.add(new JLabel("Unit *"), gbc);
+        gbc.gridx = 1; gbc.weightx = 0.7;
+        formPanel.add(unitField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 2; gbc.weightx = 0.3;
         formPanel.add(new JLabel("Description"), gbc);
         gbc.gridx = 1; gbc.weightx = 0.7;
         formPanel.add(new JScrollPane(descArea), gbc);
@@ -74,15 +84,17 @@ public class CategoryFormPanel extends JDialog {
 
     private void saveCategory() {
         String name = nameField.getText().trim();
+        String unit = unitField.getText().trim();
         String desc = descArea.getText().trim();
 
-        if (name.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Category Name is required.", "Validation Error", JOptionPane.WARNING_MESSAGE);
+        if (name.isEmpty() || unit.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Category Name and Unit are required.", "Validation Error", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         MaterialCategoryDTO dto = new MaterialCategoryDTO();
         dto.setCategoryName(name);
+        dto.setUnit(unit);
         dto.setDescription(desc);
 
         if (controller.createCategory(dto)) {

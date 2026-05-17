@@ -14,6 +14,11 @@ import model.Project;
 import model.Material;
 import model.User;
 import model.EMovementType;
+import model.MaterialPurchase;
+import model.EPurchaseStockStatus;
+import model.UsagePurchaseAllocation;
+import dao.MaterialPurchaseDao;
+import dao.UsagePurchaseAllocationDao;
 import service.interfaces.MaterialUsageService;
 import util.HibernateUtil;
 import org.hibernate.Session;
@@ -32,6 +37,8 @@ public class MaterialUsageServiceImpl extends UnicastRemoteObject implements Mat
     private final ProjectDao projectDao;
     private final MaterialDao materialDao;
     private final UserDao userDao;
+    private final MaterialPurchaseDao purchaseDao;
+    private final UsagePurchaseAllocationDao allocDao;
 
     public MaterialUsageServiceImpl() throws RemoteException {
         super();
@@ -41,6 +48,8 @@ public class MaterialUsageServiceImpl extends UnicastRemoteObject implements Mat
         this.projectDao = new ProjectDao();
         this.materialDao = new MaterialDao();
         this.userDao = new UserDao();
+        this.purchaseDao = new MaterialPurchaseDao();
+        this.allocDao = new UsagePurchaseAllocationDao();
     }
 
     private MaterialUsageDTO toDTO(MaterialUsage entity) {
@@ -71,7 +80,7 @@ public class MaterialUsageServiceImpl extends UnicastRemoteObject implements Mat
 
             Project p = projectDao.findById(dto.getProjectId());
             Material m = materialDao.findById(dto.getMaterialId());
-            User u = userDao.findById(dto.getRecordedByName()); 
+            User u = userDao.findById(dto.getRecordedById()); 
 
             if (p == null || m == null || u == null) throw new IllegalArgumentException("Project, Material, or User not found");
 
@@ -85,16 +94,50 @@ public class MaterialUsageServiceImpl extends UnicastRemoteObject implements Mat
             usage.setProject(p);
             usage.setMaterial(m);
             usage.setQuantityUsed(dto.getQuantityUsed());
-            usage.setUnitPrice(stock.getAverageUnitPrice()); // Cost based on avg stock price
+            usage.setUnitPrice(stock.getAverageUnitPrice()); // Aggregate average
             usage.setTotalCost(dto.getQuantityUsed().multiply(stock.getAverageUnitPrice()));
             usage.setUsageDate(dto.getUsageDate());
             usage.setActivityDescription(dto.getActivityDescription());
             usage.setRecordedBy(u);
+            usage.setCreatedAt(java.time.LocalDateTime.now());
+            usage.setUpdatedAt(java.time.LocalDateTime.now());
             usage = dao.saveWithSession(usage, session);
 
-            // 2. Update Stock
+            // 2. The FIFO Engine Allocation
+            BigDecimal requestedQty = dto.getQuantityUsed();
+            List<MaterialPurchase> availablePurchases = purchaseDao.findAvailablePurchases(p.getId(), m.getId());
+
+            for (MaterialPurchase purchase : availablePurchases) {
+                if (requestedQty.compareTo(BigDecimal.ZERO) <= 0) break;
+
+                BigDecimal sumAllocated = allocDao.getSumOfAllocationsForPurchaseWithSession(purchase.getId(), session);
+                BigDecimal remainingInPurchase = purchase.getQuantity().subtract(sumAllocated);
+
+                if (remainingInPurchase.compareTo(BigDecimal.ZERO) <= 0) continue;
+
+                BigDecimal amountToTake = requestedQty.min(remainingInPurchase);
+
+                UsagePurchaseAllocation allocation = new UsagePurchaseAllocation(usage, purchase, amountToTake);
+                allocDao.saveWithSession(allocation, session);
+
+                if (amountToTake.compareTo(remainingInPurchase) == 0) {
+                    purchase.setStockStatus(EPurchaseStockStatus.DEPLETED);
+                } else {
+                    purchase.setStockStatus(EPurchaseStockStatus.PARTIALLY_USED);
+                }
+                purchaseDao.updateWithSession(purchase, session);
+
+                requestedQty = requestedQty.subtract(amountToTake);
+            }
+
+            if (requestedQty.compareTo(BigDecimal.ZERO) > 0) {
+                throw new IllegalArgumentException("FIFO Allocation failed. Aggregate stock indicates availability but purchase batches are depleted.");
+            }
+
+            // 3. Update Aggregate Stock
             BigDecimal newQty = stock.getQuantityAvailable().subtract(dto.getQuantityUsed());
             stock.setQuantityAvailable(newQty);
+            stock.setUpdatedAt(java.time.LocalDateTime.now());
             stockDao.updateWithSession(stock, session);
 
             // 3. Create Movement Record
@@ -110,6 +153,8 @@ public class MaterialUsageServiceImpl extends UnicastRemoteObject implements Mat
             movement.setReferenceType("USAGE");
             movement.setReferenceId(usage.getId());
             movement.setRecordedBy(u);
+            movement.setCreatedAt(java.time.LocalDateTime.now());
+            movement.setUpdatedAt(java.time.LocalDateTime.now());
             movementDao.saveWithSession(movement, session);
 
             tx.commit();

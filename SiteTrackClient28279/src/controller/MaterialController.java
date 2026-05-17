@@ -4,9 +4,11 @@ import config.RMIConnection;
 import dto.MaterialCategoryDTO;
 import dto.MaterialDTO;
 import dto.MaterialPurchaseDTO;
+import dto.MaterialUsageDTO;
 import service.interfaces.MaterialCategoryService;
 import service.interfaces.MaterialPurchaseService;
 import service.interfaces.MaterialService;
+import service.interfaces.MaterialUsageService;
 
 import javax.swing.*;
 import java.rmi.RemoteException;
@@ -26,6 +28,10 @@ public class MaterialController {
 
     private MaterialPurchaseService getPurchaseService() throws RemoteException {
         return RMIConnection.getInstance().getService(MaterialPurchaseService.class);
+    }
+
+    private MaterialUsageService getUsageService() throws RemoteException {
+        return RMIConnection.getInstance().getService(MaterialUsageService.class);
     }
 
     // --- Categories ---
@@ -80,6 +86,26 @@ public class MaterialController {
             return false;
         }
     }
+
+    public boolean updateMaterial(MaterialDTO dto) {
+        try {
+            getMaterialService().updateMaterial(dto);
+            return true;
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Failed to update material: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+    }
+    
+    public MaterialDTO getMaterialById(String id) {
+        try {
+            return getMaterialService().getMaterialById(id);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     
     public boolean deactivateMaterial(String id) {
         try {
@@ -114,6 +140,30 @@ public class MaterialController {
     public List<MaterialPurchaseDTO> getPurchasesByProject(String projectId) {
         try {
             return getPurchaseService().getPurchasesByProject(projectId);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    // --- Usages ---
+    public boolean recordUsage(MaterialUsageDTO dto) {
+        try {
+            getUsageService().recordUsage(dto);
+            return true;
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Validation Error", JOptionPane.WARNING_MESSAGE);
+            return false;
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Failed to record usage: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+    }
+
+    public List<MaterialUsageDTO> getUsageByProject(String projectId) {
+        try {
+            return getUsageService().getUsageByProject(projectId);
         } catch (RemoteException e) {
             e.printStackTrace();
             return new ArrayList<>();

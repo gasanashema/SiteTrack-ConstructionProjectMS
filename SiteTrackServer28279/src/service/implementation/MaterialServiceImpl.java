@@ -30,7 +30,6 @@ public class MaterialServiceImpl extends UnicastRemoteObject implements Material
             entity.getCategory() != null ? entity.getCategory().getCategoryName() : null,
             entity.getMaterialName(),
             entity.getUnit(),
-            entity.getCurrentPrice(),
             entity.getDescription(),
             entity.getStatus().name()
         );
@@ -42,7 +41,6 @@ public class MaterialServiceImpl extends UnicastRemoteObject implements Material
             Material entity = new Material();
             entity.setMaterialName(dto.getMaterialName());
             entity.setUnit(dto.getUnit());
-            entity.setCurrentPrice(dto.getCurrentPrice());
             entity.setDescription(dto.getDescription());
             entity.setStatus(EMaterialStatus.ACTIVE);
             
@@ -50,6 +48,9 @@ public class MaterialServiceImpl extends UnicastRemoteObject implements Material
                 MaterialCategory cat = categoryDao.findById(dto.getCategoryId());
                 if (cat != null) entity.setCategory(cat);
             }
+            
+            entity.setCreatedAt(java.time.LocalDateTime.now());
+            entity.setUpdatedAt(java.time.LocalDateTime.now());
             
             entity = dao.save(entity);
             return toDTO(entity);
@@ -67,7 +68,6 @@ public class MaterialServiceImpl extends UnicastRemoteObject implements Material
             
             entity.setMaterialName(dto.getMaterialName());
             entity.setUnit(dto.getUnit());
-            entity.setCurrentPrice(dto.getCurrentPrice());
             entity.setDescription(dto.getDescription());
             
             if (dto.getCategoryId() != null) {

@@ -33,9 +33,6 @@ public class Material implements Serializable {
     @Column(name = "unit", nullable = false)
     private String unit;
 
-    @Column(name = "current_price", nullable = false)
-    private BigDecimal currentPrice;
-
     @Column(name = "description")
     private String description;
 
@@ -64,12 +61,11 @@ public class Material implements Serializable {
     public Material() {
     }
 
-    public Material(String id, MaterialCategory category, String materialName, String unit, BigDecimal currentPrice, String description, EMaterialStatus status, LocalDateTime createdAt, LocalDateTime updatedAt, List<MaterialPurchase> materialPurchases, List<ProjectMaterialStock> materialStocks, List<MaterialStockMovement> stockMovements, List<MaterialUsage> materialUsages) {
+    public Material(String id, MaterialCategory category, String materialName, String unit, String description, EMaterialStatus status, LocalDateTime createdAt, LocalDateTime updatedAt, List<MaterialPurchase> materialPurchases, List<ProjectMaterialStock> materialStocks, List<MaterialStockMovement> stockMovements, List<MaterialUsage> materialUsages) {
         this.id = id;
         this.category = category;
         this.materialName = materialName;
         this.unit = unit;
-        this.currentPrice = currentPrice;
         this.description = description;
         this.status = status;
         this.createdAt = createdAt;
@@ -88,8 +84,6 @@ public class Material implements Serializable {
     public void setMaterialName(String materialName) { this.materialName = materialName; }
     public String getUnit() { return unit; }
     public void setUnit(String unit) { this.unit = unit; }
-    public BigDecimal getCurrentPrice() { return currentPrice; }
-    public void setCurrentPrice(BigDecimal currentPrice) { this.currentPrice = currentPrice; }
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
     public EMaterialStatus getStatus() { return status; }

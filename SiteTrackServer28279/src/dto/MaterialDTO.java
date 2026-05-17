@@ -10,19 +10,17 @@ public class MaterialDTO implements Serializable {
     private String categoryName;
     private String materialName;
     private String unit;
-    private java.math.BigDecimal currentPrice;
     private String description;
     private String status;
 
     public MaterialDTO() {}
 
-    public MaterialDTO(String id, String categoryId, String categoryName, String materialName, String unit, java.math.BigDecimal currentPrice, String description, String status) {
+    public MaterialDTO(String id, String categoryId, String categoryName, String materialName, String unit, String description, String status) {
         this.id = id;
         this.categoryId = categoryId;
         this.categoryName = categoryName;
         this.materialName = materialName;
         this.unit = unit;
-        this.currentPrice = currentPrice;
         this.description = description;
         this.status = status;
     }
@@ -37,8 +35,6 @@ public class MaterialDTO implements Serializable {
     public void setMaterialName(String materialName) { this.materialName = materialName; }
     public String getUnit() { return unit; }
     public void setUnit(String unit) { this.unit = unit; }
-    public java.math.BigDecimal getCurrentPrice() { return currentPrice; }
-    public void setCurrentPrice(java.math.BigDecimal currentPrice) { this.currentPrice = currentPrice; }
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
     public String getStatus() { return status; }

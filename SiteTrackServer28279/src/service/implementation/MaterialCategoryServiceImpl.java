@@ -19,7 +19,7 @@ public class MaterialCategoryServiceImpl extends UnicastRemoteObject implements 
 
     private MaterialCategoryDTO toDTO(MaterialCategory entity) {
         if (entity == null) return null;
-        return new MaterialCategoryDTO(entity.getId(), entity.getCategoryName(), entity.getDescription());
+        return new MaterialCategoryDTO(entity.getId(), entity.getCategoryName(), entity.getDescription(), entity.getUnit());
     }
 
     private MaterialCategory toEntity(MaterialCategoryDTO dto) {
@@ -28,6 +28,7 @@ public class MaterialCategoryServiceImpl extends UnicastRemoteObject implements 
         entity.setId(dto.getId());
         entity.setCategoryName(dto.getCategoryName());
         entity.setDescription(dto.getDescription());
+        entity.setUnit(dto.getUnit());
         return entity;
     }
 
@@ -35,6 +36,8 @@ public class MaterialCategoryServiceImpl extends UnicastRemoteObject implements 
     public MaterialCategoryDTO createCategory(MaterialCategoryDTO dto) throws RemoteException {
         try {
             MaterialCategory entity = toEntity(dto);
+            entity.setCreatedAt(java.time.LocalDateTime.now());
+            entity.setUpdatedAt(java.time.LocalDateTime.now());
             entity = dao.save(entity);
             return toDTO(entity);
         } catch (Exception e) {

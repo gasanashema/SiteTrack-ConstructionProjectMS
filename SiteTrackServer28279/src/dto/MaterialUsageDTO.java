@@ -16,11 +16,12 @@ public class MaterialUsageDTO implements Serializable {
     private java.math.BigDecimal totalCost;
     private java.time.LocalDate usageDate;
     private String activityDescription;
+    private String recordedById;
     private String recordedByName;
 
     public MaterialUsageDTO() {}
 
-    public MaterialUsageDTO(String id, String projectId, String projectName, String materialId, String materialName, String unit, java.math.BigDecimal quantityUsed, java.math.BigDecimal unitPrice, java.math.BigDecimal totalCost, java.time.LocalDate usageDate, String activityDescription, String recordedByName) {
+    public MaterialUsageDTO(String id, String projectId, String projectName, String materialId, String materialName, String unit, java.math.BigDecimal quantityUsed, java.math.BigDecimal unitPrice, java.math.BigDecimal totalCost, java.time.LocalDate usageDate, String activityDescription, String recordedById, String recordedByName) {
         this.id = id;
         this.projectId = projectId;
         this.projectName = projectName;
@@ -32,6 +33,7 @@ public class MaterialUsageDTO implements Serializable {
         this.totalCost = totalCost;
         this.usageDate = usageDate;
         this.activityDescription = activityDescription;
+        this.recordedById = recordedById;
         this.recordedByName = recordedByName;
     }
 
@@ -57,6 +59,8 @@ public class MaterialUsageDTO implements Serializable {
     public void setUsageDate(java.time.LocalDate usageDate) { this.usageDate = usageDate; }
     public String getActivityDescription() { return activityDescription; }
     public void setActivityDescription(String activityDescription) { this.activityDescription = activityDescription; }
+    public String getRecordedById() { return recordedById; }
+    public void setRecordedById(String recordedById) { this.recordedById = recordedById; }
     public String getRecordedByName() { return recordedByName; }
     public void setRecordedByName(String recordedByName) { this.recordedByName = recordedByName; }
 }
