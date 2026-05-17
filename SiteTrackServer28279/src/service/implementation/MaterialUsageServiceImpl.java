@@ -66,6 +66,7 @@ public class MaterialUsageServiceImpl extends UnicastRemoteObject implements Mat
             entity.getTotalCost(),
             entity.getUsageDate(),
             entity.getActivityDescription(),
+            entity.getRecordedBy() != null ? entity.getRecordedBy().getId() : null,
             entity.getRecordedBy() != null ? entity.getRecordedBy().getFullName() : null
         );
     }

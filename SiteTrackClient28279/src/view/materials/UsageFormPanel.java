@@ -2,9 +2,11 @@ package view.materials;
 
 import controller.MaterialController;
 import controller.ProjectController;
+import controller.StockController;
 import dto.MaterialDTO;
 import dto.MaterialUsageDTO;
 import dto.ProjectDTO;
+import dto.ProjectMaterialStockDTO;
 import session.SessionManager;
 
 import javax.swing.*;
@@ -17,6 +19,7 @@ import com.toedter.calendar.JDateChooser;
 public class UsageFormPanel extends JDialog {
     private MaterialController controller;
     private ProjectController projectController;
+    private StockController stockController;
     private boolean isSaved = false;
 
     private JComboBox<String> projectCombo;
@@ -24,11 +27,14 @@ public class UsageFormPanel extends JDialog {
     private JTextField quantityField;
     private JTextField activityField;
     private JDateChooser dateField;
+    private JLabel remainingStockLabel;
+    private BigDecimal currentAvailableStock = BigDecimal.ZERO;
 
     public UsageFormPanel(JFrame parent, MaterialController controller) {
         super(parent, "Record Material Usage (Stock Out)", true);
         this.controller = controller;
         this.projectController = new ProjectController();
+        this.stockController = new StockController();
         
         setSize(450, 400);
         setLocationRelativeTo(parent);
@@ -70,14 +76,38 @@ public class UsageFormPanel extends JDialog {
         dateField.setDate(java.sql.Date.valueOf(LocalDate.now()));
         ((JTextField) dateField.getDateEditor().getUiComponent()).setEditable(false);
 
+        remainingStockLabel = new JLabel("Please select a project and material.");
+        remainingStockLabel.setFont(new Font("Ubuntu", Font.BOLD, 12));
+        remainingStockLabel.setForeground(Color.decode("#FF5E14"));
+
+        projectCombo.addItemListener(e -> {
+            if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED) {
+                updateRemainingStock();
+            }
+        });
+
+        materialCombo.addItemListener(e -> {
+            if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED) {
+                updateRemainingStock();
+            }
+        });
+
         int row = 0;
         addFormField(formPanel, "Project *", projectCombo, gbc, row++);
         addFormField(formPanel, "Material *", materialCombo, gbc, row++);
+        
+        gbc.gridy = row++;
+        gbc.gridx = 1; gbc.weightx = 0.7;
+        formPanel.add(remainingStockLabel, gbc);
+
         addFormField(formPanel, "Quantity Used *", quantityField, gbc, row++);
         addFormField(formPanel, "Usage Date *", dateField, gbc, row++);
         addFormField(formPanel, "Activity Desc *", activityField, gbc, row++);
 
         mainPanel.add(formPanel, BorderLayout.CENTER);
+        
+        // Initial fetch
+        updateRemainingStock();
 
         // Buttons
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
@@ -104,6 +134,25 @@ public class UsageFormPanel extends JDialog {
         panel.add(comp, gbc);
     }
 
+    private void updateRemainingStock() {
+        if (projectCombo.getSelectedItem() != null && materialCombo.getSelectedItem() != null) {
+            String projSelected = (String) projectCombo.getSelectedItem();
+            String projId = projSelected.split(" - ")[0];
+            
+            String matSelected = (String) materialCombo.getSelectedItem();
+            String matId = matSelected.split(" - ")[0];
+            
+            ProjectMaterialStockDTO stock = stockController.getStockByProjectAndMaterial(projId, matId);
+            if (stock != null) {
+                currentAvailableStock = stock.getQuantityAvailable();
+                remainingStockLabel.setText("Available Stock: " + currentAvailableStock.toString() + " " + stock.getUnit());
+            } else {
+                currentAvailableStock = BigDecimal.ZERO;
+                remainingStockLabel.setText("Available Stock: 0.00");
+            }
+        }
+    }
+
     private void saveUsage() {
         String qtyStr = quantityField.getText().trim();
         String activity = activityField.getText().trim();
@@ -124,6 +173,11 @@ public class UsageFormPanel extends JDialog {
             return;
         }
 
+        if (qty.compareTo(currentAvailableStock) > 0) {
+            JOptionPane.showMessageDialog(this, "Quantity used cannot exceed the available stock (" + currentAvailableStock + ").", "Insufficient Stock", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         String projSelected = (String) projectCombo.getSelectedItem();
         String projId = projSelected.split(" - ")[0];
         
@@ -139,10 +193,8 @@ public class UsageFormPanel extends JDialog {
         dto.setActivityDescription(activity);
         dto.setUsageDate(date);
         
-        // Use recordedById but MaterialUsageDTO may not have it! Wait!
-        // We added recordedById to MaterialPurchaseDTO, did we add it to MaterialUsageDTO?
-        // Let's check that.
-        dto.setRecordedByName(SessionManager.getInstance().getCurrentUserId()); // Hack for now, Server expects ID in RecordedByName field from previous implementation
+        dto.setRecordedById(SessionManager.getInstance().getCurrentUserId());
+        dto.setRecordedByName(SessionManager.getInstance().getCurrentUserName());
 
         if (controller.recordUsage(dto)) {
             isSaved = true;

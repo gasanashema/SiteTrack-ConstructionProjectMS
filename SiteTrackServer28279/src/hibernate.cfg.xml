@@ -60,6 +60,7 @@ Contributor(s):
     <mapping class="model.ProjectManager"/>
     <mapping class="model.ProjectMaterialStock"/>
     <mapping class="model.SiteWorker"/>
+    <mapping class="model.UsagePurchaseAllocation"/>
     <mapping class="model.User"/>
     <mapping class="model.WorkerAttendance"/>
     <mapping class="model.WorkerPayment"/>

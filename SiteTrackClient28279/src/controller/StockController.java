@@ -34,6 +34,15 @@ public class StockController {
         }
     }
 
+    public ProjectMaterialStockDTO getStockByProjectAndMaterial(String projectId, String materialId) {
+        try {
+            return getStockService().getStockByProjectAndMaterial(projectId, materialId);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public List<ProjectMaterialStockDTO> getLowStockByProject(String projectId) {
         try {
             return getStockService().getLowStockByProject(projectId);
