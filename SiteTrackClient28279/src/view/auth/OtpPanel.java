@@ -181,12 +181,6 @@ public class OtpPanel extends JPanel {
                     view.admin.AuditLogPanel auditLogPanel = new view.admin.AuditLogPanel();
                     mainFrame.addPanel("AuditLogPanel", auditLogPanel);
                     
-                    view.admin.SystemHealthPanel systemHealthPanel = new view.admin.SystemHealthPanel();
-                    mainFrame.addPanel("SystemHealthPanel", systemHealthPanel);
-                    
-                    view.admin.BackupPanel backupPanel = new view.admin.BackupPanel();
-                    mainFrame.addPanel("BackupPanel", backupPanel);
-                    
                     view.admin.LogViewerPanel logViewerPanel = new view.admin.LogViewerPanel();
                     mainFrame.addPanel("LogViewerPanel", logViewerPanel);
                 }

@@ -70,8 +70,6 @@ public class SidebarPanel extends JPanel {
             addMenuButton("⚙", "Settings", "SettingsPanel");
             addMenuButton("👥", "User Management", "UserManagementPanel");
             addMenuButton("📜", "Audit Log", "AuditLogPanel");
-            addMenuButton("❤", "System Health", "SystemHealthPanel");
-            addMenuButton("💾", "Backup & Data", "BackupPanel");
             addMenuButton("📃", "Logs", "LogViewerPanel");
         } else if (SessionManager.getInstance().isSiteManager()) {
             addMenuButton("📊", "Dashboard", "DashboardPanel");

@@ -3,9 +3,12 @@ package view.admin;
 import controller.SystemAdminController;
 import controller.ReportController;
 
+import dto.AuditLogDTO;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,7 +28,7 @@ public class AuditLogPanel extends JPanel {
     private JTable table;
     private DefaultTableModel tableModel;
 
-    private List<String[]> allLogs;
+    private List<AuditLogDTO> allLogs;
 
     public AuditLogPanel() {
         this.adminController = new SystemAdminController();
@@ -141,11 +144,11 @@ public class AuditLogPanel extends JPanel {
             toDateField.setDate(null);
             applyFilters();
         });
-        exportButton.addActionListener(e -> adminController.exportDataPlaceholder("Audit Logs", "CSV"));
+        exportButton.addActionListener(e -> JOptionPane.showMessageDialog(this, "Export function coming soon."));
     }
 
     private void loadData() {
-        allLogs = adminController.getDummyAuditLogs();
+        allLogs = adminController.getAuditLogs();
         applyFilters();
     }
 
@@ -153,15 +156,24 @@ public class AuditLogPanel extends JPanel {
         String user = (String) userCombo.getSelectedItem();
         String event = (String) eventTypeCombo.getSelectedItem();
         
-        List<String[]> filtered = allLogs.stream().filter(log -> {
-            boolean matchUser = "All Users".equals(user) || log[1].equals(user);
-            boolean matchEvent = "All Events".equals(event) || log[2].equals(event);
+        List<AuditLogDTO> filtered = allLogs.stream().filter(log -> {
+            boolean matchUser = "All Users".equals(user) || log.getUsername().equals(user);
+            boolean matchEvent = "All Events".equals(event) || log.getEventType().equals(event);
             return matchUser && matchEvent;
         }).collect(Collectors.toList());
 
         tableModel.setRowCount(0);
-        for (String[] log : filtered) {
-            tableModel.addRow(log);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        for (AuditLogDTO log : filtered) {
+            tableModel.addRow(new String[]{
+                log.getCreatedAt().format(dtf),
+                log.getUsername(),
+                log.getEventType(),
+                log.getEntityName(),
+                log.getDetails(),
+                log.getIpAddress(),
+                "SUCCESS" // Assuming success for now
+            });
         }
     }
 

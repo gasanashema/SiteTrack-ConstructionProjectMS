@@ -14,11 +14,13 @@ import java.rmi.server.UnicastRemoteObject;
 public class AuthServiceImpl extends UnicastRemoteObject implements AuthService {
     private final UserDao userDao;
     private final OtpVerificationDao otpDao;
+    private final dao.AuditLogDao auditDao;
 
     public AuthServiceImpl() throws RemoteException {
         super();
         this.userDao = new UserDao();
         this.otpDao = new OtpVerificationDao();
+        this.auditDao = new dao.AuditLogDao();
     }
 
     @Override
@@ -32,9 +34,11 @@ public class AuthServiceImpl extends UnicastRemoteObject implements AuthService 
                 return new LoginResponseDTO(false, "Account is inactive", null, null, null, null);
             }
             if (BCrypt.checkpw(password, user.getPassword())) {
+                auditDao.save(new model.AuditLog(user.getId(), user.getUsername(), "LOGIN", "User", "User logged in successfully", "127.0.0.1", java.time.LocalDateTime.now()));
                 // If 2FA is required, we'd generate OTP here. For basic implementation, returning success.
                 return new LoginResponseDTO(true, "Login successful", user.getId(), user.getRole().name(), user.getFullName(), null);
             }
+            auditDao.save(new model.AuditLog(user.getId(), user.getUsername(), "LOGIN_FAILED", "User", "Failed login attempt", "127.0.0.1", java.time.LocalDateTime.now()));
             return new LoginResponseDTO(false, "Invalid username or password", null, null, null, null);
         } catch (Exception e) {
             e.printStackTrace();
@@ -61,6 +65,7 @@ public class AuthServiceImpl extends UnicastRemoteObject implements AuthService 
             if (user != null && BCrypt.checkpw(currentPassword, user.getPassword())) {
                 user.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
                 userDao.update(user);
+                auditDao.save(new model.AuditLog(user.getId(), user.getUsername(), "PASSWORD_CHANGE", "User", "User changed their password", "127.0.0.1", java.time.LocalDateTime.now()));
                 NotificationProducer.sendNotification(user.getId(), "PASSWORD_CHANGE", "Your password has been changed", "EMAIL");
                 return true;
             }
@@ -78,6 +83,7 @@ public class AuthServiceImpl extends UnicastRemoteObject implements AuthService 
             if (user != null) {
                 user.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
                 userDao.update(user);
+                auditDao.save(new model.AuditLog(user.getId(), user.getUsername(), "PASSWORD_RESET", "User", "Password reset by admin", "127.0.0.1", java.time.LocalDateTime.now()));
                 NotificationProducer.sendNotification(user.getId(), "PASSWORD_RESET", "Your password has been reset by an administrator", "EMAIL");
                 return true;
             }

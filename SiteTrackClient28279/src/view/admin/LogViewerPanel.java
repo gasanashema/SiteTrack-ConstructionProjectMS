@@ -159,18 +159,18 @@ public class LogViewerPanel extends JPanel {
         });
         refreshButton.addActionListener(e -> loadData());
         
-        exportButton.addActionListener(e -> adminController.exportDataPlaceholder("System Logs", "CSV"));
+        exportButton.addActionListener(e -> JOptionPane.showMessageDialog(this, "Export function coming soon."));
         deleteLogsButton.addActionListener(e -> {
             String months = JOptionPane.showInputDialog(this, "Delete logs older than (months):", "3");
             if (months != null && !months.trim().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Logs older than " + months + " months have been deleted.");
+                JOptionPane.showMessageDialog(this, "Audit logs deleted. (System logs are file-based)");
                 loadData();
             }
         });
     }
 
     private void loadData() {
-        allLogs = adminController.getDummySystemLogs();
+        allLogs = adminController.getSystemLogs();
         applyFilters();
     }
 
