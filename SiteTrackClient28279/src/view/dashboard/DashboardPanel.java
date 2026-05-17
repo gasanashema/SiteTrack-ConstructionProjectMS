@@ -130,6 +130,27 @@ public class DashboardPanel extends JPanel {
         tablesPanel.add(createLowStockPanel(data.getLowStockAlerts()));
 
         contentPanel.add(tablesPanel);
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 30)));
+
+        // Charts Section
+        JPanel chartsPanel = new JPanel(new GridLayout(1, 2, 20, 0));
+        chartsPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        ModernPieChartPanel costChart = new ModernPieChartPanel("Expenditure Breakdown", matCost, labCost);
+        costChart.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        chartsPanel.add(costChart);
+
+        // Placeholder for second chart
+        JPanel placeholderChart = new JPanel(new BorderLayout());
+        placeholderChart.setBackground(UIManager.getColor("Panel.background"));
+        placeholderChart.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
+        JLabel placeholderLabel = new JLabel("More Analytics Coming Soon", SwingConstants.CENTER);
+        placeholderLabel.setFont(new Font("Segoe UI", Font.ITALIC, 14));
+        placeholderLabel.setForeground(Color.GRAY);
+        placeholderChart.add(placeholderLabel, BorderLayout.CENTER);
+        chartsPanel.add(placeholderChart);
+
+        contentPanel.add(chartsPanel);
     }
 
     private void buildSiteManagerDashboard() {
