@@ -39,11 +39,27 @@ public class DashboardPanel extends JPanel {
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
         headerPanel.add(titleLabel, BorderLayout.WEST);
         
+        JPanel headerActions = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        headerActions.setOpaque(false);
+        
+        JButton recordUsageBtn = new JButton("+ Record Daily Usage");
+        recordUsageBtn.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        recordUsageBtn.setBackground(Color.decode("#FF5E14"));
+        recordUsageBtn.setForeground(Color.WHITE);
+        recordUsageBtn.setFocusPainted(false);
+        recordUsageBtn.addActionListener(e -> {
+            new view.materials.UsageFormDialog(mainFrame, new controller.MaterialController()).setVisible(true);
+        });
+        
         JButton refreshBtn = new JButton("↻ Refresh");
         refreshBtn.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         refreshBtn.setFocusPainted(false);
         refreshBtn.addActionListener(e -> refreshDashboard());
-        headerPanel.add(refreshBtn, BorderLayout.EAST);
+        
+        headerActions.add(recordUsageBtn);
+        headerActions.add(refreshBtn);
+        
+        headerPanel.add(headerActions, BorderLayout.EAST);
 
         add(headerPanel, BorderLayout.NORTH);
 

@@ -62,7 +62,6 @@ public class StockPanel extends JPanel {
 
         tabbedPane.addTab("Current Stock", createStockTab());
         tabbedPane.addTab("Material Purchases", createPurchasesTab());
-        tabbedPane.addTab("Material Usage", createUsagesTab());
         tabbedPane.addTab("Stock Movements", createMovementsTab());
 
         add(tabbedPane, BorderLayout.CENTER);
@@ -143,44 +142,6 @@ public class StockPanel extends JPanel {
         return panel;
     }
 
-    private JPanel createUsagesTab() {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        DefaultTableModel model = new DefaultTableModel(new String[]{"ID", "Project", "Material", "Qty Used", "Date", "Activity"}, 0);
-        JTable table = new JTable(model);
-        panel.add(new JScrollPane(table), BorderLayout.CENTER);
-
-        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        
-        JButton refreshBtn = new JButton("Load Usages");
-        refreshBtn.addActionListener(e -> {
-            String projId = getSelectedProjectId();
-            if (projId != null) {
-                model.setRowCount(0);
-                List<dto.MaterialUsageDTO> usages = materialController.getUsageByProject(projId);
-                for (dto.MaterialUsageDTO u : usages) {
-                    model.addRow(new Object[]{u.getId(), u.getProjectName(), u.getMaterialName(), u.getQuantityUsed(), u.getUsageDate(), u.getActivityDescription()});
-                }
-            } else {
-                JOptionPane.showMessageDialog(this, "Please select a project first.", "Warning", JOptionPane.WARNING_MESSAGE);
-            }
-        });
-        JButton addBtn = new JButton("Record Usage");
-        addBtn.addActionListener(e -> {
-            UsageFormPanel dialog = new UsageFormPanel(mainFrame, materialController);
-            dialog.setVisible(true);
-            if (dialog.isSaved()) {
-                refreshBtn.doClick();
-            }
-        });
-        
-        topPanel.add(refreshBtn);
-        topPanel.add(addBtn);
-        panel.add(topPanel, BorderLayout.NORTH);
-
-        return panel;
-    }
 
     private JPanel createMovementsTab() {
         JPanel panel = new JPanel(new BorderLayout());

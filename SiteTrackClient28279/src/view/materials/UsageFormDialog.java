@@ -16,7 +16,7 @@ import java.time.LocalDate;
 import java.util.List;
 import com.toedter.calendar.JDateChooser;
 
-public class UsageFormPanel extends JDialog {
+public class UsageFormDialog extends JDialog {
     private MaterialController controller;
     private ProjectController projectController;
     private StockController stockController;
@@ -29,9 +29,11 @@ public class UsageFormPanel extends JDialog {
     private JDateChooser dateField;
     private JLabel remainingStockLabel;
     private BigDecimal currentAvailableStock = BigDecimal.ZERO;
+    private boolean isViewMode = false;
+    private MaterialUsageDTO viewDto;
 
-    public UsageFormPanel(JFrame parent, MaterialController controller) {
-        super(parent, "Record Material Usage (Stock Out)", true);
+    public UsageFormDialog(JFrame parent, MaterialController controller) {
+        super(parent, "Record Material Usage", true);
         this.controller = controller;
         this.projectController = new ProjectController();
         this.stockController = new StockController();
@@ -40,6 +42,45 @@ public class UsageFormPanel extends JDialog {
         setLocationRelativeTo(parent);
         
         initUI();
+    }
+
+    public UsageFormDialog(JFrame parent, MaterialController controller, MaterialUsageDTO viewDto) {
+        super(parent, "View Material Usage", true);
+        this.controller = controller;
+        this.projectController = new ProjectController();
+        this.stockController = new StockController();
+        this.isViewMode = true;
+        this.viewDto = viewDto;
+        
+        setSize(450, 450);
+        setLocationRelativeTo(parent);
+        
+        initUI();
+        populateViewData();
+    }
+
+    private void populateViewData() {
+        projectCombo.removeAllItems();
+        projectCombo.addItem(viewDto.getProjectId() + " - " + viewDto.getProjectName());
+        projectCombo.setSelectedIndex(0);
+        projectCombo.setEnabled(false);
+
+        materialCombo.removeAllItems();
+        materialCombo.addItem(viewDto.getMaterialId() + " - " + viewDto.getMaterialName());
+        materialCombo.setSelectedIndex(0);
+        materialCombo.setEnabled(false);
+
+        quantityField.setText(viewDto.getQuantityUsed().toString());
+        quantityField.setEditable(false);
+
+        activityField.setText(viewDto.getActivityDescription());
+        activityField.setEditable(false);
+
+        dateField.setDate(java.sql.Date.valueOf(viewDto.getUsageDate()));
+        dateField.setEnabled(false);
+
+        remainingStockLabel.setText("Recorded By: " + viewDto.getRecordedByName());
+        remainingStockLabel.setForeground(Color.BLACK);
     }
 
     private void initUI() {
@@ -111,16 +152,18 @@ public class UsageFormPanel extends JDialog {
 
         // Buttons
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-        JButton cancelBtn = new JButton("Cancel");
+        JButton cancelBtn = new JButton(isViewMode ? "Close" : "Cancel");
         cancelBtn.addActionListener(e -> dispose());
         
-        JButton saveBtn = new JButton("Record Usage");
-        saveBtn.setBackground(Color.decode("#FF5E14"));
-        saveBtn.setForeground(Color.WHITE);
-        saveBtn.addActionListener(e -> saveUsage());
-        
         buttonPanel.add(cancelBtn);
-        buttonPanel.add(saveBtn);
+
+        if (!isViewMode) {
+            JButton saveBtn = new JButton("Record Usage");
+            saveBtn.setBackground(Color.decode("#FF5E14"));
+            saveBtn.setForeground(Color.WHITE);
+            saveBtn.addActionListener(e -> saveUsage());
+            buttonPanel.add(saveBtn);
+        }
         
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
         setContentPane(mainPanel);

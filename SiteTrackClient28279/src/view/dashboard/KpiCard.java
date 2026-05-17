@@ -8,6 +8,7 @@ public class KpiCard extends JPanel {
     private String value;
     private String subtitle;
     private int styleIndex;
+    private JLabel valueLabel;
 
     public KpiCard(String title, String value, String subtitle) {
         this(title, value, subtitle, 0); // Default style
@@ -33,7 +34,7 @@ public class KpiCard extends JPanel {
         titleLabel.setForeground(UIManager.getColor("Label.disabledForeground"));
         titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel valueLabel = new JLabel(value);
+        valueLabel = new JLabel(value);
         valueLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
         valueLabel.setForeground(UIManager.getColor("Label.foreground"));
         valueLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -49,6 +50,13 @@ public class KpiCard extends JPanel {
             subtitleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
             add(Box.createVerticalStrut(5));
             add(subtitleLabel);
+        }
+    }
+
+    public void setValue(String newValue) {
+        this.value = newValue;
+        if (valueLabel != null) {
+            valueLabel.setText(newValue);
         }
     }
 

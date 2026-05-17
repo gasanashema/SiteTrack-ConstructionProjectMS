@@ -52,7 +52,9 @@ public class SidebarPanel extends JPanel {
             addMenuButton("👥", "Users", "UserPanel");
             addMenuButton("📁", "Projects", "ProjectPanel");
             addMenuButton("📦", "Materials", "MaterialPanel");
-            addMenuButton("📈", "Stock & Usage", "StockPanel");
+            addMenuButton("📈", "Stock & Purchases", "StockPanel");
+            addMenuButton("📋", "Daily Usage", "DailyUsageDialog");
+            addMenuButton("🕒", "Usage History", "UsageHistoryPanel");
             addMenuButton("🏗", "Workers", "WorkerPanel");
             addMenuButton("💰", "Payroll", "PayrollPanel");
             addMenuButton("📋", "Reports", "ReportPanel");
@@ -60,7 +62,9 @@ public class SidebarPanel extends JPanel {
             addMenuButton("📊", "Dashboard", "DashboardPanel");
             addMenuButton("📁", "My Projects", "ProjectPanel");
             addMenuButton("📦", "Materials", "MaterialPanel");
-            addMenuButton("📈", "Stock & Usage", "StockPanel");
+            addMenuButton("📈", "Stock & Purchases", "StockPanel");
+            addMenuButton("📋", "Daily Usage", "DailyUsageDialog");
+            addMenuButton("🕒", "Usage History", "UsageHistoryPanel");
             addMenuButton("🏗", "Workers", "WorkerPanel");
             addMenuButton("✓", "Attendance", "AttendancePanel");
             addMenuButton("💰", "Payroll", "PayrollPanel");
@@ -85,8 +89,12 @@ public class SidebarPanel extends JPanel {
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
         btn.addActionListener(e -> {
-            mainFrame.switchPanel(panelName);
-            highlightButton(btn);
+            if ("DailyUsageDialog".equals(panelName)) {
+                new view.materials.UsageFormDialog(mainFrame, new controller.MaterialController()).setVisible(true);
+            } else {
+                mainFrame.switchPanel(panelName);
+                highlightButton(btn);
+            }
         });
         
         menuButtons.add(btn);

@@ -6,6 +6,7 @@ import view.MainFrame;
 import view.dashboard.DashboardPanel;
 import view.materials.MaterialPanel;
 import view.materials.StockPanel;
+import view.materials.UsageHistoryPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -152,8 +153,10 @@ public class OtpPanel extends JPanel {
                 
                 MaterialPanel materialPanel = new MaterialPanel(mainFrame);
                 StockPanel stockPanel = new StockPanel(mainFrame);
+                UsageHistoryPanel usageHistoryPanel = new UsageHistoryPanel(mainFrame);
                 mainFrame.addPanel("MaterialPanel", materialPanel);
                 mainFrame.addPanel("StockPanel", stockPanel);
+                mainFrame.addPanel("UsageHistoryPanel", usageHistoryPanel);
                 
                 mainFrame.switchPanel("DashboardPanel");
             } else {
