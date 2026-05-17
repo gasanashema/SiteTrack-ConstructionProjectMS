@@ -4,6 +4,8 @@ import controller.AuthController;
 import dto.LoginResponseDTO;
 import view.MainFrame;
 import view.dashboard.DashboardPanel;
+import view.materials.MaterialPanel;
+import view.materials.StockPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -147,6 +149,11 @@ public class OtpPanel extends JPanel {
                 
                 mainFrame.addPanel("DashboardPanel", dashboard);
                 mainFrame.addPanel("ProjectPanel", projectList);
+                
+                MaterialPanel materialPanel = new MaterialPanel(mainFrame);
+                StockPanel stockPanel = new StockPanel(mainFrame);
+                mainFrame.addPanel("MaterialPanel", materialPanel);
+                mainFrame.addPanel("StockPanel", stockPanel);
                 
                 mainFrame.switchPanel("DashboardPanel");
             } else {
