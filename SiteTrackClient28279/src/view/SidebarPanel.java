@@ -56,6 +56,7 @@ public class SidebarPanel extends JPanel {
             addMenuButton("📋", "Daily Usage", "DailyUsageDialog");
             addMenuButton("🕒", "Usage History", "UsageHistoryPanel");
             addMenuButton("🏗", "Workers", "WorkerPanel");
+            addMenuButton("✓", "Attendance", "AttendancePanel");
             addMenuButton("💰", "Payroll", "PayrollPanel");
             addMenuButton("📋", "Reports", "ReportPanel");
         } else if (SessionManager.getInstance().isSiteManager()) {
