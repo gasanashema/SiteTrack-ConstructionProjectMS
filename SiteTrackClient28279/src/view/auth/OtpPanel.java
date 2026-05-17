@@ -170,6 +170,27 @@ public class OtpPanel extends JPanel {
                 view.reports.ReportsPanel reportsPanel = new view.reports.ReportsPanel();
                 mainFrame.addPanel("ReportsPanel", reportsPanel);
                 
+                // Admin Tools & Settings
+                view.settings.SettingsPanel settingsPanel = new view.settings.SettingsPanel(mainFrame);
+                mainFrame.addPanel("SettingsPanel", settingsPanel);
+                
+                if (loginData.getRole().equals("ADMIN")) {
+                    view.settings.UserManagementPanel userMgmtPanel = new view.settings.UserManagementPanel();
+                    mainFrame.addPanel("UserManagementPanel", userMgmtPanel);
+                    
+                    view.admin.AuditLogPanel auditLogPanel = new view.admin.AuditLogPanel();
+                    mainFrame.addPanel("AuditLogPanel", auditLogPanel);
+                    
+                    view.admin.SystemHealthPanel systemHealthPanel = new view.admin.SystemHealthPanel();
+                    mainFrame.addPanel("SystemHealthPanel", systemHealthPanel);
+                    
+                    view.admin.BackupPanel backupPanel = new view.admin.BackupPanel();
+                    mainFrame.addPanel("BackupPanel", backupPanel);
+                    
+                    view.admin.LogViewerPanel logViewerPanel = new view.admin.LogViewerPanel();
+                    mainFrame.addPanel("LogViewerPanel", logViewerPanel);
+                }
+                
                 mainFrame.switchPanel("DashboardPanel");
             } else {
                 errorLabel.setText("Invalid OTP");

@@ -49,7 +49,6 @@ public class SidebarPanel extends JPanel {
         
         if (SessionManager.getInstance().isAdmin()) {
             addMenuButton("📊", "Dashboard", "DashboardPanel");
-            addMenuButton("👥", "Users", "UserPanel");
             addMenuButton("📁", "Projects", "ProjectPanel");
             addMenuButton("📦", "Materials", "MaterialPanel");
             addMenuButton("📈", "Stock & Purchases", "StockPanel");
@@ -59,6 +58,21 @@ public class SidebarPanel extends JPanel {
             addMenuButton("✓", "Attendance", "AttendancePanel");
             addMenuButton("💰", "Payroll", "PayrollPanel");
             addMenuButton("📈", "Reports", "ReportsPanel");
+
+            add(Box.createRigidArea(new Dimension(0, 15)));
+            JLabel adminMenuLabel = new JLabel("ADMIN TOOLS");
+            adminMenuLabel.setFont(new Font("Ubuntu", Font.BOLD, 12));
+            adminMenuLabel.setForeground(Color.decode("#8A94A6"));
+            adminMenuLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            add(adminMenuLabel);
+            add(Box.createRigidArea(new Dimension(0, 5)));
+
+            addMenuButton("⚙", "Settings", "SettingsPanel");
+            addMenuButton("👥", "User Management", "UserManagementPanel");
+            addMenuButton("📜", "Audit Log", "AuditLogPanel");
+            addMenuButton("❤", "System Health", "SystemHealthPanel");
+            addMenuButton("💾", "Backup & Data", "BackupPanel");
+            addMenuButton("📃", "Logs", "LogViewerPanel");
         } else if (SessionManager.getInstance().isSiteManager()) {
             addMenuButton("📊", "Dashboard", "DashboardPanel");
             addMenuButton("📁", "My Projects", "ProjectPanel");

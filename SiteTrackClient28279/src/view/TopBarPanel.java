@@ -8,6 +8,8 @@ public class TopBarPanel extends JPanel {
     private MainFrame mainFrame;
     private JLabel userInfoLabel;
     private JButton themeToggleBtn;
+    private JButton settingsBtn;
+    private JButton helpBtn;
     private JButton logoutBtn;
 
     public TopBarPanel(MainFrame mainFrame) {
@@ -46,9 +48,20 @@ public class TopBarPanel extends JPanel {
         logoutBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         logoutBtn.setPreferredSize(new Dimension(80, 32));
         logoutBtn.addActionListener(e -> mainFrame.handleLogout());
+
+        settingsBtn = new JButton("⚙️ Settings");
+        settingsBtn.setFocusPainted(false);
+        settingsBtn.setFont(new Font("Ubuntu", Font.PLAIN, 13));
+        settingsBtn.addActionListener(e -> mainFrame.switchPanel("SettingsPanel"));
+
+        helpBtn = new JButton("❓ Help");
+        helpBtn.setFocusPainted(false);
+        helpBtn.setFont(new Font("Ubuntu", Font.PLAIN, 13));
         
         rightPanel.add(userInfoLabel);
         rightPanel.add(themeToggleBtn);
+        rightPanel.add(settingsBtn);
+        rightPanel.add(helpBtn);
         rightPanel.add(logoutBtn);
         
         add(leftPanel, BorderLayout.WEST);
