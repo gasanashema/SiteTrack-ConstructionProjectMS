@@ -58,7 +58,7 @@ public class SidebarPanel extends JPanel {
             addMenuButton("🏗", "Workers", "WorkerPanel");
             addMenuButton("✓", "Attendance", "AttendancePanel");
             addMenuButton("💰", "Payroll", "PayrollPanel");
-            addMenuButton("📋", "Reports", "ReportPanel");
+            addMenuButton("📈", "Reports", "ReportsPanel");
         } else if (SessionManager.getInstance().isSiteManager()) {
             addMenuButton("📊", "Dashboard", "DashboardPanel");
             addMenuButton("📁", "My Projects", "ProjectPanel");
@@ -69,6 +69,7 @@ public class SidebarPanel extends JPanel {
             addMenuButton("🏗", "Workers", "WorkerPanel");
             addMenuButton("✓", "Attendance", "AttendancePanel");
             addMenuButton("💰", "Payroll", "PayrollPanel");
+            addMenuButton("📈", "Reports", "ReportsPanel");
         }
         
         revalidate();

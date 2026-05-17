@@ -167,6 +167,9 @@ public class OtpPanel extends JPanel {
                 view.payroll.PayrollPanel payrollPanel = new view.payroll.PayrollPanel(mainFrame);
                 mainFrame.addPanel("PayrollPanel", payrollPanel);
                 
+                view.reports.ReportsPanel reportsPanel = new view.reports.ReportsPanel();
+                mainFrame.addPanel("ReportsPanel", reportsPanel);
+                
                 mainFrame.switchPanel("DashboardPanel");
             } else {
                 errorLabel.setText("Invalid OTP");
