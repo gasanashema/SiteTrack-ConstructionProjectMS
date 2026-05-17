@@ -91,7 +91,7 @@ public class ProjectListPanel extends JPanel {
         add(actionBar, BorderLayout.NORTH);
 
         // 2. Table (Center)
-        String[] columns = {"ID", "Project Name", "Location", "Description", "Start Date", "End Date", "Status", "Progress", "Created By"};
+        String[] columns = {"ID", "Project Name", "Location", "Description", "Start Date", "End Date", "Status", "Created By"};
         tableModel = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int row, int column) { return false; }
@@ -108,8 +108,7 @@ public class ProjectListPanel extends JPanel {
         table.getColumnModel().getColumn(0).setMaxWidth(0);
         table.getColumnModel().getColumn(0).setWidth(0);
         
-        // Custom renderer for Progress column (now at index 7)
-        table.getColumnModel().getColumn(7).setCellRenderer(new ProgressCellRenderer());
+        // No progress column anymore
         
         rowSorter = new TableRowSorter<>(tableModel);
         table.setRowSorter(rowSorter);
@@ -148,7 +147,6 @@ public class ProjectListPanel extends JPanel {
         
         if (projectList != null) {
             for (ProjectDTO p : projectList) {
-                int progress = calculateProgress(p.getStartDate(), p.getExpectedEndDate());
                 tableModel.addRow(new Object[]{
                     p.getId(),
                     p.getProjectName(),
@@ -157,7 +155,6 @@ public class ProjectListPanel extends JPanel {
                     p.getStartDate(),
                     p.getExpectedEndDate(),
                     p.getStatus(),
-                    progress,
                     p.getCreatedByName()
                 });
             }
@@ -196,16 +193,7 @@ public class ProjectListPanel extends JPanel {
         statusLabel.setText("Total visible: " + total + " | Selected: " + selected);
     }
     
-    private int calculateProgress(LocalDate start, LocalDate end) {
-        if (start == null || end == null) return 0;
-        LocalDate now = LocalDate.now();
-        if (now.isBefore(start)) return 0;
-        if (now.isAfter(end)) return 100;
-        long totalDays = ChronoUnit.DAYS.between(start, end);
-        if (totalDays == 0) return 100;
-        long elapsedDays = ChronoUnit.DAYS.between(start, now);
-        return (int) ((elapsedDays * 100) / totalDays);
-    }
+    
     
     private void openProjectForm(ProjectDTO project) {
         // We will implement ProjectFormPanel next
@@ -246,34 +234,4 @@ public class ProjectListPanel extends JPanel {
         }
     }
     
-    // Custom renderer for progress bar
-    private class ProgressCellRenderer extends JProgressBar implements javax.swing.table.TableCellRenderer {
-        public ProgressCellRenderer() {
-            super(0, 100);
-            setStringPainted(true);
-            setOpaque(true);
-        }
-        
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            int progress = (Integer) value;
-            setValue(progress);
-            setString(progress + "%");
-            
-            if (progress < 30) {
-                setForeground(Color.decode("#D93025"));
-            } else if (progress < 70) {
-                setForeground(Color.decode("#F29900"));
-            } else {
-                setForeground(Color.decode("#188038"));
-            }
-            
-            if (isSelected) {
-                setBackground(table.getSelectionBackground());
-            } else {
-                setBackground(table.getBackground());
-            }
-            return this;
-        }
-    }
 }

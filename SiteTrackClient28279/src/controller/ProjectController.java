@@ -116,6 +116,16 @@ public class ProjectController {
             }
             return success;
         } catch (RemoteException e) {
+            if (e.getMessage() != null && e.getMessage().contains("Cannot delete project with existing")) {
+                int cancelConfirm = JOptionPane.showConfirmDialog(null,
+                    "This project has associated stock or attendance records and cannot be permanently deleted.\nWould you like to change its status to CANCELLED instead?",
+                    "Cannot Delete Project", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                
+                if (cancelConfirm == JOptionPane.YES_OPTION) {
+                    return changeProjectStatus(projectId, "CANCELLED");
+                }
+                return false;
+            }
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Failed to delete project: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             return false;

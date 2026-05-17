@@ -4,6 +4,8 @@ import controller.MaterialController;
 import dto.MaterialCategoryDTO;
 import dto.MaterialDTO;
 import dto.MaterialPurchaseDTO;
+import dto.ProjectDTO;
+import controller.ProjectController;
 import session.SessionManager;
 import view.MainFrame;
 
@@ -61,7 +63,16 @@ public class MaterialPanel extends JPanel {
                 model.addRow(new Object[]{c.getId(), c.getCategoryName(), c.getDescription()});
             }
         });
+        JButton addBtn = new JButton("Add Category");
+        addBtn.addActionListener(e -> {
+            CategoryFormPanel dialog = new CategoryFormPanel(mainFrame, materialController);
+            dialog.setVisible(true);
+            if (dialog.isSaved()) {
+                refreshBtn.doClick();
+            }
+        });
         topPanel.add(refreshBtn);
+        topPanel.add(addBtn);
         panel.add(topPanel, BorderLayout.NORTH);
 
         // Load initial data
@@ -88,6 +99,17 @@ public class MaterialPanel extends JPanel {
             }
         });
         topPanel.add(refreshBtn);
+        if (isAdmin) {
+            JButton addBtn = new JButton("Add Material");
+            addBtn.addActionListener(e -> {
+                MaterialFormPanel dialog = new MaterialFormPanel(mainFrame, materialController);
+                dialog.setVisible(true);
+                if (dialog.isSaved()) {
+                    refreshBtn.doClick();
+                }
+            });
+            topPanel.add(addBtn);
+        }
         panel.add(topPanel, BorderLayout.NORTH);
 
         refreshBtn.doClick();
@@ -104,10 +126,19 @@ public class MaterialPanel extends JPanel {
         panel.add(new JScrollPane(table), BorderLayout.CENTER);
 
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JButton refreshBtn = new JButton("Refresh (Requires Project ID)");
+        
+        JComboBox<String> projectCombo = new JComboBox<>();
+        ProjectController pc = new ProjectController();
+        List<ProjectDTO> projects = pc.getAllProjects();
+        for (ProjectDTO p : projects) {
+            projectCombo.addItem(p.getId() + " - " + p.getProjectName());
+        }
+        
+        JButton refreshBtn = new JButton("Load Purchases");
         refreshBtn.addActionListener(e -> {
-            String projId = JOptionPane.showInputDialog("Enter Project ID:");
-            if (projId != null && !projId.trim().isEmpty()) {
+            if (projectCombo.getSelectedItem() != null) {
+                String selected = (String) projectCombo.getSelectedItem();
+                String projId = selected.split(" - ")[0];
                 model.setRowCount(0);
                 List<MaterialPurchaseDTO> purchases = materialController.getPurchasesByProject(projId);
                 for (MaterialPurchaseDTO p : purchases) {
@@ -115,7 +146,19 @@ public class MaterialPanel extends JPanel {
                 }
             }
         });
+        JButton addBtn = new JButton("Record Purchase");
+        addBtn.addActionListener(e -> {
+            PurchaseFormPanel dialog = new PurchaseFormPanel(mainFrame, materialController);
+            dialog.setVisible(true);
+            if (dialog.isSaved()) {
+                refreshBtn.doClick();
+            }
+        });
+        
+        topPanel.add(new JLabel("Select Project: "));
+        topPanel.add(projectCombo);
         topPanel.add(refreshBtn);
+        topPanel.add(addBtn);
         panel.add(topPanel, BorderLayout.NORTH);
 
         return panel;
