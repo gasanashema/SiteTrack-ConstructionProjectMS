@@ -28,6 +28,9 @@ public class MaterialCategory implements Serializable {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "unit")
+    private String unit;
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
@@ -40,10 +43,11 @@ public class MaterialCategory implements Serializable {
     public MaterialCategory() {
     }
 
-    public MaterialCategory(String id, String categoryName, String description, LocalDateTime createdAt, LocalDateTime updatedAt, List<Material> materials) {
+    public MaterialCategory(String id, String categoryName, String description, String unit, LocalDateTime createdAt, LocalDateTime updatedAt, List<Material> materials) {
         this.id = id;
         this.categoryName = categoryName;
         this.description = description;
+        this.unit = unit;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.materials = materials;
@@ -55,6 +59,8 @@ public class MaterialCategory implements Serializable {
     public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+    public String getUnit() { return unit; }
+    public void setUnit(String unit) { this.unit = unit; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }

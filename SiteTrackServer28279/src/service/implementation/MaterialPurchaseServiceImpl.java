@@ -57,6 +57,7 @@ public class MaterialPurchaseServiceImpl extends UnicastRemoteObject implements 
             entity.getTotalPrice(),
             entity.getSupplierName(),
             entity.getPurchaseDate(),
+            entity.getRecordedBy() != null ? entity.getRecordedBy().getId() : null,
             entity.getRecordedBy() != null ? entity.getRecordedBy().getFullName() : null
         );
     }
@@ -71,7 +72,7 @@ public class MaterialPurchaseServiceImpl extends UnicastRemoteObject implements 
 
             Project p = projectDao.findById(dto.getProjectId());
             Material m = materialDao.findById(dto.getMaterialId());
-            User u = userDao.findById(dto.getRecordedByName()); // Assuming username/id
+            User u = userDao.findById(dto.getRecordedById());
 
             if (p == null || m == null || u == null) throw new IllegalArgumentException("Project, Material, or User not found");
 
@@ -85,6 +86,8 @@ public class MaterialPurchaseServiceImpl extends UnicastRemoteObject implements 
             purchase.setSupplierName(dto.getSupplierName());
             purchase.setPurchaseDate(dto.getPurchaseDate());
             purchase.setRecordedBy(u);
+            purchase.setCreatedAt(java.time.LocalDateTime.now());
+            purchase.setUpdatedAt(java.time.LocalDateTime.now());
             purchase = dao.saveWithSession(purchase, session);
 
             // 2. Update or Create Stock
@@ -96,6 +99,8 @@ public class MaterialPurchaseServiceImpl extends UnicastRemoteObject implements 
                 stock.setQuantityAvailable(dto.getQuantity());
                 stock.setMinimumQuantity(BigDecimal.ZERO); // default
                 stock.setAverageUnitPrice(dto.getUnitPrice());
+                stock.setCreatedAt(java.time.LocalDateTime.now());
+                stock.setUpdatedAt(java.time.LocalDateTime.now());
                 stockDao.saveWithSession(stock, session);
             } else {
                 BigDecimal oldTotalVal = stock.getQuantityAvailable().multiply(stock.getAverageUnitPrice());
@@ -104,6 +109,7 @@ public class MaterialPurchaseServiceImpl extends UnicastRemoteObject implements 
                 
                 stock.setQuantityAvailable(newQty);
                 stock.setAverageUnitPrice((oldTotalVal.add(newTotalVal)).divide(newQty, 2, java.math.RoundingMode.HALF_UP));
+                stock.setUpdatedAt(java.time.LocalDateTime.now());
                 stockDao.updateWithSession(stock, session);
             }
 
@@ -120,6 +126,8 @@ public class MaterialPurchaseServiceImpl extends UnicastRemoteObject implements 
             movement.setReferenceType("PURCHASE");
             movement.setReferenceId(purchase.getId());
             movement.setRecordedBy(u);
+            movement.setCreatedAt(java.time.LocalDateTime.now());
+            movement.setUpdatedAt(java.time.LocalDateTime.now());
             movementDao.saveWithSession(movement, session);
 
             tx.commit();

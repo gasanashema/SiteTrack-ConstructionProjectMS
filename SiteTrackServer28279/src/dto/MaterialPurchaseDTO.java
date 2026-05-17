@@ -16,11 +16,12 @@ public class MaterialPurchaseDTO implements Serializable {
     private java.math.BigDecimal totalPrice;
     private String supplierName;
     private java.time.LocalDate purchaseDate;
+    private String recordedById;
     private String recordedByName;
 
     public MaterialPurchaseDTO() {}
 
-    public MaterialPurchaseDTO(String id, String projectId, String projectName, String materialId, String materialName, String unit, java.math.BigDecimal quantity, java.math.BigDecimal unitPrice, java.math.BigDecimal totalPrice, String supplierName, java.time.LocalDate purchaseDate, String recordedByName) {
+    public MaterialPurchaseDTO(String id, String projectId, String projectName, String materialId, String materialName, String unit, java.math.BigDecimal quantity, java.math.BigDecimal unitPrice, java.math.BigDecimal totalPrice, String supplierName, java.time.LocalDate purchaseDate, String recordedById, String recordedByName) {
         this.id = id;
         this.projectId = projectId;
         this.projectName = projectName;
@@ -32,6 +33,7 @@ public class MaterialPurchaseDTO implements Serializable {
         this.totalPrice = totalPrice;
         this.supplierName = supplierName;
         this.purchaseDate = purchaseDate;
+        this.recordedById = recordedById;
         this.recordedByName = recordedByName;
     }
 
@@ -57,6 +59,8 @@ public class MaterialPurchaseDTO implements Serializable {
     public void setSupplierName(String supplierName) { this.supplierName = supplierName; }
     public java.time.LocalDate getPurchaseDate() { return purchaseDate; }
     public void setPurchaseDate(java.time.LocalDate purchaseDate) { this.purchaseDate = purchaseDate; }
+    public String getRecordedById() { return recordedById; }
+    public void setRecordedById(String recordedById) { this.recordedById = recordedById; }
     public String getRecordedByName() { return recordedByName; }
     public void setRecordedByName(String recordedByName) { this.recordedByName = recordedByName; }
 }

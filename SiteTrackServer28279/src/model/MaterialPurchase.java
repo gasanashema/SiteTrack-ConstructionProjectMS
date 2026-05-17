@@ -55,6 +55,10 @@ public class MaterialPurchase implements Serializable {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "stock_status", nullable = false)
+    private EPurchaseStockStatus stockStatus = EPurchaseStockStatus.AVAILABLE;
+
     public MaterialPurchase() {
     }
 
@@ -70,6 +74,7 @@ public class MaterialPurchase implements Serializable {
         this.recordedBy = recordedBy;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.stockStatus = EPurchaseStockStatus.AVAILABLE;
     }
 
     public String getId() { return id; }
@@ -94,6 +99,8 @@ public class MaterialPurchase implements Serializable {
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public EPurchaseStockStatus getStockStatus() { return stockStatus; }
+    public void setStockStatus(EPurchaseStockStatus stockStatus) { this.stockStatus = stockStatus; }
 
     @Override
     public String toString() {
