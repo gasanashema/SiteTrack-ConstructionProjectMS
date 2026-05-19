@@ -35,7 +35,7 @@ public class ProjectFormPanel extends JDialog {
         this.project = project;
         this.controller = controller;
         
-        setSize(550, 600);
+        setSize(650, 600);
         setLocationRelativeTo(parent);
         
         initUI();
@@ -62,11 +62,13 @@ public class ProjectFormPanel extends JDialog {
         descArea.setBorder(BorderFactory.createLineBorder(UIManager.getColor("Component.borderColor")));
         
         startDateField = new JDateChooser();
-        startDateField.setPreferredSize(new Dimension(0, 35));
+        startDateField.setPreferredSize(new Dimension(250, 35));
+        startDateField.setDateFormatString("yyyy-MM-dd");
         startDateField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         
         endDateField = new JDateChooser();
-        endDateField.setPreferredSize(new Dimension(0, 35));
+        endDateField.setPreferredSize(new Dimension(250, 35));
+        endDateField.setDateFormatString("yyyy-MM-dd");
         endDateField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         
         statusCombo = new JComboBox<>(new String[]{"PLANNING", "ONGOING", "COMPLETED", "CANCELLED"});
@@ -95,7 +97,7 @@ public class ProjectFormPanel extends JDialog {
         mainPanel.add(new JScrollPane(formPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER);
 
         // Buttons
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
         
         deleteBtn = new JButton("Delete Project");
         deleteBtn.setForeground(Color.RED);
@@ -109,14 +111,14 @@ public class ProjectFormPanel extends JDialog {
         JButton cancelBtn = new JButton("Cancel");
         cancelBtn.addActionListener(e -> dispose());
         
-        saveBtn = new JButton("Save");
+        saveBtn = new JButton("Save Project");
         saveBtn.setBackground(Color.decode("#FF5E14"));
         saveBtn.setForeground(Color.WHITE);
         saveBtn.addActionListener(e -> saveProject());
         
         buttonPanel.add(manageManagersBtn);
         buttonPanel.add(deleteBtn);
-        buttonPanel.add(Box.createHorizontalStrut(20)); // Spacer
+        buttonPanel.add(Box.createHorizontalStrut(10)); // Spacer
         buttonPanel.add(cancelBtn);
         buttonPanel.add(saveBtn);
         
@@ -172,6 +174,7 @@ public class ProjectFormPanel extends JDialog {
                 deleteBtn.setVisible(true);
                 manageManagersBtn.setVisible(true);
             }
+            saveBtn.setText("Update Project");
         }
         
         ((JTextField) startDateField.getDateEditor().getUiComponent()).setEditable(false);

@@ -34,7 +34,6 @@ public class ProjectSummaryReportPanel extends JPanel {
     private JLabel projNameLabel;
     private JLabel statusLabel;
     private JLabel dateLabel;
-    private JProgressBar progressBar;
     
     // KPI Cards
     private KpiCard materialCostCard;
@@ -139,18 +138,6 @@ public class ProjectSummaryReportPanel extends JPanel {
         dateLabel = new JLabel("Duration: - to -");
         dateLabel.setFont(new Font("Ubuntu", Font.PLAIN, 14));
 
-        JPanel progressPanel = new JPanel(new BorderLayout());
-        progressPanel.setOpaque(false);
-        progressPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-        
-        progressBar = new JProgressBar(0, 100);
-        progressBar.setStringPainted(true);
-        progressBar.setPreferredSize(new Dimension(300, 25));
-        progressBar.setForeground(Color.decode("#2ecc71"));
-
-        progressPanel.add(new JLabel("Project Progress: "), BorderLayout.WEST);
-        progressPanel.add(progressBar, BorderLayout.CENTER);
-
         JPanel leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
         leftPanel.setOpaque(false);
@@ -158,7 +145,6 @@ public class ProjectSummaryReportPanel extends JPanel {
         leftPanel.add(dateLabel);
 
         overviewPanel.add(leftPanel, BorderLayout.WEST);
-        overviewPanel.add(progressPanel, BorderLayout.EAST);
         
         reportContainer.add(overviewPanel);
         reportContainer.add(Box.createVerticalStrut(20));
@@ -254,8 +240,6 @@ public class ProjectSummaryReportPanel extends JPanel {
         
         dateLabel.setText(String.format("Location: %s | Duration: %s to %s | %d/%d days elapsed",
                 currentProject.getLocation(), start, end, elapsedDays, totalDays));
-
-        progressBar.setValue(currentSummary.getProgressPercentage());
 
         NumberFormat currFmt = NumberFormat.getCurrencyInstance(new Locale("en", "RW"));
         materialCostCard.setValue(currFmt.format(currentSummary.getTotalMaterialCost()));

@@ -36,6 +36,8 @@ public class WorkerTypeServiceImpl extends UnicastRemoteObject implements Worker
     public WorkerTypeDTO createWorkerType(WorkerTypeDTO dto) throws RemoteException {
         try {
             WorkerType entity = toEntity(dto);
+            entity.setCreatedAt(java.time.LocalDateTime.now());
+            entity.setUpdatedAt(java.time.LocalDateTime.now());
             entity = dao.save(entity);
             return toDTO(entity);
         } catch (Exception e) {
@@ -47,9 +49,16 @@ public class WorkerTypeServiceImpl extends UnicastRemoteObject implements Worker
     @Override
     public WorkerTypeDTO updateWorkerType(WorkerTypeDTO dto) throws RemoteException {
         try {
-            WorkerType entity = toEntity(dto);
-            entity = dao.update(entity);
-            return toDTO(entity);
+            WorkerType existing = dao.findById(dto.getId());
+            if (existing != null) {
+                existing.setTypeName(dto.getTypeName());
+                existing.setDefaultDailyRate(dto.getDefaultDailyRate());
+                existing.setDescription(dto.getDescription());
+                existing.setUpdatedAt(java.time.LocalDateTime.now());
+                existing = dao.update(existing);
+                return toDTO(existing);
+            }
+            return null;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to update worker type");

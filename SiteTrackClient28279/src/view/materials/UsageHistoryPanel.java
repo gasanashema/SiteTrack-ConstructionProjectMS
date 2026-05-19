@@ -99,8 +99,8 @@ public class UsageHistoryPanel extends JPanel {
         JPanel kpiPanel = new JPanel(new GridLayout(2, 2, 20, 20));
         
         totalQtyCard = new KpiCard("Total Quantity Used", "0", "Total usage", 0);
-        totalCostCard = new KpiCard("Total Cost", "$0.00", "Total value used", 2);
-        avgCostCard = new KpiCard("Average Unit Cost", "$0.00", "Cost per unit", 1);
+        totalCostCard = new KpiCard("Total Cost", "RWF 0.00", "Total value used", 2);
+        avgCostCard = new KpiCard("Average Unit Cost", "RWF 0.00", "Cost per unit", 1);
         numUsagesCard = new KpiCard("Number of Usages", "0", "Total records", 3);
         
         kpiPanel.add(totalQtyCard);
@@ -181,14 +181,14 @@ public class UsageHistoryPanel extends JPanel {
 
         // Update KPIs
         totalQtyCard.setValue(totalQty.toString());
-        totalCostCard.setValue(String.format("$%.2f", totalCost));
+        totalCostCard.setValue(String.format("RWF %.2f", totalCost));
         numUsagesCard.setValue(String.valueOf(usages.size()));
         
         if (usages.size() > 0 && totalQty.compareTo(BigDecimal.ZERO) > 0) {
             BigDecimal avgCost = totalCost.divide(totalQty, 2, BigDecimal.ROUND_HALF_UP);
-            avgCostCard.setValue(String.format("$%.2f", avgCost));
+            avgCostCard.setValue(String.format("RWF %.2f", avgCost));
         } else {
-            avgCostCard.setValue("$0.00");
+            avgCostCard.setValue("RWF 0.00");
         }
     }
 
