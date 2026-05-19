@@ -34,9 +34,13 @@ public class AuthServiceImpl extends UnicastRemoteObject implements AuthService 
                 return new LoginResponseDTO(false, "Account is inactive", null, null, null, null);
             }
             if (BCrypt.checkpw(password, user.getPassword())) {
-                auditDao.save(new model.AuditLog(user.getId(), user.getUsername(), "LOGIN", "User", "User logged in successfully", "127.0.0.1", java.time.LocalDateTime.now()));
-                // If 2FA is required, we'd generate OTP here. For basic implementation, returning success.
-                return new LoginResponseDTO(true, "Login successful", user.getId(), user.getRole().name(), user.getFullName(), null);
+                boolean otpSent = util.OtpManager.getInstance().createAndSendOtp(user);
+                if (otpSent) {
+                    auditDao.save(new model.AuditLog(user.getId(), user.getUsername(), "OTP_SENT", "User", "OTP generated and sent", "127.0.0.1", java.time.LocalDateTime.now()));
+                    return new LoginResponseDTO(true, "OTP_REQUIRED", user.getId(), user.getRole().name(), user.getFullName(), null);
+                } else {
+                    return new LoginResponseDTO(false, "Failed to send OTP email", null, null, null, null);
+                }
             }
             auditDao.save(new model.AuditLog(user.getId(), user.getUsername(), "LOGIN_FAILED", "User", "Failed login attempt", "127.0.0.1", java.time.LocalDateTime.now()));
             return new LoginResponseDTO(false, "Invalid username or password", null, null, null, null);
@@ -48,10 +52,40 @@ public class AuthServiceImpl extends UnicastRemoteObject implements AuthService 
 
     @Override
     public boolean verifyOtp(String userId, String otpCode) throws RemoteException {
+        // 1. Check rate limiting FIRST
+        if (util.OtpManager.getInstance().isUserLockedOut(userId)) {
+            auditDao.save(new model.AuditLog(userId, "SYSTEM", "LOGIN_LOCKED", "User", "Account locked due to too many failed OTP attempts", "127.0.0.1", java.time.LocalDateTime.now()));
+            return false;
+        }
+
         try {
-            // TEMPORARY BYPASS FOR UI TESTING
-            // Originally: return otpDao.findByUserAndCode(userId, otpCode) != null;
-            return otpCode != null && otpCode.length() == 6;
+            model.OtpVerification otp = otpDao.findByUserAndCode(userId, otpCode);
+            if (otp == null) {
+                util.OtpManager.getInstance().recordFailedOtpAttempt(userId);
+                return false;
+            }
+            if (otp.isUsed()) {
+                util.OtpManager.getInstance().recordFailedOtpAttempt(userId);
+                return false;
+            }
+            if (otp.getExpiresAt().isBefore(java.time.LocalDateTime.now())) {
+                util.OtpManager.getInstance().recordFailedOtpAttempt(userId);
+                return false;
+            }
+            
+            // Valid OTP
+            otp.setUsed(true);
+            otpDao.update(otp);
+            
+            // Reset attempts on success
+            util.OtpManager.getInstance().resetOtpAttempts(userId);
+            
+            model.User user = userDao.findById(userId);
+            if (user != null) {
+                auditDao.save(new model.AuditLog(user.getId(), user.getUsername(), "LOGIN_SUCCESS", "User", "Completed 2FA login", "127.0.0.1", java.time.LocalDateTime.now()));
+            }
+            
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("OTP verification failed");

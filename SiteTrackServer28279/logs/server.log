@@ -1327,3 +1327,6 @@
 [2026-05-19 16:17:32] [WARN] [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] SQL Error: 0, SQLState: 42P01||
 [2026-05-19 16:17:32] [ERROR] [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] ERROR: relation "seq_audit_logs_id" does not exist
   Position: 16||
+[2026-05-19 17:57:00] [WARN] [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] SQL Error: 0, SQLState: 42P01||
+[2026-05-19 17:57:00] [ERROR] [org.hibernate.engine.jdbc.spi.SqlExceptionHelper] ERROR: relation "seq_audit_logs_id" does not exist
+  Position: 16||
