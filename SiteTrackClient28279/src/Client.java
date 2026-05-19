@@ -22,10 +22,18 @@ public class Client {
             UIManager.put("defaultFont", new Font("Ubuntu", Font.PLAIN, 14));
             
             // Override FlatLaf defaults
+            UIManager.put("Panel.background", Color.WHITE);
+            UIManager.put("Viewport.background", Color.WHITE);
+            UIManager.put("RootPane.background", Color.WHITE);
             UIManager.put("Button.background", Color.decode("#FF5E14")); // Primary Orange
             UIManager.put("Button.foreground", Color.WHITE);
             UIManager.put("Button.arc", 8); // slightly rounded
             UIManager.put("TextComponent.arc", 8);
+            
+            // Enable inner table borders globally
+            UIManager.put("Table.showHorizontalLines", true);
+            UIManager.put("Table.showVerticalLines", true);
+            UIManager.put("Table.gridColor", Color.decode("#E0E0E0"));
         } catch (Exception ex) {
             System.err.println("Failed to initialize LaF");
         }

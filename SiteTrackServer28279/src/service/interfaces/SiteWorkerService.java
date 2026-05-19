@@ -10,6 +10,7 @@ public interface SiteWorkerService extends Remote {
     SiteWorkerDTO updateWorker(SiteWorkerDTO dto) throws RemoteException;
     boolean deactivateWorker(String workerId) throws RemoteException;
     boolean activateWorker(String workerId) throws RemoteException;
+    boolean deleteWorker(String workerId) throws RemoteException;
     SiteWorkerDTO getWorkerById(String workerId) throws RemoteException;
     List<SiteWorkerDTO> getAllWorkers() throws RemoteException;
     List<SiteWorkerDTO> getActiveWorkers() throws RemoteException;

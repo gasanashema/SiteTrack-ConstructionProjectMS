@@ -14,6 +14,7 @@ public class LoginPanel extends JPanel {
     private JTextField usernameField;
     private JPasswordField passwordField;
     private JLabel errorLabel;
+    private JButton loginButton;
 
     public LoginPanel(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
@@ -92,7 +93,7 @@ public class LoginPanel extends JPanel {
         gbc.gridy++;
         gbc.gridwidth = 2;
         gbc.insets = new Insets(30, 0, 10, 0);
-        JButton loginButton = new JButton("Login");
+        loginButton = new JButton("Login");
         loginButton.setPreferredSize(new Dimension(0, 45));
         loginButton.setBackground(Color.decode("#FF5E14"));
         loginButton.setForeground(Color.WHITE);
@@ -100,6 +101,25 @@ public class LoginPanel extends JPanel {
         loginButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         loginButton.addActionListener(e -> attemptLogin());
         formPanel.add(loginButton, gbc);
+        
+        gbc.gridy++;
+        gbc.insets = new Insets(10, 0, 10, 0);
+        JLabel forgotPasswordLabel = new JLabel("Forgot Password?");
+        forgotPasswordLabel.setFont(new Font("Ubuntu", Font.PLAIN, 13));
+        forgotPasswordLabel.setForeground(Color.decode("#0056b3"));
+        forgotPasswordLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        forgotPasswordLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        forgotPasswordLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            private boolean added = false;
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                if (!added) {
+                    mainFrame.addPanel("ForgotPasswordPanel", new ForgotPasswordPanel(mainFrame, authController));
+                    added = true;
+                }
+                mainFrame.switchPanel("ForgotPasswordPanel");
+            }
+        });
+        formPanel.add(forgotPasswordLabel, gbc);
         
         gbc.gridy++;
         gbc.insets = new Insets(0, 0, 0, 0);
@@ -114,21 +134,47 @@ public class LoginPanel extends JPanel {
     private void attemptLogin() {
         String username = usernameField.getText();
         String password = new String(passwordField.getPassword());
-        errorLabel.setText(" ");
-        try {
-            LoginResponseDTO response = authController.attemptLogin(username, password);
-            if (response != null && response.isSuccess()) {
-                passwordField.setText("");
-                OtpPanel otpPanel = new OtpPanel(mainFrame, response);
-                mainFrame.addPanel("OtpPanel", otpPanel);
-                mainFrame.switchPanel("OtpPanel");
-            } else {
-                String msg = response != null ? response.getMessage() : "Unknown error";
-                errorLabel.setText(msg);
-                passwordField.setText("");
-            }
-        } catch (IllegalArgumentException ex) {
-            errorLabel.setText(ex.getMessage());
+        
+        if (username.trim().isEmpty() || password.trim().isEmpty()) {
+            errorLabel.setText("Please enter username and password");
+            return;
         }
+
+        errorLabel.setForeground(Color.decode("#FF5E14"));
+        errorLabel.setText("Authenticating and sending OTP... Please wait.");
+        loginButton.setEnabled(false);
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+
+        SwingWorker<LoginResponseDTO, Void> worker = new SwingWorker<LoginResponseDTO, Void>() {
+            @Override
+            protected LoginResponseDTO doInBackground() throws Exception {
+                return authController.attemptLogin(username, password);
+            }
+
+            @Override
+            protected void done() {
+                loginButton.setEnabled(true);
+                setCursor(Cursor.getDefaultCursor());
+                errorLabel.setForeground(Color.RED);
+                
+                try {
+                    LoginResponseDTO response = get();
+                    if (response != null && response.isSuccess()) {
+                        passwordField.setText("");
+                        OtpPanel otpPanel = new OtpPanel(mainFrame, response);
+                        mainFrame.addPanel("OtpPanel", otpPanel);
+                        mainFrame.switchPanel("OtpPanel");
+                    } else {
+                        String msg = response != null ? response.getMessage() : "Unknown error";
+                        errorLabel.setText(msg);
+                        passwordField.setText("");
+                    }
+                } catch (Exception ex) {
+                    errorLabel.setText("Error: " + ex.getMessage());
+                    passwordField.setText("");
+                }
+            }
+        };
+        worker.execute();
     }
 }

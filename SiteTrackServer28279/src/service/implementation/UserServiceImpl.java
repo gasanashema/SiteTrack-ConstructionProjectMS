@@ -15,10 +15,12 @@ import java.util.List;
 
 public class UserServiceImpl extends UnicastRemoteObject implements UserService {
     private final UserDao dao;
+    private final dao.AuditLogDao auditDao;
 
     public UserServiceImpl() throws RemoteException {
         super();
         this.dao = new UserDao();
+        this.auditDao = new dao.AuditLogDao();
     }
 
     private UserDTO toDTO(User entity) {
@@ -50,8 +52,8 @@ public class UserServiceImpl extends UnicastRemoteObject implements UserService 
             entity.setStatus(EUserStatus.ACTIVE);
             entity.setCreatedAt(LocalDateTime.now());
             entity.setUpdatedAt(LocalDateTime.now());
-            
             entity = dao.save(entity);
+            auditDao.save(new model.AuditLog(entity.getId(), entity.getUsername(), "USER_CREATED", "User", "Created new user: " + entity.getUsername(), "127.0.0.1", java.time.LocalDateTime.now()));
             return toDTO(entity);
         } catch (IllegalArgumentException e) {
             throw e;
@@ -71,8 +73,8 @@ public class UserServiceImpl extends UnicastRemoteObject implements UserService 
             entity.setPhone(dto.getPhone());
             entity.setRole(ERole.valueOf(dto.getRole()));
             entity.setUpdatedAt(LocalDateTime.now());
-            
             entity = dao.update(entity);
+            auditDao.save(new model.AuditLog(entity.getId(), entity.getUsername(), "USER_UPDATED", "User", "Updated user details for: " + entity.getUsername(), "127.0.0.1", java.time.LocalDateTime.now()));
             return toDTO(entity);
         } catch (Exception e) {
             e.printStackTrace();
@@ -88,6 +90,7 @@ public class UserServiceImpl extends UnicastRemoteObject implements UserService 
                 entity.setStatus(EUserStatus.INACTIVE);
                 entity.setUpdatedAt(LocalDateTime.now());
                 dao.update(entity);
+                auditDao.save(new model.AuditLog(entity.getId(), entity.getUsername(), "USER_DEACTIVATED", "User", "Deactivated user: " + entity.getUsername(), "127.0.0.1", java.time.LocalDateTime.now()));
                 return true;
             }
             return false;
@@ -105,6 +108,7 @@ public class UserServiceImpl extends UnicastRemoteObject implements UserService 
                 entity.setStatus(EUserStatus.ACTIVE);
                 entity.setUpdatedAt(LocalDateTime.now());
                 dao.update(entity);
+                auditDao.save(new model.AuditLog(entity.getId(), entity.getUsername(), "USER_ACTIVATED", "User", "Activated user: " + entity.getUsername(), "127.0.0.1", java.time.LocalDateTime.now()));
                 return true;
             }
             return false;

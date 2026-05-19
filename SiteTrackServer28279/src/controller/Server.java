@@ -19,7 +19,16 @@ import service.implementation.SiteWorkerServiceImpl;
 import service.implementation.WorkerAttendanceServiceImpl;
 import service.implementation.WorkerPaymentServiceImpl;
 import service.implementation.ReportServiceImpl;
+import service.implementation.AuditLogServiceImpl;
+import service.implementation.SystemLogServiceImpl;
 import util.HibernateUtil;
+
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.*;
 
 /**
  * SiteTrack Construction Manager - RMI Server Entry Point.
@@ -32,6 +41,8 @@ import util.HibernateUtil;
 public class Server {
 
     public static void main(String[] args) {
+        setupLogger();
+        
         try {
             // ── Step 1: Load configuration ──────────────────────────────────
             Properties config = new Properties();
@@ -59,6 +70,7 @@ public class Server {
             // ── Step 4: Create the RMI registry ─────────────────────────────
             Registry registry = LocateRegistry.createRegistry(port);
             System.out.println("[SiteTrack] RMI registry started on port " + port);
+            Logger.getLogger("SiteTrack").info("RMI registry started on port " + port);
 
             // ── Step 5: Bind all 14 service implementations ──────────────────
             registry.rebind("auth-service",              new AuthServiceImpl());
@@ -75,6 +87,8 @@ public class Server {
             registry.rebind("worker-attendance-service", new WorkerAttendanceServiceImpl());
             registry.rebind("worker-payment-service",    new WorkerPaymentServiceImpl());
             registry.rebind("report-service",            new ReportServiceImpl());
+            registry.rebind("audit-log-service",         new AuditLogServiceImpl());
+            registry.rebind("system-log-service",        new SystemLogServiceImpl());
 
             // ── Step 6: Confirm startup ──────────────────────────────────────
             System.out.println("========================================");
@@ -88,6 +102,49 @@ public class Server {
 
         } catch (Exception e) {
             System.err.println("[SiteTrack] Server startup FAILED:");
+            e.printStackTrace();
+            Logger.getLogger("SiteTrack").log(Level.SEVERE, "Server startup FAILED", e);
+        }
+    }
+    
+    private static void setupLogger() {
+        try {
+            File logDir = new File("logs");
+            if (!logDir.exists()) logDir.mkdir();
+
+            FileHandler fh = new FileHandler("logs/server.log", 5 * 1024 * 1024, 1, true);
+            fh.setFormatter(new Formatter() {
+                private final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+                @Override
+                public String format(LogRecord record) {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("[").append(df.format(new Date(record.getMillis()))).append("] ");
+                    sb.append("[").append(record.getLevel().getName()).append("] ");
+                    sb.append("[").append(record.getLoggerName()).append("] ");
+                    sb.append(formatMessage(record));
+
+                    if (record.getThrown() != null) {
+                        StringWriter sw = new StringWriter();
+                        PrintWriter pw = new PrintWriter(sw);
+                        record.getThrown().printStackTrace(pw);
+                        sb.append("||").append(sw.toString());
+                    } else {
+                        sb.append("||");
+                    }
+                    sb.append("\n");
+                    return sb.toString();
+                }
+            });
+
+            Logger rootLogger = Logger.getLogger("");
+            // Remove default console handlers to prevent double logging if desired
+            // for (Handler h : rootLogger.getHandlers()) rootLogger.removeHandler(h);
+            rootLogger.addHandler(fh);
+            rootLogger.setLevel(Level.INFO);
+            
+            Logger.getLogger("SiteTrack").info("Application logger initialized.");
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

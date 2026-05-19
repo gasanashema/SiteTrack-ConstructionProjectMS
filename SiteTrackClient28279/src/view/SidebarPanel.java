@@ -49,21 +49,39 @@ public class SidebarPanel extends JPanel {
         
         if (SessionManager.getInstance().isAdmin()) {
             addMenuButton("📊", "Dashboard", "DashboardPanel");
-            addMenuButton("👥", "Users", "UserPanel");
             addMenuButton("📁", "Projects", "ProjectPanel");
             addMenuButton("📦", "Materials", "MaterialPanel");
-            addMenuButton("📈", "Stock & Usage", "StockPanel");
+            addMenuButton("📈", "Stock & Purchases", "StockPanel");
+            addMenuButton("📋", "Daily Usage", "DailyUsageDialog");
+            addMenuButton("🕒", "Usage History", "UsageHistoryPanel");
             addMenuButton("🏗", "Workers", "WorkerPanel");
+            addMenuButton("✓", "Attendance", "AttendancePanel");
             addMenuButton("💰", "Payroll", "PayrollPanel");
-            addMenuButton("📋", "Reports", "ReportPanel");
+            addMenuButton("📈", "Reports", "ReportsPanel");
+
+            add(Box.createRigidArea(new Dimension(0, 15)));
+            JLabel adminMenuLabel = new JLabel("ADMIN TOOLS");
+            adminMenuLabel.setFont(new Font("Ubuntu", Font.BOLD, 12));
+            adminMenuLabel.setForeground(Color.decode("#8A94A6"));
+            adminMenuLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            add(adminMenuLabel);
+            add(Box.createRigidArea(new Dimension(0, 5)));
+
+            addMenuButton("⚙", "Settings", "SettingsPanel");
+            addMenuButton("👥", "User Management", "UserManagementPanel");
+            addMenuButton("📜", "Audit Log", "AuditLogPanel");
+            addMenuButton("📃", "Logs", "LogViewerPanel");
         } else if (SessionManager.getInstance().isSiteManager()) {
             addMenuButton("📊", "Dashboard", "DashboardPanel");
             addMenuButton("📁", "My Projects", "ProjectPanel");
             addMenuButton("📦", "Materials", "MaterialPanel");
-            addMenuButton("📈", "Stock & Usage", "StockPanel");
+            addMenuButton("📈", "Stock & Purchases", "StockPanel");
+            addMenuButton("📋", "Daily Usage", "DailyUsageDialog");
+            addMenuButton("🕒", "Usage History", "UsageHistoryPanel");
             addMenuButton("🏗", "Workers", "WorkerPanel");
             addMenuButton("✓", "Attendance", "AttendancePanel");
             addMenuButton("💰", "Payroll", "PayrollPanel");
+            addMenuButton("📈", "Reports", "ReportsPanel");
         }
         
         revalidate();
@@ -85,8 +103,12 @@ public class SidebarPanel extends JPanel {
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         
         btn.addActionListener(e -> {
-            mainFrame.switchPanel(panelName);
-            highlightButton(btn);
+            if ("DailyUsageDialog".equals(panelName)) {
+                new view.materials.UsageFormDialog(mainFrame, new controller.MaterialController()).setVisible(true);
+            } else {
+                mainFrame.switchPanel(panelName);
+                highlightButton(btn);
+            }
         });
         
         menuButtons.add(btn);

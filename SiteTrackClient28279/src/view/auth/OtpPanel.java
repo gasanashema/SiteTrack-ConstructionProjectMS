@@ -6,6 +6,7 @@ import view.MainFrame;
 import view.dashboard.DashboardPanel;
 import view.materials.MaterialPanel;
 import view.materials.StockPanel;
+import view.materials.UsageHistoryPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +25,7 @@ public class OtpPanel extends JPanel {
     private JLabel timerLabel;
     private JLabel errorLabel;
     private Timer countdownTimer;
-    private int timeLeft = 120;
+    private int timeLeft = 40;
 
     public OtpPanel(MainFrame mainFrame, LoginResponseDTO loginData) {
         this.mainFrame = mainFrame;
@@ -110,7 +111,7 @@ public class OtpPanel extends JPanel {
         formPanel.add(resendButton, gbc);
         gbc.gridy++;
         
-        timerLabel = new JLabel("Resend available in 120 seconds", SwingConstants.CENTER);
+        timerLabel = new JLabel("Resend available in 40 seconds", SwingConstants.CENTER);
         timerLabel.setForeground(Color.GRAY);
         timerLabel.setFont(new Font("Ubuntu", Font.PLAIN, 12));
         gbc.insets = new Insets(5, 0, 0, 0);
@@ -121,7 +122,7 @@ public class OtpPanel extends JPanel {
     }
     
     private void startTimer() {
-        timeLeft = 120;
+        timeLeft = 40;
         resendButton.setEnabled(false);
         countdownTimer = new Timer(1000, e -> {
             timeLeft--;
@@ -152,8 +153,37 @@ public class OtpPanel extends JPanel {
                 
                 MaterialPanel materialPanel = new MaterialPanel(mainFrame);
                 StockPanel stockPanel = new StockPanel(mainFrame);
+                UsageHistoryPanel usageHistoryPanel = new UsageHistoryPanel(mainFrame);
                 mainFrame.addPanel("MaterialPanel", materialPanel);
                 mainFrame.addPanel("StockPanel", stockPanel);
+                mainFrame.addPanel("UsageHistoryPanel", usageHistoryPanel);
+                
+                view.workers.WorkersPanel workersPanel = new view.workers.WorkersPanel(mainFrame);
+                mainFrame.addPanel("WorkerPanel", workersPanel);
+                
+                view.workers.AttendancePanel attendancePanel = new view.workers.AttendancePanel();
+                mainFrame.addPanel("AttendancePanel", attendancePanel);
+                
+                view.payroll.PayrollPanel payrollPanel = new view.payroll.PayrollPanel(mainFrame);
+                mainFrame.addPanel("PayrollPanel", payrollPanel);
+                
+                view.reports.ReportsPanel reportsPanel = new view.reports.ReportsPanel();
+                mainFrame.addPanel("ReportsPanel", reportsPanel);
+                
+                // Admin Tools & Settings
+                view.settings.SettingsPanel settingsPanel = new view.settings.SettingsPanel(mainFrame);
+                mainFrame.addPanel("SettingsPanel", settingsPanel);
+                
+                if (loginData.getRole().equals("ADMIN")) {
+                    view.settings.UserManagementPanel userMgmtPanel = new view.settings.UserManagementPanel();
+                    mainFrame.addPanel("UserManagementPanel", userMgmtPanel);
+                    
+                    view.admin.AuditLogPanel auditLogPanel = new view.admin.AuditLogPanel();
+                    mainFrame.addPanel("AuditLogPanel", auditLogPanel);
+                    
+                    view.admin.LogViewerPanel logViewerPanel = new view.admin.LogViewerPanel();
+                    mainFrame.addPanel("LogViewerPanel", logViewerPanel);
+                }
                 
                 mainFrame.switchPanel("DashboardPanel");
             } else {
@@ -165,7 +195,38 @@ public class OtpPanel extends JPanel {
     }
     
     private void resendOtp() {
-        authController.resendOtp(loginData.getUserId());
-        startTimer();
+        resendButton.setEnabled(false);
+        resendButton.setText("Sending...");
+        errorLabel.setText(" ");
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        
+        SwingWorker<Boolean, Void> worker = new SwingWorker<Boolean, Void>() {
+            @Override
+            protected Boolean doInBackground() throws Exception {
+                return authController.resendOtp(loginData.getUserId());
+            }
+
+            @Override
+            protected void done() {
+                setCursor(Cursor.getDefaultCursor());
+                resendButton.setText("Resend OTP");
+                try {
+                    boolean success = get();
+                    if (success) {
+                        JOptionPane.showMessageDialog(OtpPanel.this, "OTP resent to your email.");
+                        startTimer();
+                        otpField.setText("");
+                        otpField.requestFocus();
+                    } else {
+                        resendButton.setEnabled(true);
+                        JOptionPane.showMessageDialog(OtpPanel.this, "Failed to resend OTP. Please try again later.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (Exception ex) {
+                    resendButton.setEnabled(true);
+                    JOptionPane.showMessageDialog(OtpPanel.this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        };
+        worker.execute();
     }
 }

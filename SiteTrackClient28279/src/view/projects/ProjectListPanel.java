@@ -31,6 +31,7 @@ public class ProjectListPanel extends JPanel {
     private JButton addButton;
     private JButton editButton;
     private JButton deleteButton;
+    private JButton assignManagerButton;
     private JLabel statusLabel;
 
     public ProjectListPanel(MainFrame mainFrame) {
@@ -63,20 +64,24 @@ public class ProjectListPanel extends JPanel {
         addButton = new JButton("+ New Project");
         editButton = new JButton("✎ Edit");
         deleteButton = new JButton("🗑 Delete");
+        assignManagerButton = new JButton("👥 Assign Manager");
         JButton refreshButton = new JButton("↻ Refresh");
         
         editButton.setEnabled(false);
         deleteButton.setEnabled(false);
+        assignManagerButton.setEnabled(false);
         
         addButton.addActionListener(e -> openProjectForm(null));
         editButton.addActionListener(e -> openSelectedProject());
         deleteButton.addActionListener(e -> deleteSelectedProject());
+        assignManagerButton.addActionListener(e -> openAssignManagerDialog());
         refreshButton.addActionListener(e -> loadData());
         
         // Only admins can create or delete projects directly here
         if (!SessionManager.getInstance().isAdmin()) {
             addButton.setVisible(false);
             deleteButton.setVisible(false);
+            assignManagerButton.setVisible(false);
         }
 
         actionBar.add(new JLabel("Status:"));
@@ -86,6 +91,9 @@ public class ProjectListPanel extends JPanel {
         actionBar.add(addButton);
         actionBar.add(editButton);
         actionBar.add(deleteButton);
+        if (SessionManager.getInstance().isAdmin()) {
+            actionBar.add(assignManagerButton);
+        }
         actionBar.add(refreshButton);
         
         add(actionBar, BorderLayout.NORTH);
@@ -118,6 +126,7 @@ public class ProjectListPanel extends JPanel {
             editButton.setEnabled(hasSelection);
             if (SessionManager.getInstance().isAdmin()) {
                 deleteButton.setEnabled(hasSelection);
+                assignManagerButton.setEnabled(hasSelection);
             }
             updateStatusBar();
         });
@@ -184,16 +193,21 @@ public class ProjectListPanel extends JPanel {
     }
     
     private void updateStatusBar() {
-        int total = table.getRowCount();
-        String selected = "None";
-        int viewRow = table.getSelectedRow();
-        if (viewRow != -1) {
-            selected = (String) table.getValueAt(viewRow, 1);
-        }
-        statusLabel.setText("Total visible: " + total + " | Selected: " + selected);
+        int total = tableModel.getRowCount();
+        int selected = table.getSelectedRowCount();
+        statusLabel.setText("Total: " + total + " | Selected: " + (selected > 0 ? selected : "None"));
     }
     
-    
+    private void openAssignManagerDialog() {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow == -1) return;
+        
+        int modelRow = table.convertRowIndexToModel(selectedRow);
+        String projectId = (String) tableModel.getValueAt(modelRow, 0);
+        
+        AssignManagerPanel dialog = new AssignManagerPanel(mainFrame, projectId, controller);
+        dialog.setVisible(true);
+    }
     
     private void openProjectForm(ProjectDTO project) {
         // We will implement ProjectFormPanel next

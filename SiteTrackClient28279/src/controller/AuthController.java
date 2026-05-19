@@ -56,15 +56,63 @@ public class AuthController {
         }
     }
     
-    public void resendOtp(String userId) {
-        // In the instructions it says "resendOtp", assuming AuthService has something for this or we just call login again?
-        // Wait, the prompt says "Call AuthController.resendOtp(userId)", but AuthService interface doesn't have it.
-        // We will mock it or just call a method if it exists later.
-        JOptionPane.showMessageDialog(null, "OTP Resent. Check your email.", "Info", JOptionPane.INFORMATION_MESSAGE);
+    public boolean resendOtp(String userId) {
+        try {
+            AuthService authService = RMIConnection.getInstance().getService(AuthService.class);
+            return authService.resendOtp(userId);
+        } catch (RemoteException e) {
+            JOptionPane.showMessageDialog(null, 
+                "Server connection error: " + e.getMessage() + "\nPlease try again.",
+                "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
     }
     
     public void logout(MainFrame mainFrame) {
         SessionManager.getInstance().logout();
         mainFrame.switchPanel("LoginPanel");
+    }
+
+    public LoginResponseDTO initiatePasswordReset(String emailOrUsername) {
+        if (emailOrUsername == null || emailOrUsername.trim().isEmpty()) {
+            throw new IllegalArgumentException("Email or username is required");
+        }
+        try {
+            AuthService authService = RMIConnection.getInstance().getService(AuthService.class);
+            return authService.initiatePasswordReset(emailOrUsername);
+        } catch (RemoteException e) {
+            JOptionPane.showMessageDialog(null, "Server connection error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return new LoginResponseDTO(false, "Connection error", null, null, null, null);
+        }
+    }
+
+    public boolean verifyPasswordResetOtp(String userId, String otpCode) {
+        if (otpCode == null || otpCode.length() != 6 || !otpCode.matches("\\d+")) {
+            throw new IllegalArgumentException("OTP must be 6 digits");
+        }
+        try {
+            AuthService authService = RMIConnection.getInstance().getService(AuthService.class);
+            boolean isValid = authService.verifyOtp(userId, otpCode);
+            if (!isValid) {
+                JOptionPane.showMessageDialog(null, "Invalid OTP. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            return isValid;
+        } catch (RemoteException e) {
+            JOptionPane.showMessageDialog(null, "Server connection error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+    }
+
+    public boolean resetPassword(String userId, String newPassword) {
+        if (newPassword == null || newPassword.trim().isEmpty()) {
+            throw new IllegalArgumentException("New password is required");
+        }
+        try {
+            AuthService authService = RMIConnection.getInstance().getService(AuthService.class);
+            return authService.resetPassword(userId, newPassword);
+        } catch (RemoteException e) {
+            JOptionPane.showMessageDialog(null, "Server connection error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
     }
 }

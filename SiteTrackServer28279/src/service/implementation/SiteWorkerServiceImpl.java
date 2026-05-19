@@ -113,6 +113,17 @@ public class SiteWorkerServiceImpl extends UnicastRemoteObject implements SiteWo
     }
 
     @Override
+    public boolean deleteWorker(String workerId) throws RemoteException {
+        try {
+            dao.delete(workerId);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to delete worker");
+        }
+    }
+
+    @Override
     public SiteWorkerDTO getWorkerById(String workerId) throws RemoteException {
         try {
             return toDTO(dao.findById(workerId));

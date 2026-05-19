@@ -84,6 +84,9 @@ public class ProjectServiceImpl extends UnicastRemoteObject implements ProjectSe
             entity.setDescription(dto.getDescription());
             entity.setStartDate(dto.getStartDate());
             entity.setExpectedEndDate(dto.getExpectedEndDate());
+            if (dto.getStatus() != null && !dto.getStatus().isEmpty()) {
+                entity.setStatus(EProjectStatus.valueOf(dto.getStatus()));
+            }
             entity.setUpdatedAt(LocalDateTime.now());
             
             entity = dao.update(entity);
@@ -186,6 +189,8 @@ public class ProjectServiceImpl extends UnicastRemoteObject implements ProjectSe
                 pm.setUser(u);
                 pm.setAssignedDate(LocalDate.now());
                 pm.setStatus(EManagerStatus.ACTIVE);
+                pm.setCreatedAt(LocalDateTime.now());
+                pm.setUpdatedAt(LocalDateTime.now());
                 pmDao.save(pm);
                 NotificationProducer.sendNotification(userId, "MANAGER_ASSIGNED", "Assigned as manager for: " + p.getProjectName(), "EMAIL");
                 return true;
@@ -193,7 +198,7 @@ public class ProjectServiceImpl extends UnicastRemoteObject implements ProjectSe
             return false;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("Failed to assign manager");
+            throw new RuntimeException("Failed to assign manager: " + e.getMessage());
         }
     }
 

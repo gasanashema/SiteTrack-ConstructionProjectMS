@@ -62,7 +62,6 @@ public class StockPanel extends JPanel {
 
         tabbedPane.addTab("Current Stock", createStockTab());
         tabbedPane.addTab("Material Purchases", createPurchasesTab());
-        tabbedPane.addTab("Material Usage", createUsagesTab());
         tabbedPane.addTab("Stock Movements", createMovementsTab());
 
         add(tabbedPane, BorderLayout.CENTER);
@@ -80,8 +79,62 @@ public class StockPanel extends JPanel {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        DefaultTableModel model = new DefaultTableModel(new String[]{"Material", "Qty Available", "Min Qty", "Avg Unit Price"}, 0);
+        DefaultTableModel model = new DefaultTableModel(new String[]{"ID", "Material", "Qty Available", "Min Qty", "Avg Unit Price"}, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 3;
+            }
+        };
         JTable table = new JTable(model);
+        
+        // Hide ID column
+        table.getColumnModel().getColumn(0).setMinWidth(0);
+        table.getColumnModel().getColumn(0).setMaxWidth(0);
+        table.getColumnModel().getColumn(0).setWidth(0);
+
+        table.setDefaultRenderer(Object.class, new javax.swing.table.DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                if (!isSelected) {
+                    try {
+                        java.math.BigDecimal qty = new java.math.BigDecimal(table.getModel().getValueAt(row, 2).toString());
+                        java.math.BigDecimal min = new java.math.BigDecimal(table.getModel().getValueAt(row, 3).toString());
+                        if (min.compareTo(java.math.BigDecimal.ZERO) > 0) {
+                            if (qty.compareTo(min.divide(new java.math.BigDecimal("2"))) < 0) {
+                                c.setBackground(new Color(255, 204, 204)); // CRITICAL
+                            } else if (qty.compareTo(min) < 0) {
+                                c.setBackground(new Color(255, 255, 204)); // LOW
+                            } else {
+                                c.setBackground(new Color(204, 255, 204)); // OK
+                            }
+                        } else {
+                            c.setBackground(table.getBackground());
+                        }
+                    } catch (Exception e) {
+                        c.setBackground(table.getBackground());
+                    }
+                }
+                return c;
+            }
+        });
+
+        model.addTableModelListener(e -> {
+            if (e.getType() == javax.swing.event.TableModelEvent.UPDATE && e.getColumn() == 3) {
+                int row = e.getFirstRow();
+                String id = (String) model.getValueAt(row, 0);
+                String newValStr = model.getValueAt(row, 3).toString();
+                try {
+                    java.math.BigDecimal minQty = new java.math.BigDecimal(newValStr);
+                    if (minQty.compareTo(java.math.BigDecimal.ZERO) < 0) throw new NumberFormatException();
+                    stockController.updateMinimumQuantity(id, minQty);
+                    table.repaint();
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(panel, "Invalid minimum quantity");
+                }
+            }
+        });
+
         panel.add(new JScrollPane(table), BorderLayout.CENTER);
 
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -92,13 +145,32 @@ public class StockPanel extends JPanel {
                 model.setRowCount(0);
                 List<ProjectMaterialStockDTO> stock = stockController.getStockByProject(projId);
                 for (ProjectMaterialStockDTO s : stock) {
-                    model.addRow(new Object[]{s.getMaterialName(), s.getQuantityAvailable(), s.getMinimumQuantity(), s.getAverageUnitPrice()});
+                    model.addRow(new Object[]{s.getId(), s.getMaterialName(), s.getQuantityAvailable(), s.getMinimumQuantity(), s.getAverageUnitPrice()});
                 }
             } else {
                 JOptionPane.showMessageDialog(this, "Please select a project first.", "Warning", JOptionPane.WARNING_MESSAGE);
             }
         });
+        
+        JButton adjustBtn = new JButton("Adjust Stock");
+        if (!SessionManager.getInstance().isAdmin()) {
+            adjustBtn.setVisible(false);
+        }
+        adjustBtn.addActionListener(e -> {
+            String projId = getSelectedProjectId();
+            if (projId != null) {
+                StockAdjustmentDialog dialog = new StockAdjustmentDialog(mainFrame, stockController, materialController, projId);
+                dialog.setVisible(true);
+                if (dialog.isSaved()) {
+                    refreshBtn.doClick();
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Please select a project first.", "Warning", JOptionPane.WARNING_MESSAGE);
+            }
+        });
+        
         topPanel.add(refreshBtn);
+        topPanel.add(adjustBtn);
         panel.add(topPanel, BorderLayout.NORTH);
 
         return panel;
@@ -143,68 +215,106 @@ public class StockPanel extends JPanel {
         return panel;
     }
 
-    private JPanel createUsagesTab() {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        DefaultTableModel model = new DefaultTableModel(new String[]{"ID", "Project", "Material", "Qty Used", "Date", "Activity"}, 0);
-        JTable table = new JTable(model);
-        panel.add(new JScrollPane(table), BorderLayout.CENTER);
-
-        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        
-        JButton refreshBtn = new JButton("Load Usages");
-        refreshBtn.addActionListener(e -> {
-            String projId = getSelectedProjectId();
-            if (projId != null) {
-                model.setRowCount(0);
-                List<dto.MaterialUsageDTO> usages = materialController.getUsageByProject(projId);
-                for (dto.MaterialUsageDTO u : usages) {
-                    model.addRow(new Object[]{u.getId(), u.getProjectName(), u.getMaterialName(), u.getQuantityUsed(), u.getUsageDate(), u.getActivityDescription()});
-                }
-            } else {
-                JOptionPane.showMessageDialog(this, "Please select a project first.", "Warning", JOptionPane.WARNING_MESSAGE);
-            }
-        });
-        JButton addBtn = new JButton("Record Usage");
-        addBtn.addActionListener(e -> {
-            UsageFormPanel dialog = new UsageFormPanel(mainFrame, materialController);
-            dialog.setVisible(true);
-            if (dialog.isSaved()) {
-                refreshBtn.doClick();
-            }
-        });
-        
-        topPanel.add(refreshBtn);
-        topPanel.add(addBtn);
-        panel.add(topPanel, BorderLayout.NORTH);
-
-        return panel;
-    }
 
     private JPanel createMovementsTab() {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        DefaultTableModel model = new DefaultTableModel(new String[]{"Material", "Type", "Qty Change", "Ref ID", "Date"}, 0);
+        DefaultTableModel model = new DefaultTableModel(new String[]{"Date", "Material", "Type", "Qty", "Ref ID", "Description"}, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) { return false; }
+        };
         JTable table = new JTable(model);
+        
+        table.getColumnModel().getColumn(2).setCellRenderer(new javax.swing.table.DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                if (value != null && !isSelected) {
+                    String type = value.toString();
+                    if (type.equals("IN")) {
+                        c.setBackground(new Color(204, 229, 255)); // Blue
+                        c.setForeground(Color.BLACK);
+                    } else if (type.equals("OUT")) {
+                        c.setBackground(new Color(255, 204, 204)); // Red
+                        c.setForeground(Color.BLACK);
+                    } else if (type.equals("ADJUSTMENT")) {
+                        c.setBackground(new Color(255, 229, 204)); // Orange
+                        c.setForeground(Color.BLACK);
+                    } else {
+                        c.setBackground(table.getBackground());
+                        c.setForeground(table.getForeground());
+                    }
+                }
+                return c;
+            }
+        });
+
         panel.add(new JScrollPane(table), BorderLayout.CENTER);
 
-        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JButton refreshBtn = new JButton("Load Movements");
-        refreshBtn.addActionListener(e -> {
+        JPanel topPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        
+        JComboBox<String> materialFilter = new JComboBox<>();
+        materialFilter.addItem("All Materials");
+        
+        JComboBox<String> typeFilter = new JComboBox<>(new String[]{"All Types", "IN", "OUT", "ADJUSTMENT"});
+        
+        com.toedter.calendar.JDateChooser fromDate = new com.toedter.calendar.JDateChooser();
+        com.toedter.calendar.JDateChooser toDate = new com.toedter.calendar.JDateChooser();
+        
+        JButton filterBtn = new JButton("Apply Filters");
+        
+        int x = 0;
+        gbc.gridy = 0;
+        
+        gbc.gridx = x++; topPanel.add(new JLabel("Material:"), gbc);
+        gbc.gridx = x++; topPanel.add(materialFilter, gbc);
+        
+        gbc.gridx = x++; topPanel.add(new JLabel("Type:"), gbc);
+        gbc.gridx = x++; topPanel.add(typeFilter, gbc);
+        
+        gbc.gridx = x++; topPanel.add(new JLabel("From:"), gbc);
+        gbc.gridx = x++; topPanel.add(fromDate, gbc);
+        
+        gbc.gridx = x++; topPanel.add(new JLabel("To:"), gbc);
+        gbc.gridx = x++; topPanel.add(toDate, gbc);
+        
+        gbc.gridx = x++; topPanel.add(filterBtn, gbc);
+
+        filterBtn.addActionListener(e -> {
             String projId = getSelectedProjectId();
             if (projId != null) {
+                if (materialFilter.getItemCount() == 1) {
+                    List<dto.MaterialDTO> mats = materialController.getActiveMaterials();
+                    for(dto.MaterialDTO m : mats) materialFilter.addItem(m.getMaterialName());
+                }
+                
                 model.setRowCount(0);
                 List<MaterialStockMovementDTO> movements = stockController.getMovementsByProject(projId);
+                
+                String selMat = (String) materialFilter.getSelectedItem();
+                String selType = (String) typeFilter.getSelectedItem();
+                java.time.LocalDate fDate = fromDate.getDate() != null ? new java.sql.Date(fromDate.getDate().getTime()).toLocalDate() : null;
+                java.time.LocalDate tDate = toDate.getDate() != null ? new java.sql.Date(toDate.getDate().getTime()).toLocalDate() : null;
+                
                 for (MaterialStockMovementDTO m : movements) {
-                    model.addRow(new Object[]{m.getMaterialName(), m.getMovementType(), m.getQuantity(), m.getReferenceId(), m.getMovementDate()});
+                    boolean matchMat = selMat.equals("All Materials") || m.getMaterialName().equals(selMat);
+                    boolean matchType = selType.equals("All Types") || m.getMovementType().equals(selType);
+                    boolean matchFrom = fDate == null || !m.getMovementDate().isBefore(fDate);
+                    boolean matchTo = tDate == null || !m.getMovementDate().isAfter(tDate);
+                    
+                    if (matchMat && matchType && matchFrom && matchTo) {
+                        model.addRow(new Object[]{m.getMovementDate(), m.getMaterialName(), m.getMovementType(), m.getQuantity(), m.getReferenceId(), m.getDescription()});
+                    }
                 }
             } else {
                 JOptionPane.showMessageDialog(this, "Please select a project first.", "Warning", JOptionPane.WARNING_MESSAGE);
             }
         });
-        topPanel.add(refreshBtn);
+        
         panel.add(topPanel, BorderLayout.NORTH);
 
         return panel;
