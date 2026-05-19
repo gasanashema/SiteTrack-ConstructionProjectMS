@@ -56,11 +56,16 @@ public class AuthController {
         }
     }
     
-    public void resendOtp(String userId) {
-        // In the instructions it says "resendOtp", assuming AuthService has something for this or we just call login again?
-        // Wait, the prompt says "Call AuthController.resendOtp(userId)", but AuthService interface doesn't have it.
-        // We will mock it or just call a method if it exists later.
-        JOptionPane.showMessageDialog(null, "OTP Resent. Check your email.", "Info", JOptionPane.INFORMATION_MESSAGE);
+    public boolean resendOtp(String userId) {
+        try {
+            AuthService authService = RMIConnection.getInstance().getService(AuthService.class);
+            return authService.resendOtp(userId);
+        } catch (RemoteException e) {
+            JOptionPane.showMessageDialog(null, 
+                "Server connection error: " + e.getMessage() + "\nPlease try again.",
+                "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
     }
     
     public void logout(MainFrame mainFrame) {

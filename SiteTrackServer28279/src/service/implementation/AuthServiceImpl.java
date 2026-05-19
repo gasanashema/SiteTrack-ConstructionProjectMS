@@ -131,11 +131,25 @@ public class AuthServiceImpl extends UnicastRemoteObject implements AuthService 
     @Override
     public boolean isAccountActive(String userId) throws RemoteException {
         try {
-            User user = userDao.findById(userId);
+            model.User user = userDao.findById(userId);
             return user != null && user.getStatus() == EUserStatus.ACTIVE;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to check account status");
+        }
+    }
+
+    @Override
+    public boolean resendOtp(String userId) throws RemoteException {
+        try {
+            model.User user = userDao.findById(userId);
+            if (user != null && user.getStatus() == EUserStatus.ACTIVE) {
+                return util.OtpManager.getInstance().createAndSendOtp(user);
+            }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to resend OTP");
         }
     }
 }

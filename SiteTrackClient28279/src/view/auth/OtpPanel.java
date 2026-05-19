@@ -195,7 +195,14 @@ public class OtpPanel extends JPanel {
     }
     
     private void resendOtp() {
-        authController.resendOtp(loginData.getUserId());
-        startTimer();
+        boolean success = authController.resendOtp(loginData.getUserId());
+        if (success) {
+            JOptionPane.showMessageDialog(this, "OTP resent to your email.");
+            startTimer();
+            otpField.setText("");
+            otpField.requestFocus();
+        } else {
+            JOptionPane.showMessageDialog(this, "Failed to resend OTP. Please try again later.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

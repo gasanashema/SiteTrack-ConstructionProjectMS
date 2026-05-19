@@ -66,7 +66,7 @@ public class EmailService {
         Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress(username, "SiteTrack Security"));
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
-        message.setSubject("🔐 Your SiteTrack OTP: " + otpCode);
+        message.setSubject("Your SiteTrack OTP: " + otpCode);
         
         String htmlContent = "<!DOCTYPE html>" +
                "<html>" +
@@ -88,7 +88,7 @@ public class EmailService {
                "<body>" +
                "  <div class='container'>" +
                "    <div class='header'>" +
-               "      <h1>🏗️ SiteTrack Construction Manager</h1>" +
+               "      <h1>SiteTrack Construction Manager</h1>" +
                "    </div>" +
                "    <div class='content'>" +
                "      <h2>Your One-Time Password (OTP)</h2>" +
@@ -97,7 +97,7 @@ public class EmailService {
                "        <div class='otp-code'>" + otpCode + "</div>" +
                "        <div class='expiry'>Valid for 5 minutes</div>" +
                "      </div>" +
-               "      <p><span class='warning'>⚠️ Never share this code with anyone.</span></p>" +
+               "      <p><span class='warning'>Never share this code with anyone.</span></p>" +
                "      <p>If you did not request this OTP, please ignore this email.</p>" +
                "    </div>" +
                "    <div class='footer'>" +
