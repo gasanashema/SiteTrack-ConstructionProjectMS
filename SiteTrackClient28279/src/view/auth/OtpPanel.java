@@ -25,7 +25,7 @@ public class OtpPanel extends JPanel {
     private JLabel timerLabel;
     private JLabel errorLabel;
     private Timer countdownTimer;
-    private int timeLeft = 120;
+    private int timeLeft = 40;
 
     public OtpPanel(MainFrame mainFrame, LoginResponseDTO loginData) {
         this.mainFrame = mainFrame;
@@ -111,7 +111,7 @@ public class OtpPanel extends JPanel {
         formPanel.add(resendButton, gbc);
         gbc.gridy++;
         
-        timerLabel = new JLabel("Resend available in 120 seconds", SwingConstants.CENTER);
+        timerLabel = new JLabel("Resend available in 40 seconds", SwingConstants.CENTER);
         timerLabel.setForeground(Color.GRAY);
         timerLabel.setFont(new Font("Ubuntu", Font.PLAIN, 12));
         gbc.insets = new Insets(5, 0, 0, 0);
@@ -122,7 +122,7 @@ public class OtpPanel extends JPanel {
     }
     
     private void startTimer() {
-        timeLeft = 120;
+        timeLeft = 40;
         resendButton.setEnabled(false);
         countdownTimer = new Timer(1000, e -> {
             timeLeft--;
@@ -195,14 +195,38 @@ public class OtpPanel extends JPanel {
     }
     
     private void resendOtp() {
-        boolean success = authController.resendOtp(loginData.getUserId());
-        if (success) {
-            JOptionPane.showMessageDialog(this, "OTP resent to your email.");
-            startTimer();
-            otpField.setText("");
-            otpField.requestFocus();
-        } else {
-            JOptionPane.showMessageDialog(this, "Failed to resend OTP. Please try again later.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        resendButton.setEnabled(false);
+        resendButton.setText("Sending...");
+        errorLabel.setText(" ");
+        setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        
+        SwingWorker<Boolean, Void> worker = new SwingWorker<Boolean, Void>() {
+            @Override
+            protected Boolean doInBackground() throws Exception {
+                return authController.resendOtp(loginData.getUserId());
+            }
+
+            @Override
+            protected void done() {
+                setCursor(Cursor.getDefaultCursor());
+                resendButton.setText("Resend OTP");
+                try {
+                    boolean success = get();
+                    if (success) {
+                        JOptionPane.showMessageDialog(OtpPanel.this, "OTP resent to your email.");
+                        startTimer();
+                        otpField.setText("");
+                        otpField.requestFocus();
+                    } else {
+                        resendButton.setEnabled(true);
+                        JOptionPane.showMessageDialog(OtpPanel.this, "Failed to resend OTP. Please try again later.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (Exception ex) {
+                    resendButton.setEnabled(true);
+                    JOptionPane.showMessageDialog(OtpPanel.this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        };
+        worker.execute();
     }
 }

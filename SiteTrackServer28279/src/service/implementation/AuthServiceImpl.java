@@ -152,4 +152,31 @@ public class AuthServiceImpl extends UnicastRemoteObject implements AuthService 
             throw new RuntimeException("Failed to resend OTP");
         }
     }
+
+    @Override
+    public LoginResponseDTO initiatePasswordReset(String emailOrUsername) throws RemoteException {
+        try {
+            User user = userDao.findByEmail(emailOrUsername);
+            if (user == null) {
+                user = userDao.findByUsername(emailOrUsername);
+            }
+            if (user == null) {
+                return new LoginResponseDTO(false, "No account found with that email or username", null, null, null, null);
+            }
+            if (user.getStatus() == EUserStatus.INACTIVE) {
+                return new LoginResponseDTO(false, "Account is inactive", null, null, null, null);
+            }
+            
+            boolean otpSent = util.OtpManager.getInstance().createAndSendOtp(user);
+            if (otpSent) {
+                auditDao.save(new model.AuditLog(user.getId(), user.getUsername(), "PASSWORD_RESET_REQUESTED", "User", "Requested password reset OTP", "127.0.0.1", java.time.LocalDateTime.now()));
+                return new LoginResponseDTO(true, "OTP_SENT", user.getId(), user.getRole().name(), user.getFullName(), null);
+            } else {
+                return new LoginResponseDTO(false, "Failed to send reset email", null, null, null, null);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to initiate password reset");
+        }
+    }
 }

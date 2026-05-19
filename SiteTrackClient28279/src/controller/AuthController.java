@@ -72,4 +72,47 @@ public class AuthController {
         SessionManager.getInstance().logout();
         mainFrame.switchPanel("LoginPanel");
     }
+
+    public LoginResponseDTO initiatePasswordReset(String emailOrUsername) {
+        if (emailOrUsername == null || emailOrUsername.trim().isEmpty()) {
+            throw new IllegalArgumentException("Email or username is required");
+        }
+        try {
+            AuthService authService = RMIConnection.getInstance().getService(AuthService.class);
+            return authService.initiatePasswordReset(emailOrUsername);
+        } catch (RemoteException e) {
+            JOptionPane.showMessageDialog(null, "Server connection error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return new LoginResponseDTO(false, "Connection error", null, null, null, null);
+        }
+    }
+
+    public boolean verifyPasswordResetOtp(String userId, String otpCode) {
+        if (otpCode == null || otpCode.length() != 6 || !otpCode.matches("\\d+")) {
+            throw new IllegalArgumentException("OTP must be 6 digits");
+        }
+        try {
+            AuthService authService = RMIConnection.getInstance().getService(AuthService.class);
+            boolean isValid = authService.verifyOtp(userId, otpCode);
+            if (!isValid) {
+                JOptionPane.showMessageDialog(null, "Invalid OTP. Please try again.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            return isValid;
+        } catch (RemoteException e) {
+            JOptionPane.showMessageDialog(null, "Server connection error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+    }
+
+    public boolean resetPassword(String userId, String newPassword) {
+        if (newPassword == null || newPassword.trim().isEmpty()) {
+            throw new IllegalArgumentException("New password is required");
+        }
+        try {
+            AuthService authService = RMIConnection.getInstance().getService(AuthService.class);
+            return authService.resetPassword(userId, newPassword);
+        } catch (RemoteException e) {
+            JOptionPane.showMessageDialog(null, "Server connection error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+    }
 }

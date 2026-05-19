@@ -18,8 +18,8 @@ public class ProjectManagerDao {
             return obj;
         } catch (Exception e) {
             e.printStackTrace();
+            throw new RuntimeException("Save failed: " + e.getMessage(), e);
         }
-        return null;
     }
 
     public ProjectManager update(ProjectManager obj) {
@@ -32,8 +32,8 @@ public class ProjectManagerDao {
             return obj;
         } catch (Exception e) {
             e.printStackTrace();
+            throw new RuntimeException("Update failed: " + e.getMessage(), e);
         }
-        return null;
     }
 
     public ProjectManager findById(String id) {
@@ -62,8 +62,8 @@ public class ProjectManagerDao {
             return obj;
         } catch (Exception e) {
             e.printStackTrace();
+            throw new RuntimeException("Delete failed: " + e.getMessage(), e);
         }
-        return null;
     }
 
     public List<ProjectManager> findAll() {

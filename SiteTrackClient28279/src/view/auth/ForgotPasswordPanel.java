@@ -7,18 +7,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
 
-public class LoginPanel extends JPanel {
+public class ForgotPasswordPanel extends JPanel {
     private MainFrame mainFrame;
     private AuthController authController;
     
-    private JTextField usernameField;
-    private JPasswordField passwordField;
+    private JTextField emailField;
     private JLabel errorLabel;
-    private JButton loginButton;
+    private JButton submitButton;
 
-    public LoginPanel(MainFrame mainFrame) {
+    public ForgotPasswordPanel(MainFrame mainFrame, AuthController authController) {
         this.mainFrame = mainFrame;
-        this.authController = new AuthController();
+        this.authController = authController;
         
         setLayout(new GridBagLayout());
         
@@ -48,13 +47,13 @@ public class LoginPanel extends JPanel {
             }
         } catch (Exception e) {}
         
-        JLabel title = new JLabel("SiteTrack Construction", SwingConstants.CENTER);
+        JLabel title = new JLabel("Forgot Password", SwingConstants.CENTER);
         title.setFont(new Font("Ubuntu", Font.BOLD, 22));
         title.setForeground(Color.decode("#1f242e"));
         formPanel.add(title, gbc);
         gbc.gridy++;
         
-        JLabel subtitle = new JLabel("Login to your account", SwingConstants.CENTER);
+        JLabel subtitle = new JLabel("Enter your email or username to reset", SwingConstants.CENTER);
         subtitle.setFont(new Font("Ubuntu", Font.PLAIN, 14));
         subtitle.setForeground(Color.GRAY);
         gbc.insets = new Insets(0, 0, 30, 0);
@@ -64,62 +63,43 @@ public class LoginPanel extends JPanel {
         gbc.gridwidth = 1;
         gbc.insets = new Insets(5, 0, 5, 10);
         
-        JLabel userLabel = new JLabel("Username:");
+        JLabel userLabel = new JLabel("Email/Username:");
         userLabel.setFont(new Font("Ubuntu", Font.BOLD, 14));
         userLabel.setForeground(Color.decode("#1f242e"));
         formPanel.add(userLabel, gbc);
         
         gbc.gridx = 1;
         gbc.insets = new Insets(5, 0, 5, 0);
-        usernameField = new JTextField(20);
-        usernameField.setPreferredSize(new Dimension(250, 40));
-        formPanel.add(usernameField, gbc);
-        
-        gbc.gridx = 0;
-        gbc.gridy++;
-        gbc.insets = new Insets(15, 0, 5, 10);
-        JLabel passLabel = new JLabel("Password:");
-        passLabel.setFont(new Font("Ubuntu", Font.BOLD, 14));
-        passLabel.setForeground(Color.decode("#1f242e"));
-        formPanel.add(passLabel, gbc);
-        
-        gbc.gridx = 1;
-        gbc.insets = new Insets(15, 0, 5, 0);
-        passwordField = new JPasswordField(20);
-        passwordField.setPreferredSize(new Dimension(250, 40));
-        formPanel.add(passwordField, gbc);
+        emailField = new JTextField(20);
+        emailField.setPreferredSize(new Dimension(250, 40));
+        formPanel.add(emailField, gbc);
         
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 2;
         gbc.insets = new Insets(30, 0, 10, 0);
-        loginButton = new JButton("Login");
-        loginButton.setPreferredSize(new Dimension(0, 45));
-        loginButton.setBackground(Color.decode("#FF5E14"));
-        loginButton.setForeground(Color.WHITE);
-        loginButton.setFont(new Font("Ubuntu", Font.BOLD, 16));
-        loginButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        loginButton.addActionListener(e -> attemptLogin());
-        formPanel.add(loginButton, gbc);
+        submitButton = new JButton("Send Reset OTP");
+        submitButton.setPreferredSize(new Dimension(0, 45));
+        submitButton.setBackground(Color.decode("#FF5E14"));
+        submitButton.setForeground(Color.WHITE);
+        submitButton.setFont(new Font("Ubuntu", Font.BOLD, 16));
+        submitButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        submitButton.addActionListener(e -> attemptSendOtp());
+        formPanel.add(submitButton, gbc);
         
         gbc.gridy++;
         gbc.insets = new Insets(10, 0, 10, 0);
-        JLabel forgotPasswordLabel = new JLabel("Forgot Password?");
-        forgotPasswordLabel.setFont(new Font("Ubuntu", Font.PLAIN, 13));
-        forgotPasswordLabel.setForeground(Color.decode("#0056b3"));
-        forgotPasswordLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        forgotPasswordLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        forgotPasswordLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-            private boolean added = false;
+        JLabel backToLogin = new JLabel("Back to Login");
+        backToLogin.setFont(new Font("Ubuntu", Font.PLAIN, 13));
+        backToLogin.setForeground(Color.decode("#0056b3"));
+        backToLogin.setHorizontalAlignment(SwingConstants.CENTER);
+        backToLogin.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        backToLogin.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                if (!added) {
-                    mainFrame.addPanel("ForgotPasswordPanel", new ForgotPasswordPanel(mainFrame, authController));
-                    added = true;
-                }
-                mainFrame.switchPanel("ForgotPasswordPanel");
+                mainFrame.switchPanel("LoginPanel");
             }
         });
-        formPanel.add(forgotPasswordLabel, gbc);
+        formPanel.add(backToLogin, gbc);
         
         gbc.gridy++;
         gbc.insets = new Insets(0, 0, 0, 0);
@@ -131,47 +111,44 @@ public class LoginPanel extends JPanel {
         add(formPanel);
     }
     
-    private void attemptLogin() {
-        String username = usernameField.getText();
-        String password = new String(passwordField.getPassword());
+    private void attemptSendOtp() {
+        String identifier = emailField.getText();
         
-        if (username.trim().isEmpty() || password.trim().isEmpty()) {
-            errorLabel.setText("Please enter username and password");
+        if (identifier.trim().isEmpty()) {
+            errorLabel.setText("Please enter your email or username");
             return;
         }
 
         errorLabel.setForeground(Color.decode("#FF5E14"));
-        errorLabel.setText("Authenticating and sending OTP... Please wait.");
-        loginButton.setEnabled(false);
+        errorLabel.setText("Sending OTP email... Please wait.");
+        submitButton.setEnabled(false);
         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
         SwingWorker<LoginResponseDTO, Void> worker = new SwingWorker<LoginResponseDTO, Void>() {
             @Override
             protected LoginResponseDTO doInBackground() throws Exception {
-                return authController.attemptLogin(username, password);
+                return authController.initiatePasswordReset(identifier);
             }
 
             @Override
             protected void done() {
-                loginButton.setEnabled(true);
+                submitButton.setEnabled(true);
                 setCursor(Cursor.getDefaultCursor());
                 errorLabel.setForeground(Color.RED);
                 
                 try {
                     LoginResponseDTO response = get();
                     if (response != null && response.isSuccess()) {
-                        passwordField.setText("");
-                        OtpPanel otpPanel = new OtpPanel(mainFrame, response);
-                        mainFrame.addPanel("OtpPanel", otpPanel);
-                        mainFrame.switchPanel("OtpPanel");
+                        emailField.setText("");
+                        ResetPasswordOtpPanel otpPanel = new ResetPasswordOtpPanel(mainFrame, authController, response.getUserId());
+                        mainFrame.addPanel("ResetPasswordOtpPanel", otpPanel);
+                        mainFrame.switchPanel("ResetPasswordOtpPanel");
                     } else {
                         String msg = response != null ? response.getMessage() : "Unknown error";
                         errorLabel.setText(msg);
-                        passwordField.setText("");
                     }
                 } catch (Exception ex) {
                     errorLabel.setText("Error: " + ex.getMessage());
-                    passwordField.setText("");
                 }
             }
         };

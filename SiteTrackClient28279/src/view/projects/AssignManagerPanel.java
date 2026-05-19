@@ -25,7 +25,7 @@ public class AssignManagerPanel extends JDialog {
         this.projectId = projectId;
         this.controller = controller;
         
-        setSize(450, 400);
+        setSize(550, 450);
         setLocationRelativeTo(parent);
         
         initUI();

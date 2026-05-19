@@ -11,4 +11,5 @@ public interface AuthService extends Remote {
     boolean resetPassword(String userId, String newPassword) throws RemoteException;
     boolean isAccountActive(String userId) throws RemoteException;
     boolean resendOtp(String userId) throws RemoteException;
+    LoginResponseDTO initiatePasswordReset(String emailOrUsername) throws RemoteException;
 }
