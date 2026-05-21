@@ -63,7 +63,7 @@ public class ProjectListPanel extends JPanel {
         
         addButton = new JButton("+ New Project");
         editButton = new JButton("✎ Edit");
-        deleteButton = new JButton("🗑 Delete");
+        deleteButton = new JButton("ㄨDelete");
         assignManagerButton = new JButton("👥 Assign Manager");
         JButton refreshButton = new JButton("↻ Refresh");
         

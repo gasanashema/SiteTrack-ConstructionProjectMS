@@ -43,6 +43,8 @@ public class SiteWorkerServiceImpl extends UnicastRemoteObject implements SiteWo
             entity.setPhone(dto.getPhone());
             entity.setDailyRate(dto.getDailyRate());
             entity.setStatus(EWorkerStatus.ACTIVE);
+            entity.setCreatedAt(java.time.LocalDateTime.now());
+            entity.setUpdatedAt(java.time.LocalDateTime.now());
             
             if (dto.getWorkerTypeId() != null) {
                 WorkerType wt = workerTypeDao.findById(dto.getWorkerTypeId());
@@ -66,6 +68,7 @@ public class SiteWorkerServiceImpl extends UnicastRemoteObject implements SiteWo
             entity.setFullName(dto.getFullName());
             entity.setPhone(dto.getPhone());
             entity.setDailyRate(dto.getDailyRate());
+            entity.setUpdatedAt(java.time.LocalDateTime.now());
             
             if (dto.getWorkerTypeId() != null) {
                 WorkerType wt = workerTypeDao.findById(dto.getWorkerTypeId());
@@ -86,6 +89,7 @@ public class SiteWorkerServiceImpl extends UnicastRemoteObject implements SiteWo
             SiteWorker entity = dao.findById(workerId);
             if (entity != null) {
                 entity.setStatus(EWorkerStatus.INACTIVE);
+                entity.setUpdatedAt(java.time.LocalDateTime.now());
                 dao.update(entity);
                 return true;
             }
@@ -102,6 +106,7 @@ public class SiteWorkerServiceImpl extends UnicastRemoteObject implements SiteWo
             SiteWorker entity = dao.findById(workerId);
             if (entity != null) {
                 entity.setStatus(EWorkerStatus.ACTIVE);
+                entity.setUpdatedAt(java.time.LocalDateTime.now());
                 dao.update(entity);
                 return true;
             }

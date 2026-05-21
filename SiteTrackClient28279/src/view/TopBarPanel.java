@@ -54,14 +54,10 @@ public class TopBarPanel extends JPanel {
         settingsBtn.setFont(new Font("Ubuntu", Font.PLAIN, 13));
         settingsBtn.addActionListener(e -> mainFrame.switchPanel("SettingsPanel"));
 
-        helpBtn = new JButton("❓ Help");
-        helpBtn.setFocusPainted(false);
-        helpBtn.setFont(new Font("Ubuntu", Font.PLAIN, 13));
         
         rightPanel.add(userInfoLabel);
         rightPanel.add(themeToggleBtn);
         rightPanel.add(settingsBtn);
-        rightPanel.add(helpBtn);
         rightPanel.add(logoutBtn);
         
         add(leftPanel, BorderLayout.WEST);
@@ -85,7 +81,7 @@ public class TopBarPanel extends JPanel {
             themeToggleBtn.setText("☀ Light");
         } else {
             mainFrame.setTheme("dark");
-            themeToggleBtn.setText("🌙 Dark");
+            themeToggleBtn.setText(" ⋆⁺₊ Dark");
         }
         
         // We need to trigger a repaint/revalidate to update custom components that check the theme manually
