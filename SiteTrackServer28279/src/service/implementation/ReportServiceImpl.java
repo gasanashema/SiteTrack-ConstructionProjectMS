@@ -58,7 +58,7 @@ public class ReportServiceImpl extends UnicastRemoteObject implements ReportServ
             Long totalWork = (Long) session.createQuery("SELECT COUNT(w) FROM SiteWorker w WHERE w.status = 'ACTIVE'").uniqueResult();
             Long totalMat = (Long) session.createQuery("SELECT COUNT(m) FROM Material m").uniqueResult();
 
-            BigDecimal matExp = (BigDecimal) session.createQuery("SELECT SUM(mp.totalCost) FROM MaterialPurchase mp").uniqueResult();
+            BigDecimal matExp = (BigDecimal) session.createQuery("SELECT SUM(mp.totalPrice) FROM MaterialPurchase mp").uniqueResult();
             if (matExp == null) matExp = BigDecimal.ZERO;
 
             BigDecimal labExp = (BigDecimal) session.createQuery("SELECT SUM(wp.netPay) FROM WorkerPayment wp").uniqueResult();

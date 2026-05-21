@@ -3,10 +3,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/GeekNest/Documents/NetBeansProjects/SiteTrack/SiteTrackClient28279/src/view/projects/ProjectFormPanel.java</file>
-            <file>file:/C:/Users/GeekNest/Documents/NetBeansProjects/SiteTrack/SiteTrackClient28279/src/view/materials/MaterialPanel.java</file>
-            <file>file:/C:/Users/GeekNest/Documents/NetBeansProjects/SiteTrack/SiteTrackClient28279/src/view/materials/UsageHistoryPanel.java</file>
-            <file>file:/C:/Users/GeekNest/Documents/NetBeansProjects/SiteTrack/SiteTrackClient28279/src/view/materials/StockPanel.java</file>
+            <file>file:/C:/Users/GeekNest/Documents/NetBeansProjects/SiteTrack/SiteTrackClient28279/src/view/projects/ProjectListPanel.java</file>
+            <file>file:/C:/Users/GeekNest/Documents/NetBeansProjects/SiteTrack/SiteTrackClient28279/src/controller/ProjectController.java</file>
         </group>
     </open-files>
 </project-private>

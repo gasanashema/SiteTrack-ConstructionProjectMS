@@ -30,8 +30,7 @@ public class MainFrame extends JFrame {
         cardLayout = new CardLayout();
         contentPanel = new JPanel(cardLayout);
 
-        // We don't add sidebar and topbar immediately, or we add them but hide them until login
-        // Let's add them but set their visibility to false initially
+
         add(topBar, BorderLayout.NORTH);
         add(sidebar, BorderLayout.WEST);
         add(contentPanel, BorderLayout.CENTER);
