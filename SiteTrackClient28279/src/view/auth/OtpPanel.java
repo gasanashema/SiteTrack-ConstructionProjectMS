@@ -36,7 +36,7 @@ public class OtpPanel extends JPanel {
         
         JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.decode("#E0E0E0"), 1, true),
+                BorderFactory.createLineBorder(UIManager.getColor("Component.borderColor"), 1, true),
                 BorderFactory.createEmptyBorder(40, 40, 40, 40)));
         
         GridBagConstraints gbc = new GridBagConstraints();
@@ -61,7 +61,7 @@ public class OtpPanel extends JPanel {
         
         JLabel title = new JLabel("Enter OTP", SwingConstants.CENTER);
         title.setFont(new Font("Ubuntu", Font.BOLD, 22));
-        title.setForeground(Color.decode("#1f242e"));
+        title.setForeground(UIManager.getColor("Label.foreground"));
         formPanel.add(title, gbc);
         gbc.gridy++;
         

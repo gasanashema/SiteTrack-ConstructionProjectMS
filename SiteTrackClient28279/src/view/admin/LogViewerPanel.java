@@ -45,7 +45,7 @@ public class LogViewerPanel extends JPanel {
 
         JLabel titleLabel = new JLabel("System Log Viewer");
         titleLabel.setFont(new Font("Ubuntu", Font.BOLD, 24));
-        titleLabel.setForeground(Color.decode("#2c3e50"));
+        titleLabel.setForeground(UIManager.getColor("Label.foreground"));
         titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
         northPanel.add(titleLabel, BorderLayout.NORTH);
 

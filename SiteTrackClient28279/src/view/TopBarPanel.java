@@ -17,7 +17,7 @@ public class TopBarPanel extends JPanel {
         
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(0, 60));
-        setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.decode("#E0E0E0")));
+        setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, UIManager.getColor("Component.borderColor")));
         
         // Left side - Title/Logo area
         JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 15));
@@ -32,7 +32,7 @@ public class TopBarPanel extends JPanel {
         
         userInfoLabel = new JLabel();
         userInfoLabel.setFont(new Font("Ubuntu", Font.PLAIN, 14));
-        userInfoLabel.setForeground(Color.decode("#5F6368"));
+        userInfoLabel.setForeground(UIManager.getColor("Label.disabledForeground"));
         
         themeToggleBtn = new JButton("☀ Light");
         themeToggleBtn.setFocusPainted(false);
@@ -78,10 +78,10 @@ public class TopBarPanel extends JPanel {
         boolean isDark = UIManager.getBoolean("laf.dark");
         if (isDark) {
             mainFrame.setTheme("light");
-            themeToggleBtn.setText("☀ Light");
+            themeToggleBtn.setText(" ⋆⁺₊ Dark");
         } else {
             mainFrame.setTheme("dark");
-            themeToggleBtn.setText(" ⋆⁺₊ Dark");
+            themeToggleBtn.setText("☀ Light");
         }
         
         // We need to trigger a repaint/revalidate to update custom components that check the theme manually

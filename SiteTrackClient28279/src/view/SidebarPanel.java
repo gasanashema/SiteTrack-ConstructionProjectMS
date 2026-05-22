@@ -17,7 +17,7 @@ public class SidebarPanel extends JPanel {
         
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         setPreferredSize(new Dimension(240, 0));
-        setBackground(Color.decode("#1f242e")); // Dark slate background
+        setBackground(UIManager.getColor("Label.foreground")); // Dark slate background
         setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
     }
 
@@ -97,7 +97,7 @@ public class SidebarPanel extends JPanel {
         // Use Segoe UI for the text
         btn.setFont(new Font("Segoe UI", Font.PLAIN, 15));
         btn.setFocusPainted(false);
-        btn.setBackground(Color.decode("#1f242e")); 
+        btn.setBackground(UIManager.getColor("Label.foreground")); 
         btn.setForeground(Color.WHITE);
         btn.setBorder(BorderFactory.createEmptyBorder(0, 15, 0, 0));
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -124,7 +124,7 @@ public class SidebarPanel extends JPanel {
                 btn.setForeground(Color.WHITE);
             } else {
                 btn.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-                btn.setBackground(Color.decode("#1f242e"));
+                btn.setBackground(UIManager.getColor("Label.foreground"));
                 btn.setForeground(Color.WHITE);
             }
         }

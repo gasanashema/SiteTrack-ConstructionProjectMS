@@ -25,7 +25,7 @@ public class NewPasswordPanel extends JPanel {
         
         JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.decode("#E0E0E0"), 1, true),
+                BorderFactory.createLineBorder(UIManager.getColor("Component.borderColor"), 1, true),
                 BorderFactory.createEmptyBorder(40, 40, 40, 40)));
         
         GridBagConstraints gbc = new GridBagConstraints();
@@ -37,7 +37,7 @@ public class NewPasswordPanel extends JPanel {
         
         JLabel title = new JLabel("Set New Password", SwingConstants.CENTER);
         title.setFont(new Font("Ubuntu", Font.BOLD, 22));
-        title.setForeground(Color.decode("#1f242e"));
+        title.setForeground(UIManager.getColor("Label.foreground"));
         formPanel.add(title, gbc);
         gbc.gridy++;
         
@@ -53,7 +53,7 @@ public class NewPasswordPanel extends JPanel {
         
         JLabel newPassLabel = new JLabel("New Password:");
         newPassLabel.setFont(new Font("Ubuntu", Font.BOLD, 14));
-        newPassLabel.setForeground(Color.decode("#1f242e"));
+        newPassLabel.setForeground(UIManager.getColor("Label.foreground"));
         formPanel.add(newPassLabel, gbc);
         
         gbc.gridx = 1;
@@ -67,7 +67,7 @@ public class NewPasswordPanel extends JPanel {
         gbc.insets = new Insets(15, 0, 5, 10);
         JLabel confirmPassLabel = new JLabel("Confirm Password:");
         confirmPassLabel.setFont(new Font("Ubuntu", Font.BOLD, 14));
-        confirmPassLabel.setForeground(Color.decode("#1f242e"));
+        confirmPassLabel.setForeground(UIManager.getColor("Label.foreground"));
         formPanel.add(confirmPassLabel, gbc);
         
         gbc.gridx = 1;
