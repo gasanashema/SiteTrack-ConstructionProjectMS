@@ -39,6 +39,7 @@ public class NotificationLog implements Serializable {
     private ENotifStatus status;
 
     @Column(name = "created_at", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateTimeAttributeConverter.class)
     private LocalDateTime createdAt;
 
     public NotificationLog() {

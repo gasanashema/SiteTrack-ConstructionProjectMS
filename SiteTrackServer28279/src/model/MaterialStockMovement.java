@@ -44,6 +44,7 @@ public class MaterialStockMovement implements Serializable {
     private BigDecimal totalPrice;
 
     @Column(name = "movement_date", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateAttributeConverter.class)
     private LocalDate movementDate;
 
     @Column(name = "description")
@@ -60,9 +61,11 @@ public class MaterialStockMovement implements Serializable {
     private User recordedBy;
 
     @Column(name = "created_at", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateTimeAttributeConverter.class)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateTimeAttributeConverter.class)
     private LocalDateTime updatedAt;
 
     public MaterialStockMovement() {

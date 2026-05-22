@@ -31,6 +31,7 @@ public class WorkerAttendance implements Serializable {
     private SiteWorker worker;
 
     @Column(name = "work_date", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateAttributeConverter.class)
     private LocalDate workDate;
 
     @Enumerated(EnumType.STRING)
@@ -45,9 +46,11 @@ public class WorkerAttendance implements Serializable {
     private User recordedBy;
 
     @Column(name = "created_at", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateTimeAttributeConverter.class)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateTimeAttributeConverter.class)
     private LocalDateTime updatedAt;
 
     @OneToOne(mappedBy = "attendance", fetch = FetchType.LAZY)

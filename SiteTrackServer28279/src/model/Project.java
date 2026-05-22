@@ -33,9 +33,11 @@ public class Project implements Serializable {
     private String description;
 
     @Column(name = "start_date", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateAttributeConverter.class)
     private LocalDate startDate;
 
     @Column(name = "expected_end_date", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateAttributeConverter.class)
     private LocalDate expectedEndDate;
 
     @Enumerated(EnumType.STRING)
@@ -47,9 +49,11 @@ public class Project implements Serializable {
     private User createdBy;
 
     @Column(name = "created_at", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateTimeAttributeConverter.class)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateTimeAttributeConverter.class)
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "project", fetch = FetchType.LAZY)

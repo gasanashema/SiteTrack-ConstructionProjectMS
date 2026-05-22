@@ -39,6 +39,7 @@ public class AuditLog implements Serializable {
     private String ipAddress;
 
     @Column(name = "created_at", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateTimeAttributeConverter.class)
     private LocalDateTime createdAt;
 
     public AuditLog() {

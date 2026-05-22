@@ -41,9 +41,11 @@ public class SiteWorker implements Serializable {
     private EWorkerStatus status;
 
     @Column(name = "created_at", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateTimeAttributeConverter.class)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateTimeAttributeConverter.class)
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "worker", fetch = FetchType.LAZY)

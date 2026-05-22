@@ -48,6 +48,8 @@ Contributor(s):
     <property name="hibernate.connection.password">disaster</property>
     <property name="hibernate.show_sql">true</property>
     <property name="hibernate.hbm2ddl.auto">update</property>
+    <mapping class="util.LocalDateAttributeConverter"/>
+    <mapping class="util.LocalDateTimeAttributeConverter"/>
     <mapping class="model.AuditLog"/>
     <mapping class="model.Material"/>
     <mapping class="model.MaterialCategory"/>

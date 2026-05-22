@@ -28,12 +28,14 @@ public class OtpVerification implements Serializable {
     private String otpCode;
 
     @Column(name = "expires_at", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateTimeAttributeConverter.class)
     private LocalDateTime expiresAt;
 
     @Column(name = "is_used", nullable = false)
     private boolean isUsed;
 
     @Column(name = "created_at", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateTimeAttributeConverter.class)
     private LocalDateTime createdAt;
 
     public OtpVerification() {

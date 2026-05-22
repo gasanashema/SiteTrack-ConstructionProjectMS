@@ -36,6 +36,7 @@ public class WorkerPayment implements Serializable {
     private WorkerAttendance attendance;
 
     @Column(name = "work_date", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateAttributeConverter.class)
     private LocalDate workDate;
 
     @Column(name = "daily_rate", nullable = false)
@@ -59,9 +60,11 @@ public class WorkerPayment implements Serializable {
     private String notes;
 
     @Column(name = "created_at", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateTimeAttributeConverter.class)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateTimeAttributeConverter.class)
     private LocalDateTime updatedAt;
 
     public WorkerPayment() {
