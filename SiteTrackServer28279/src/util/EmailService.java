@@ -75,11 +75,11 @@ public class EmailService {
                "  <style>" +
                "    body { font-family: Arial, sans-serif; background-color: #f5f5f5; }" +
                "    .container { max-width: 600px; margin: 0 auto; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }" +
-               "    .header { background-color: #1B3A6B; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }" +
+               "    .header { background-color: #1f242e; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }" +
                "    .header h1 { margin: 0; font-size: 24px; }" +
                "    .content { padding: 20px; text-align: center; }" +
-               "    .otp-box { background-color: #f0f0f0; border: 2px solid #1B3A6B; border-radius: 8px; padding: 20px; margin: 20px 0; }" +
-               "    .otp-code { font-size: 36px; font-weight: bold; color: #1B3A6B; letter-spacing: 4px; font-family: 'Courier New', monospace; }" +
+               "    .otp-box { background-color: #f0f0f0; border: 2px solid #FF5E14; border-radius: 8px; padding: 20px; margin: 20px 0; }" +
+               "    .otp-code { font-size: 36px; font-weight: bold; color: #FF5E14; letter-spacing: 4px; font-family: 'Courier New', monospace; }" +
                "    .expiry { color: #666; font-size: 14px; margin-top: 10px; }" +
                "    .footer { background-color: #f5f5f5; padding: 15px; text-align: center; font-size: 12px; color: #999; }" +
                "    .warning { color: #F44336; font-weight: bold; }" +

@@ -136,6 +136,11 @@ public class UserFormPanel extends JDialog {
             return;
         }
         
+        if (!phone.isEmpty() && (!phone.matches("\\d+") || phone.length() > 10)) {
+            errorLabel.setText("Phone must be numbers only and max 10 digits.");
+            return;
+        }
+        
         if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
             errorLabel.setText("Invalid email format.");
             return;
