@@ -7,6 +7,7 @@ import view.dashboard.DashboardPanel;
 import view.materials.MaterialPanel;
 import view.materials.StockPanel;
 import view.materials.UsageHistoryPanel;
+import session.SessionManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -174,9 +175,12 @@ public class OtpPanel extends JPanel {
                 view.settings.SettingsPanel settingsPanel = new view.settings.SettingsPanel(mainFrame);
                 mainFrame.addPanel("SettingsPanel", settingsPanel);
                 
-                if (loginData.getRole().equals("ADMIN")) {
+                if (SessionManager.getInstance().isAdmin()) {
                     view.settings.UserManagementPanel userMgmtPanel = new view.settings.UserManagementPanel();
                     mainFrame.addPanel("UserManagementPanel", userMgmtPanel);
+                    
+                    view.workers.WorkerAssignmentPanel assignmentPanel = new view.workers.WorkerAssignmentPanel();
+                    mainFrame.addPanel("WorkerAssignmentPanel", assignmentPanel);
                     
                     view.admin.AuditLogPanel auditLogPanel = new view.admin.AuditLogPanel();
                     mainFrame.addPanel("AuditLogPanel", auditLogPanel);

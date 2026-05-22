@@ -34,15 +34,10 @@ public class TopBarPanel extends JPanel {
         userInfoLabel.setFont(new Font("Ubuntu", Font.PLAIN, 14));
         userInfoLabel.setForeground(UIManager.getColor("Label.disabledForeground"));
         
-        themeToggleBtn = new JButton("☀ Light");
-        themeToggleBtn.setFocusPainted(false);
-        themeToggleBtn.setFont(new Font("Ubuntu", Font.PLAIN, 13));
-        themeToggleBtn.addActionListener(e -> toggleTheme());
-        
         logoutBtn = new JButton("Logout");
         logoutBtn.setFocusPainted(false);
         logoutBtn.setFont(new Font("Ubuntu", Font.BOLD, 13));
-        logoutBtn.setForeground(Color.decode("#D93025")); // Red text
+        logoutBtn.setForeground(Color.decode("#D93025"));
         logoutBtn.setBorder(BorderFactory.createLineBorder(Color.decode("#D93025")));
         logoutBtn.setContentAreaFilled(false);
         logoutBtn.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -54,9 +49,7 @@ public class TopBarPanel extends JPanel {
         settingsBtn.setFont(new Font("Ubuntu", Font.PLAIN, 13));
         settingsBtn.addActionListener(e -> mainFrame.switchPanel("SettingsPanel"));
 
-        
         rightPanel.add(userInfoLabel);
-        rightPanel.add(themeToggleBtn);
         rightPanel.add(settingsBtn);
         rightPanel.add(logoutBtn);
         
@@ -72,22 +65,5 @@ public class TopBarPanel extends JPanel {
         } else {
             userInfoLabel.setText("");
         }
-    }
-    
-    private void toggleTheme() {
-        boolean isDark = UIManager.getBoolean("laf.dark");
-        if (isDark) {
-            mainFrame.setTheme("light");
-            themeToggleBtn.setText(" ⋆⁺₊ Dark");
-        } else {
-            mainFrame.setTheme("dark");
-            themeToggleBtn.setText("☀ Light");
-        }
-        
-        // We need to trigger a repaint/revalidate to update custom components that check the theme manually
-        SwingUtilities.invokeLater(() -> {
-            mainFrame.revalidate();
-            mainFrame.repaint();
-        });
     }
 }
