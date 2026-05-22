@@ -118,7 +118,18 @@ public class ReportServiceImpl extends UnicastRemoteObject implements ReportServ
 
     @Override
     public ProjectSummaryDTO getSiteManagerDashboardSummary(String projectId) throws RemoteException {
-        // Stub
-        return new ProjectSummaryDTO();
+        // Stub: initialize with default values to prevent null pointer exceptions in UI
+        return new ProjectSummaryDTO(
+            projectId, 
+            "Loading...", 
+            "ONGOING", 
+            0, 
+            BigDecimal.ZERO, 
+            BigDecimal.ZERO, 
+            BigDecimal.ZERO, 
+            0, 
+            0, 
+            new ArrayList<>()
+        );
     }
 }

@@ -60,16 +60,20 @@ public class ProjectServiceImpl extends UnicastRemoteObject implements ProjectSe
             entity.setCreatedAt(LocalDateTime.now());
             entity.setUpdatedAt(LocalDateTime.now());
             
-            // Assuming we pass userId mapping via createdByName for creation stub
             User u = userDao.findById(dto.getCreatedByName()); 
-            if (u != null) entity.setCreatedBy(u);
+            if (u == null || u.getRole() != model.ERole.ADMIN) {
+                throw new IllegalArgumentException("Unauthorized: Only Administrators can create projects");
+            }
+            entity.setCreatedBy(u);
             
             entity = dao.save(entity);
             NotificationProducer.sendNotification("ADMIN", "PROJECT_CREATED", "New project created: " + entity.getProjectName(), "SYSTEM");
             return toDTO(entity);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException(e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("Failed to create project");
+            throw new RuntimeException("Failed to create project: " + e.getMessage());
         }
     }
 

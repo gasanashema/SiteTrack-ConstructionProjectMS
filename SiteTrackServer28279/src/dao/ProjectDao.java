@@ -9,51 +9,64 @@ import org.hibernate.*;
 public class ProjectDao {
 
     public Project save(Project obj) {
+        Session ss = null;
         try {
-            Session ss = HibernateUtil.getSessionFactory().openSession();
+            ss = HibernateUtil.getSessionFactory().openSession();
             Transaction tr = ss.beginTransaction();
             ss.save(obj);
             tr.commit();
-            ss.close();
             return obj;
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (ss != null && ss.isOpen()) {
+                ss.close();
+            }
         }
         return null;
     }
 
     public Project update(Project obj) {
+        Session ss = null;
         try {
-            Session ss = HibernateUtil.getSessionFactory().openSession();
+            ss = HibernateUtil.getSessionFactory().openSession();
             Transaction tr = ss.beginTransaction();
             ss.update(obj);
             tr.commit();
-            ss.close();
             return obj;
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (ss != null && ss.isOpen()) {
+                ss.close();
+            }
         }
         return null;
     }
 
     public Project findById(String id) {
+        Session ss = null;
         try {
-            Session ss = HibernateUtil.getSessionFactory().openSession();
+            ss = HibernateUtil.getSessionFactory().openSession();
             Project obj = (Project) ss.get(Project.class, id);
-            ss.close();
             return obj;
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (ss != null && ss.isOpen()) {
+                ss.close();
+            }
         }
         return null;
     }
 
     public Project delete(String id) {
+        Session ss = null;
         try {
             if (hasAssociatedRecords(id)) {
                 throw new RuntimeException("Cannot delete project with existing purchases, usage, or attendance records.");
             }
-            Session ss = HibernateUtil.getSessionFactory().openSession();
+            ss = HibernateUtil.getSessionFactory().openSession();
             Transaction tr = ss.beginTransaction();
             Project obj = (Project) ss.get(Project.class, id);
             if (obj != null) {
@@ -64,73 +77,93 @@ public class ProjectDao {
                 ss.delete(obj);
             }
             tr.commit();
-            ss.close();
             return obj;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e.getMessage());
+        } finally {
+            if (ss != null && ss.isOpen()) {
+                ss.close();
+            }
         }
     }
 
     public List<Project> findAll() {
+        Session ss = null;
         try {
-            Session ss = HibernateUtil.getSessionFactory().openSession();
+            ss = HibernateUtil.getSessionFactory().openSession();
             Query q = ss.createQuery("FROM Project ORDER BY projectName ASC");
             List<Project> list = q.list();
-            ss.close();
             return list;
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (ss != null && ss.isOpen()) {
+                ss.close();
+            }
         }
         return Collections.EMPTY_LIST;
     }
 
     public List<Project> findByStatus(EProjectStatus status) {
+        Session ss = null;
         try {
-            Session ss = HibernateUtil.getSessionFactory().openSession();
+            ss = HibernateUtil.getSessionFactory().openSession();
             Query q = ss.createQuery("FROM Project WHERE status = :status");
             q.setParameter("status", status);
             List<Project> list = q.list();
-            ss.close();
             return list;
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (ss != null && ss.isOpen()) {
+                ss.close();
+            }
         }
         return Collections.EMPTY_LIST;
     }
 
     public List<Project> findByCreatedBy(String userId) {
+        Session ss = null;
         try {
-            Session ss = HibernateUtil.getSessionFactory().openSession();
+            ss = HibernateUtil.getSessionFactory().openSession();
             Query q = ss.createQuery("FROM Project WHERE createdBy.id = :userId");
             q.setParameter("userId", userId);
             List<Project> list = q.list();
-            ss.close();
             return list;
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (ss != null && ss.isOpen()) {
+                ss.close();
+            }
         }
         return Collections.EMPTY_LIST;
     }
 
     public List<Project> findAssignedToManager(String userId) {
+        Session ss = null;
         try {
-            Session ss = HibernateUtil.getSessionFactory().openSession();
+            ss = HibernateUtil.getSessionFactory().openSession();
             Query q = ss.createQuery("SELECT pm.project FROM ProjectManager pm WHERE pm.user.id = :uid AND pm.status = :st");
             q.setParameter("uid", userId);
             q.setParameter("st", EManagerStatus.ACTIVE);
             List<Project> list = q.list();
-            ss.close();
             return list;
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (ss != null && ss.isOpen()) {
+                ss.close();
+            }
         }
         return Collections.EMPTY_LIST;
     }
 
     public boolean hasAssociatedRecords(String projectId) {
+        Session ss = null;
         try {
-            Session ss = HibernateUtil.getSessionFactory().openSession();
+            ss = HibernateUtil.getSessionFactory().openSession();
             Query q1 = ss.createQuery("SELECT COUNT(mp) FROM MaterialPurchase mp WHERE mp.project.id = :pid");
             q1.setParameter("pid", projectId);
             Query q2 = ss.createQuery("SELECT COUNT(mu) FROM MaterialUsage mu WHERE mu.project.id = :pid");
@@ -140,10 +173,13 @@ public class ProjectDao {
             Long c1 = (Long) q1.uniqueResult();
             Long c2 = (Long) q2.uniqueResult();
             Long c3 = (Long) q3.uniqueResult();
-            ss.close();
             return (c1 != null && c1 > 0) || (c2 != null && c2 > 0) || (c3 != null && c3 > 0);
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (ss != null && ss.isOpen()) {
+                ss.close();
+            }
         }
         return false;
     }

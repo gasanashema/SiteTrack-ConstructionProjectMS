@@ -40,8 +40,7 @@ public class AuthController {
                 UserDTO userDTO = new UserDTO();
                 userDTO.setId(userId);
                 userDTO.setRole(role);
-                // We'll map full name into UserDTO later when we know exactly how UserDTO is structured
-                // For now, let's just create it and hope it sets properly or at least the session holds it.
+                userDTO.setFullName(fullName);
                 SessionManager.getInstance().setUser(userDTO, otpId);
                 return true;
             } else {
