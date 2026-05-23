@@ -172,4 +172,60 @@ public class WorkerController {
             return false;
         }
     }
+
+    // --- Worker Assignments ---
+
+    public List<SiteWorkerDTO> getAssignedWorkersByProject(String projectId) {
+        try {
+            return getSiteWorkerService().getWorkersByProject(projectId);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Failed to load assigned workers: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return new ArrayList<>();
+        }
+    }
+
+    public List<dto.WorkerAssignmentDTO> getActiveAssignments() {
+        try {
+            return getSiteWorkerService().getActiveAssignments();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Failed to load active assignments: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return new ArrayList<>();
+        }
+    }
+
+    public boolean assignWorkers(List<String> workerIds, String projectId, java.time.LocalDate date) {
+        try {
+            boolean success = getSiteWorkerService().assignWorkers(workerIds, projectId, date);
+            if (success) {
+                JOptionPane.showMessageDialog(null, "Workers assigned successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            }
+            return success;
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Validation Error", JOptionPane.WARNING_MESSAGE);
+            return false;
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Failed to assign workers: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+    }
+
+    public boolean transferWorker(String workerId, String toProjectId, java.time.LocalDate date) {
+        try {
+            boolean success = getSiteWorkerService().transferWorker(workerId, toProjectId, date);
+            if (success) {
+                JOptionPane.showMessageDialog(null, "Worker transferred successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+            }
+            return success;
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Validation Error", JOptionPane.WARNING_MESSAGE);
+            return false;
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Failed to transfer worker: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+    }
 }

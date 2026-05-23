@@ -35,6 +35,7 @@ public class ProjectActivity implements Serializable {
     private String activityDescription;
 
     @Column(name = "activity_date", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateAttributeConverter.class)
     private LocalDate activityDate;
 
     @Column(name = "progress_percentage", nullable = false)
@@ -45,9 +46,11 @@ public class ProjectActivity implements Serializable {
     private User recordedBy;
 
     @Column(name = "created_at", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateTimeAttributeConverter.class)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateTimeAttributeConverter.class)
     private LocalDateTime updatedAt;
 
     public ProjectActivity() {

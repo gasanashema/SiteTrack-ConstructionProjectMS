@@ -36,8 +36,8 @@ public class MaterialPanel extends JPanel {
         tabbedPane = new JTabbedPane();
         tabbedPane.setFont(new Font("Ubuntu", Font.PLAIN, 16));
 
-        // If Admin, show Categories and definition.
-        if (SessionManager.getInstance().isAdmin()) {
+        boolean canManage = SessionManager.getInstance().isAdmin() || SessionManager.getInstance().isSiteManager();
+        if (canManage) {
             tabbedPane.addTab("Categories", createCategoriesTab());
             tabbedPane.addTab("Materials Definition", createMaterialsTab(true));
         } else {

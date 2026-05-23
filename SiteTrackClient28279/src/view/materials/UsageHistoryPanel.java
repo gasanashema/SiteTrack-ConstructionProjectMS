@@ -56,10 +56,31 @@ public class UsageHistoryPanel extends JPanel {
         
         filterPanel.add(new JLabel("Project: "));
         projectCombo = new JComboBox<>();
-        List<ProjectDTO> projects = projectController.getAllProjects();
-        for (ProjectDTO p : projects) {
-            projectCombo.addItem(p.getId() + " - " + p.getProjectName());
-        }
+        Runnable loadProjects = () -> {
+            Object selected = projectCombo.getSelectedItem();
+            projectCombo.removeAllItems();
+            List<ProjectDTO> projs = projectController.getAllProjects();
+            for (ProjectDTO p : projs) {
+                projectCombo.addItem(p.getId() + " - " + p.getProjectName());
+            }
+            if (selected != null) {
+                projectCombo.setSelectedItem(selected);
+            } else if (projectCombo.getItemCount() > 0) {
+                projectCombo.setSelectedIndex(0);
+            }
+        };
+        loadProjects.run();
+        
+        projectCombo.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            @Override
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent e) {
+                loadProjects.run();
+            }
+            @Override
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent e) {}
+            @Override
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent e) {}
+        });
         filterPanel.add(projectCombo);
 
         filterPanel.add(new JLabel("From:"));

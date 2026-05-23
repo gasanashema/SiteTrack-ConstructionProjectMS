@@ -40,9 +40,11 @@ public class ProjectMaterialStock implements Serializable {
     private BigDecimal averageUnitPrice;
 
     @Column(name = "created_at", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateTimeAttributeConverter.class)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateTimeAttributeConverter.class)
     private LocalDateTime updatedAt;
 
     public ProjectMaterialStock() {

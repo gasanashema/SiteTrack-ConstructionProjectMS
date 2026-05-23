@@ -16,4 +16,7 @@ public interface SiteWorkerService extends Remote {
     List<SiteWorkerDTO> getActiveWorkers() throws RemoteException;
     List<SiteWorkerDTO> getWorkersByType(String workerTypeId) throws RemoteException;
     List<SiteWorkerDTO> getWorkersByProject(String projectId) throws RemoteException;
+    boolean assignWorkers(List<String> workerIds, String projectId, java.time.LocalDate date) throws RemoteException;
+    boolean transferWorker(String workerId, String toProjectId, java.time.LocalDate date) throws RemoteException;
+    List<dto.WorkerAssignmentDTO> getActiveAssignments() throws RemoteException;
 }

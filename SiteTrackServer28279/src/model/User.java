@@ -46,9 +46,11 @@ public class User implements Serializable {
     private EUserStatus status;
 
     @Column(name = "created_at", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateTimeAttributeConverter.class)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateTimeAttributeConverter.class)
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY)

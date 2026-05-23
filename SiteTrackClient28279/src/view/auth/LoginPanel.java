@@ -24,7 +24,7 @@ public class LoginPanel extends JPanel {
         
         JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.decode("#E0E0E0"), 1, true),
+                BorderFactory.createLineBorder(UIManager.getColor("Component.borderColor"), 1, true),
                 BorderFactory.createEmptyBorder(40, 40, 40, 40)));
         
         GridBagConstraints gbc = new GridBagConstraints();
@@ -50,7 +50,7 @@ public class LoginPanel extends JPanel {
         
         JLabel title = new JLabel("SiteTrack Construction", SwingConstants.CENTER);
         title.setFont(new Font("Ubuntu", Font.BOLD, 22));
-        title.setForeground(Color.decode("#1f242e"));
+        title.setForeground(UIManager.getColor("Label.foreground"));
         formPanel.add(title, gbc);
         gbc.gridy++;
         
@@ -66,7 +66,7 @@ public class LoginPanel extends JPanel {
         
         JLabel userLabel = new JLabel("Username:");
         userLabel.setFont(new Font("Ubuntu", Font.BOLD, 14));
-        userLabel.setForeground(Color.decode("#1f242e"));
+        userLabel.setForeground(UIManager.getColor("Label.foreground"));
         formPanel.add(userLabel, gbc);
         
         gbc.gridx = 1;
@@ -80,7 +80,7 @@ public class LoginPanel extends JPanel {
         gbc.insets = new Insets(15, 0, 5, 10);
         JLabel passLabel = new JLabel("Password:");
         passLabel.setFont(new Font("Ubuntu", Font.BOLD, 14));
-        passLabel.setForeground(Color.decode("#1f242e"));
+        passLabel.setForeground(UIManager.getColor("Label.foreground"));
         formPanel.add(passLabel, gbc);
         
         gbc.gridx = 1;

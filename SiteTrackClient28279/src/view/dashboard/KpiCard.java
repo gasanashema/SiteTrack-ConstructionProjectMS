@@ -154,7 +154,7 @@ public class KpiCard extends JPanel {
             borderColor = Color.decode("#3C3F41");
             bgColor = Color.decode("#2B2D30"); // Solid dark color for dark mode
         } else {
-            borderColor = Color.decode("#E0E0E0");
+            borderColor = UIManager.getColor("Component.borderColor");
             bgColor = Color.WHITE; // Full white
         }
 

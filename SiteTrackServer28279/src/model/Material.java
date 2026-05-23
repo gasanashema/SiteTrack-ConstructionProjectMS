@@ -41,9 +41,11 @@ public class Material implements Serializable {
     private EMaterialStatus status;
 
     @Column(name = "created_at", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateTimeAttributeConverter.class)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateTimeAttributeConverter.class)
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "material", fetch = FetchType.LAZY)

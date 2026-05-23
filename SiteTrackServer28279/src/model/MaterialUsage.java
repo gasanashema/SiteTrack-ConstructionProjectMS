@@ -40,6 +40,7 @@ public class MaterialUsage implements Serializable {
     private BigDecimal totalCost;
 
     @Column(name = "usage_date", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateAttributeConverter.class)
     private LocalDate usageDate;
 
     @Column(name = "activity_description")
@@ -50,9 +51,11 @@ public class MaterialUsage implements Serializable {
     private User recordedBy;
 
     @Column(name = "created_at", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateTimeAttributeConverter.class)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateTimeAttributeConverter.class)
     private LocalDateTime updatedAt;
 
     public MaterialUsage() {

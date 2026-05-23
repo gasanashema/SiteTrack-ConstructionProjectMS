@@ -7,6 +7,7 @@ import view.dashboard.DashboardPanel;
 import view.materials.MaterialPanel;
 import view.materials.StockPanel;
 import view.materials.UsageHistoryPanel;
+import session.SessionManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,7 +37,7 @@ public class OtpPanel extends JPanel {
         
         JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.decode("#E0E0E0"), 1, true),
+                BorderFactory.createLineBorder(UIManager.getColor("Component.borderColor"), 1, true),
                 BorderFactory.createEmptyBorder(40, 40, 40, 40)));
         
         GridBagConstraints gbc = new GridBagConstraints();
@@ -61,7 +62,7 @@ public class OtpPanel extends JPanel {
         
         JLabel title = new JLabel("Enter OTP", SwingConstants.CENTER);
         title.setFont(new Font("Ubuntu", Font.BOLD, 22));
-        title.setForeground(Color.decode("#1f242e"));
+        title.setForeground(UIManager.getColor("Label.foreground"));
         formPanel.add(title, gbc);
         gbc.gridy++;
         
@@ -171,12 +172,12 @@ public class OtpPanel extends JPanel {
                 mainFrame.addPanel("ReportsPanel", reportsPanel);
                 
                 // Admin Tools & Settings
-                view.settings.SettingsPanel settingsPanel = new view.settings.SettingsPanel(mainFrame);
-                mainFrame.addPanel("SettingsPanel", settingsPanel);
-                
-                if (loginData.getRole().equals("ADMIN")) {
+                if (SessionManager.getInstance().isAdmin()) {
                     view.settings.UserManagementPanel userMgmtPanel = new view.settings.UserManagementPanel();
                     mainFrame.addPanel("UserManagementPanel", userMgmtPanel);
+                    
+                    view.workers.WorkerAssignmentPanel assignmentPanel = new view.workers.WorkerAssignmentPanel();
+                    mainFrame.addPanel("WorkerAssignmentPanel", assignmentPanel);
                     
                     view.admin.AuditLogPanel auditLogPanel = new view.admin.AuditLogPanel();
                     mainFrame.addPanel("AuditLogPanel", auditLogPanel);

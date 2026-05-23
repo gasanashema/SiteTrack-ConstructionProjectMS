@@ -43,6 +43,7 @@ public class MaterialPurchase implements Serializable {
     private String supplierName;
 
     @Column(name = "purchase_date", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateAttributeConverter.class)
     private LocalDate purchaseDate;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -50,9 +51,11 @@ public class MaterialPurchase implements Serializable {
     private User recordedBy;
 
     @Column(name = "created_at", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateTimeAttributeConverter.class)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
+    @javax.persistence.Convert(converter = util.LocalDateTimeAttributeConverter.class)
     private LocalDateTime updatedAt;
 
     @Enumerated(EnumType.STRING)

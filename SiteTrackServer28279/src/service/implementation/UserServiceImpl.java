@@ -70,8 +70,12 @@ public class UserServiceImpl extends UnicastRemoteObject implements UserService 
             if (entity == null) throw new IllegalArgumentException("User not found");
             
             entity.setFullName(dto.getFullName());
+            entity.setEmail(dto.getEmail());
             entity.setPhone(dto.getPhone());
             entity.setRole(ERole.valueOf(dto.getRole()));
+            if (dto.getStatus() != null && !dto.getStatus().isEmpty()) {
+                entity.setStatus(EUserStatus.valueOf(dto.getStatus()));
+            }
             entity.setUpdatedAt(LocalDateTime.now());
             entity = dao.update(entity);
             auditDao.save(new model.AuditLog(entity.getId(), entity.getUsername(), "USER_UPDATED", "User", "Updated user details for: " + entity.getUsername(), "127.0.0.1", java.time.LocalDateTime.now()));

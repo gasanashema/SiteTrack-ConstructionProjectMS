@@ -182,8 +182,8 @@ public class AttendancePanel extends JPanel {
             return;
         }
 
-        // Fetch ALL active workers instead of by project to ensure Site Manager can assign any worker.
-        activeWorkers = workerController.getActiveWorkers();
+        // Fetch only workers assigned to this project
+        activeWorkers = workerController.getAssignedWorkersByProject(projectId);
         existingAttendance = payrollController.getAttendanceByProjectAndDate(projectId, workDate);
 
         Map<String, WorkerAttendanceDTO> attendanceMap = new HashMap<>();

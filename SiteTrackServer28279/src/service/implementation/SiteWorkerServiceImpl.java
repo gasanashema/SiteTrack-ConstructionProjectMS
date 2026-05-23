@@ -15,11 +15,15 @@ import java.util.List;
 public class SiteWorkerServiceImpl extends UnicastRemoteObject implements SiteWorkerService {
     private final SiteWorkerDao dao;
     private final WorkerTypeDao workerTypeDao;
+    private final dao.WorkerAssignmentDao assignmentDao;
+    private final dao.ProjectDao projectDao;
 
     public SiteWorkerServiceImpl() throws RemoteException {
         super();
         this.dao = new SiteWorkerDao();
         this.workerTypeDao = new WorkerTypeDao();
+        this.assignmentDao = new dao.WorkerAssignmentDao();
+        this.projectDao = new dao.ProjectDao();
     }
 
     private SiteWorkerDTO toDTO(SiteWorker entity) {
@@ -183,13 +187,107 @@ public class SiteWorkerServiceImpl extends UnicastRemoteObject implements SiteWo
     @Override
     public List<SiteWorkerDTO> getWorkersByProject(String projectId) throws RemoteException {
         try {
-            // Note: workers by project needs attendance check. Assuming DAO handles this logic or we fetch from attendance
-            // A worker is part of a project if they have attendance.
-            // For now returning empty to keep stub simple unless DAO method exists.
-            return new ArrayList<>(); 
+            List<SiteWorkerDTO> list = new ArrayList<>();
+            List<model.WorkerAssignment> assignments = assignmentDao.findByProject(projectId, model.EAssignmentStatus.ACTIVE);
+            for (model.WorkerAssignment a : assignments) {
+                if (a.getWorker() != null) {
+                    list.add(toDTO(a.getWorker()));
+                }
+            }
+            return list;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to fetch workers by project");
+        }
+    }
+
+    @Override
+    public boolean assignWorkers(List<String> workerIds, String projectId, java.time.LocalDate date) throws RemoteException {
+        try {
+            model.Project project = projectDao.findById(projectId);
+            if (project == null) throw new IllegalArgumentException("Project not found");
+
+            for (String wId : workerIds) {
+                // Check if already active
+                model.WorkerAssignment active = assignmentDao.findActiveAssignmentByWorker(wId);
+                if (active != null) {
+                    continue; // Skip if already active somewhere
+                }
+                SiteWorker worker = dao.findById(wId);
+                if (worker != null) {
+                    model.WorkerAssignment wa = new model.WorkerAssignment();
+                    wa.setWorker(worker);
+                    wa.setProject(project);
+                    wa.setStatus(model.EAssignmentStatus.ACTIVE);
+                    wa.setAssignedDate(date);
+                    wa.setCreatedAt(java.time.LocalDateTime.now());
+                    wa.setUpdatedAt(java.time.LocalDateTime.now());
+                    assignmentDao.save(wa);
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to assign workers");
+        }
+    }
+
+    @Override
+    public boolean transferWorker(String workerId, String toProjectId, java.time.LocalDate date) throws RemoteException {
+        try {
+            model.Project toProject = projectDao.findById(toProjectId);
+            if (toProject == null) throw new IllegalArgumentException("Destination project not found");
+
+            model.WorkerAssignment active = assignmentDao.findActiveAssignmentByWorker(workerId);
+            if (active != null) {
+                active.setStatus(model.EAssignmentStatus.TRANSFERRED);
+                active.setEndDate(date);
+                active.setUpdatedAt(java.time.LocalDateTime.now());
+                assignmentDao.update(active);
+            }
+
+            SiteWorker worker = dao.findById(workerId);
+            if (worker != null) {
+                model.WorkerAssignment wa = new model.WorkerAssignment();
+                wa.setWorker(worker);
+                wa.setProject(toProject);
+                wa.setStatus(model.EAssignmentStatus.ACTIVE);
+                wa.setAssignedDate(date);
+                wa.setCreatedAt(java.time.LocalDateTime.now());
+                wa.setUpdatedAt(java.time.LocalDateTime.now());
+                assignmentDao.save(wa);
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to transfer worker");
+        }
+    }
+
+    @Override
+    public List<dto.WorkerAssignmentDTO> getActiveAssignments() throws RemoteException {
+        try {
+            List<dto.WorkerAssignmentDTO> dtos = new ArrayList<>();
+            // Temporary simple fetch to all active assignments by going through all projects.
+            // But better to just run a native query in DAO. Since we don't have a direct findAllActiveAssignments yet,
+            // I'll add a helper method in DAO if needed. For now I will just grab all workers and check.
+            List<SiteWorker> workers = dao.findAllActive();
+            for (SiteWorker w : workers) {
+                model.WorkerAssignment a = assignmentDao.findActiveAssignmentByWorker(w.getId());
+                if (a != null) {
+                    dtos.add(new dto.WorkerAssignmentDTO(
+                        a.getId(), a.getWorker().getId(), a.getWorker().getFullName(),
+                        a.getWorker().getWorkerType() != null ? a.getWorker().getWorkerType().getTypeName() : null,
+                        a.getProject().getId(), a.getProject().getProjectName(),
+                        a.getStatus().name(), a.getAssignedDate(), a.getEndDate()
+                    ));
+                }
+            }
+            return dtos;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to get active assignments");
         }
     }
 }

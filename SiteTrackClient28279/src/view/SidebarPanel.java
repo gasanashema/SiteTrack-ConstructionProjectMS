@@ -55,6 +55,7 @@ public class SidebarPanel extends JPanel {
             addMenuButton("📋", "Daily Usage", "DailyUsageDialog");
             addMenuButton("🕒", "Usage History", "UsageHistoryPanel");
             addMenuButton("🏗", "Workers", "WorkerPanel");
+            addMenuButton("📋", "Assignments", "WorkerAssignmentPanel");
             addMenuButton("✓", "Attendance", "AttendancePanel");
             addMenuButton("💰", "Payroll", "PayrollPanel");
             addMenuButton("📈", "Reports", "ReportsPanel");
@@ -67,7 +68,6 @@ public class SidebarPanel extends JPanel {
             add(adminMenuLabel);
             add(Box.createRigidArea(new Dimension(0, 5)));
 
-            addMenuButton("⚙", "Settings", "SettingsPanel");
             addMenuButton("👥", "User Management", "UserManagementPanel");
             addMenuButton("📜", "Audit Log", "AuditLogPanel");
             addMenuButton("📃", "Logs", "LogViewerPanel");

@@ -9,48 +9,61 @@ import org.hibernate.*;
 public class MaterialDao {
 
     public Material save(Material obj) {
+        Session ss = null;
         try {
-            Session ss = HibernateUtil.getSessionFactory().openSession();
+            ss = HibernateUtil.getSessionFactory().openSession();
             Transaction tr = ss.beginTransaction();
             ss.save(obj);
             tr.commit();
-            ss.close();
             return obj;
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (ss != null && ss.isOpen()) {
+                ss.close();
+            }
         }
         return null;
     }
 
     public Material update(Material obj) {
+        Session ss = null;
         try {
-            Session ss = HibernateUtil.getSessionFactory().openSession();
+            ss = HibernateUtil.getSessionFactory().openSession();
             Transaction tr = ss.beginTransaction();
             ss.update(obj);
             tr.commit();
-            ss.close();
             return obj;
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (ss != null && ss.isOpen()) {
+                ss.close();
+            }
         }
         return null;
     }
 
     public Material findById(String id) {
+        Session ss = null;
         try {
-            Session ss = HibernateUtil.getSessionFactory().openSession();
+            ss = HibernateUtil.getSessionFactory().openSession();
             Material obj = (Material) ss.get(Material.class, id);
-            ss.close();
             return obj;
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (ss != null && ss.isOpen()) {
+                ss.close();
+            }
         }
         return null;
     }
 
     public Material delete(String id) {
+        Session ss = null;
         try {
-            Session ss = HibernateUtil.getSessionFactory().openSession();
+            ss = HibernateUtil.getSessionFactory().openSession();
             Transaction tr = ss.beginTransaction();
             Material obj = (Material) ss.get(Material.class, id);
             if (obj != null) {
@@ -58,111 +71,142 @@ public class MaterialDao {
                 ss.update(obj);
             }
             tr.commit();
-            ss.close();
             return obj;
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (ss != null && ss.isOpen()) {
+                ss.close();
+            }
         }
         return null;
     }
 
     public List<Material> findAll() {
+        Session ss = null;
         try {
-            Session ss = HibernateUtil.getSessionFactory().openSession();
+            ss = HibernateUtil.getSessionFactory().openSession();
             Query q = ss.createQuery("FROM Material ORDER BY materialName ASC");
             List<Material> list = q.list();
-            ss.close();
             return list;
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (ss != null && ss.isOpen()) {
+                ss.close();
+            }
         }
         return Collections.EMPTY_LIST;
     }
 
     public List<Material> findAllActive() {
+        Session ss = null;
         try {
-            Session ss = HibernateUtil.getSessionFactory().openSession();
+            ss = HibernateUtil.getSessionFactory().openSession();
             Query q = ss.createQuery("FROM Material WHERE status = :st ORDER BY materialName ASC");
             q.setParameter("st", EMaterialStatus.ACTIVE);
             List<Material> list = q.list();
-            ss.close();
             return list;
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (ss != null && ss.isOpen()) {
+                ss.close();
+            }
         }
         return Collections.EMPTY_LIST;
     }
 
     public List<Material> findByCategory(String categoryId) {
+        Session ss = null;
         try {
-            Session ss = HibernateUtil.getSessionFactory().openSession();
+            ss = HibernateUtil.getSessionFactory().openSession();
             Query q = ss.createQuery("FROM Material WHERE category.id = :categoryId ORDER BY materialName ASC");
             q.setParameter("categoryId", categoryId);
             List<Material> list = q.list();
-            ss.close();
             return list;
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (ss != null && ss.isOpen()) {
+                ss.close();
+            }
         }
         return Collections.EMPTY_LIST;
     }
 
     public List<Material> findActiveByCategory(String categoryId) {
+        Session ss = null;
         try {
-            Session ss = HibernateUtil.getSessionFactory().openSession();
+            ss = HibernateUtil.getSessionFactory().openSession();
             Query q = ss.createQuery("FROM Material WHERE category.id = :cid AND status = :st ORDER BY materialName ASC");
             q.setParameter("cid", categoryId);
             q.setParameter("st", EMaterialStatus.ACTIVE);
             List<Material> list = q.list();
-            ss.close();
             return list;
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (ss != null && ss.isOpen()) {
+                ss.close();
+            }
         }
         return Collections.EMPTY_LIST;
     }
 
     public Material findByName(String materialName) {
+        Session ss = null;
         try {
-            Session ss = HibernateUtil.getSessionFactory().openSession();
+            ss = HibernateUtil.getSessionFactory().openSession();
             Query q = ss.createQuery("FROM Material WHERE materialName = :materialName");
             q.setParameter("materialName", materialName);
             Material obj = (Material) q.uniqueResult();
-            ss.close();
             return obj;
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (ss != null && ss.isOpen()) {
+                ss.close();
+            }
         }
         return null;
     }
 
     public boolean existsByName(String materialName) {
+        Session ss = null;
         try {
-            Session ss = HibernateUtil.getSessionFactory().openSession();
+            ss = HibernateUtil.getSessionFactory().openSession();
             Query q = ss.createQuery("SELECT COUNT(m) FROM Material m WHERE m.materialName = :materialName");
             q.setParameter("materialName", materialName);
             Long count = (Long) q.uniqueResult();
-            ss.close();
             return count != null && count > 0;
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (ss != null && ss.isOpen()) {
+                ss.close();
+            }
         }
         return false;
     }
 
     public boolean hasAssociatedRecords(String materialId) {
+        Session ss = null;
         try {
-            Session ss = HibernateUtil.getSessionFactory().openSession();
+            ss = HibernateUtil.getSessionFactory().openSession();
             Query q1 = ss.createQuery("SELECT COUNT(mp) FROM MaterialPurchase mp WHERE mp.material.id = :mid");
             q1.setParameter("mid", materialId);
             Query q2 = ss.createQuery("SELECT COUNT(mu) FROM MaterialUsage mu WHERE mu.material.id = :mid");
             q2.setParameter("mid", materialId);
             Long c1 = (Long) q1.uniqueResult();
             Long c2 = (Long) q2.uniqueResult();
-            ss.close();
             return (c1 != null && c1 > 0) || (c2 != null && c2 > 0);
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (ss != null && ss.isOpen()) {
+                ss.close();
+            }
         }
         return false;
     }
