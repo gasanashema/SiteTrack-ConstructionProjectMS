@@ -172,9 +172,6 @@ public class OtpPanel extends JPanel {
                 mainFrame.addPanel("ReportsPanel", reportsPanel);
                 
                 // Admin Tools & Settings
-                view.settings.SettingsPanel settingsPanel = new view.settings.SettingsPanel(mainFrame);
-                mainFrame.addPanel("SettingsPanel", settingsPanel);
-                
                 if (SessionManager.getInstance().isAdmin()) {
                     view.settings.UserManagementPanel userMgmtPanel = new view.settings.UserManagementPanel();
                     mainFrame.addPanel("UserManagementPanel", userMgmtPanel);

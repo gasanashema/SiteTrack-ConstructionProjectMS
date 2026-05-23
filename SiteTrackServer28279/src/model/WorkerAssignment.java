@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "worker_assignments", uniqueConstraints = @UniqueConstraint(columnNames = {"worker_id", "status"}, name = "uk_active_worker_assignment"))
+@Table(name = "worker_assignments")
 public class WorkerAssignment implements Serializable {
     public static final long serialVersionUID = 1L;
 
