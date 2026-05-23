@@ -156,7 +156,7 @@ public class ReportServiceImpl extends UnicastRemoteObject implements ReportServ
             BigDecimal matExp = (BigDecimal) session.createQuery("SELECT SUM(mp.totalPrice) FROM MaterialPurchase mp").uniqueResult();
             if (matExp == null) matExp = BigDecimal.ZERO;
 
-            BigDecimal labExp = (BigDecimal) session.createQuery("SELECT SUM(wp.netPay) FROM WorkerPayment wp").uniqueResult();
+            BigDecimal labExp = (BigDecimal) session.createQuery("SELECT SUM(wp.amountPaid) FROM WorkerPayment wp").uniqueResult();
             if (labExp == null) labExp = BigDecimal.ZERO;
 
             List<Project> recentProjectsList = session.createQuery("FROM Project ORDER BY expectedEndDate DESC").setMaxResults(5).list();
