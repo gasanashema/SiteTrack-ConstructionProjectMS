@@ -25,20 +25,6 @@ public class SidebarPanel extends JPanel {
         removeAll();
         menuButtons.clear();
         
-        // Add Logo
-        try {
-            URL logoUrl = getClass().getResource("/resources/logo.png");
-            if (logoUrl != null) {
-                ImageIcon originalIcon = new ImageIcon(logoUrl);
-                Image scaledImg = originalIcon.getImage().getScaledInstance(160, -1, Image.SCALE_SMOOTH);
-                JLabel logoLabel = new JLabel(new ImageIcon(scaledImg));
-                logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-                add(logoLabel);
-                add(Box.createRigidArea(new Dimension(0, 10)));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         JLabel menuLabel = new JLabel("MAIN MENU");
         menuLabel.setFont(new Font("Ubuntu", Font.BOLD, 12));

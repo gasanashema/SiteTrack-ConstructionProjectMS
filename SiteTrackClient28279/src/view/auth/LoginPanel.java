@@ -36,7 +36,7 @@ public class LoginPanel extends JPanel {
         
         // LOGO
         try {
-            URL logoUrl = getClass().getResource("/resources/logo.png");
+            URL logoUrl = getClass().getResource("/resources/logo_colored.png");
             if (logoUrl != null) {
                 ImageIcon originalIcon = new ImageIcon(logoUrl);
                 Image img = originalIcon.getImage();
