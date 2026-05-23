@@ -23,6 +23,16 @@ public class MainFrame extends JFrame {
         setPreferredSize(new Dimension(1400, 900));
         setLayout(new BorderLayout());
 
+        // Set Application Icon
+        try {
+            java.net.URL iconURL = getClass().getResource("/resources/logo.png");
+            if (iconURL != null) {
+                setIconImage(new ImageIcon(iconURL).getImage());
+            }
+        } catch (Exception e) {
+            // Ignore if icon fails to load
+        }
+
         // Initialize components
         topBar = new TopBarPanel(this);
         sidebar = new SidebarPanel(this);
