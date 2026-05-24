@@ -13,145 +13,315 @@ import java.time.format.DateTimeParseException;
 import com.toedter.calendar.JDateChooser;
 import java.util.Date;
 
-public class ProjectFormPanel extends JDialog {
+public class ProjectFormPanel extends javax.swing.JDialog {
     private ProjectDTO project;
     private ProjectController controller;
     private boolean isSaved = false;
-
-    private JTextField nameField;
-    private JTextField locationField;
-    private JTextArea descArea;
-    private JDateChooser startDateField;
-    private JDateChooser endDateField;
-    private JComboBox<String> statusCombo;
-    private JLabel createdByLabel;
-    private JLabel createdAtLabel;
-    private JButton saveBtn;
-    private JButton deleteBtn;
-    private JButton manageManagersBtn;
 
     public ProjectFormPanel(JFrame parent, ProjectDTO project, ProjectController controller) {
         super(parent, project == null ? "New Project" : "Edit Project", true);
         this.project = project;
         this.controller = controller;
         
+        initComponents();
+        
+        // Custom styling that cannot be represented in the visual editor properties
+        descArea.setBorder(BorderFactory.createLineBorder(UIManager.getColor("Component.borderColor")));
+        
         setMinimumSize(new Dimension(650, 600));
         pack();
         setLocationRelativeTo(parent);
         
-        initUI();
         populateData();
     }
 
-    private void initUI() {
-        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
-        JPanel formPanel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(10, 5, 10, 5);
-        gbc.weightx = 1.0;
+        mainPanel = new javax.swing.JPanel();
+        mainScrollPane = new javax.swing.JScrollPane();
+        formPanel = new javax.swing.JPanel();
+        nameLabel = new javax.swing.JLabel();
+        nameField = new javax.swing.JTextField();
+        locationLabel = new javax.swing.JLabel();
+        locationField = new javax.swing.JTextField();
+        descLabel = new javax.swing.JLabel();
+        descScrollPane = new javax.swing.JScrollPane();
+        descArea = new javax.swing.JTextArea();
+        startDateLabel = new javax.swing.JLabel();
+        startDateField = new com.toedter.calendar.JDateChooser();
+        endDateLabel = new javax.swing.JLabel();
+        endDateField = new com.toedter.calendar.JDateChooser();
+        statusLabel = new javax.swing.JLabel();
+        statusCombo = new javax.swing.JComboBox<>();
+        createdByTitleLabel = new javax.swing.JLabel();
+        createdByLabel = new javax.swing.JLabel();
+        createdAtTitleLabel = new javax.swing.JLabel();
+        createdAtLabel = new javax.swing.JLabel();
+        buttonPanel = new javax.swing.JPanel();
+        leftButtons = new javax.swing.JPanel();
+        manageManagersBtn = new javax.swing.JButton();
+        deleteBtn = new javax.swing.JButton();
+        rightButtons = new javax.swing.JPanel();
+        cancelBtn = new javax.swing.JButton();
+        saveBtn = new javax.swing.JButton();
 
-        nameField = createTextField();
-        locationField = createTextField();
-        
-        descArea = new JTextArea(4, 20);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(650, 600));
+
+        mainPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 30, 20, 30));
+        mainPanel.setLayout(new java.awt.BorderLayout(10, 10));
+
+        formPanel.setLayout(new java.awt.GridBagLayout());
+
+        nameLabel.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        nameLabel.setText("Project Name *");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.3;
+        gridBagConstraints.insets = new java.awt.Insets(10, 5, 10, 5);
+        formPanel.add(nameLabel, gridBagConstraints);
+
+        nameField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        nameField.setPreferredSize(new java.awt.Dimension(0, 35));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.7;
+        gridBagConstraints.insets = new java.awt.Insets(10, 5, 10, 5);
+        formPanel.add(nameField, gridBagConstraints);
+
+        locationLabel.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        locationLabel.setText("Location *");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.3;
+        gridBagConstraints.insets = new java.awt.Insets(10, 5, 10, 5);
+        formPanel.add(locationLabel, gridBagConstraints);
+
+        locationField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        locationField.setPreferredSize(new java.awt.Dimension(0, 35));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.7;
+        gridBagConstraints.insets = new java.awt.Insets(10, 5, 10, 5);
+        formPanel.add(locationField, gridBagConstraints);
+
+        descLabel.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        descLabel.setText("Description");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.3;
+        gridBagConstraints.insets = new java.awt.Insets(10, 5, 10, 5);
+        formPanel.add(descLabel, gridBagConstraints);
+
+        descArea.setColumns(20);
+        descArea.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         descArea.setLineWrap(true);
+        descArea.setRows(4);
         descArea.setWrapStyleWord(true);
-        descArea.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        descArea.setBorder(BorderFactory.createLineBorder(UIManager.getColor("Component.borderColor")));
-        
-        startDateField = new JDateChooser();
-        startDateField.setPreferredSize(new Dimension(250, 35));
+        descScrollPane.setViewportView(descArea);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.7;
+        gridBagConstraints.insets = new java.awt.Insets(10, 5, 10, 5);
+        formPanel.add(descScrollPane, gridBagConstraints);
+
+        startDateLabel.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        startDateLabel.setText("Start Date *");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.3;
+        gridBagConstraints.insets = new java.awt.Insets(10, 5, 10, 5);
+        formPanel.add(startDateLabel, gridBagConstraints);
+
         startDateField.setDateFormatString("yyyy-MM-dd");
-        startDateField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        
-        endDateField = new JDateChooser();
-        endDateField.setPreferredSize(new Dimension(250, 35));
+        startDateField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        startDateField.setPreferredSize(new java.awt.Dimension(250, 35));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.7;
+        gridBagConstraints.insets = new java.awt.Insets(10, 5, 10, 5);
+        formPanel.add(startDateField, gridBagConstraints);
+
+        endDateLabel.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        endDateLabel.setText("Expected End Date *");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.3;
+        gridBagConstraints.insets = new java.awt.Insets(10, 5, 10, 5);
+        formPanel.add(endDateLabel, gridBagConstraints);
+
         endDateField.setDateFormatString("yyyy-MM-dd");
-        endDateField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        
-        statusCombo = new JComboBox<>(new String[]{"PLANNING", "ONGOING", "COMPLETED", "CANCELLED"});
-        statusCombo.setPreferredSize(new Dimension(0, 35));
-        statusCombo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        endDateField.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        endDateField.setPreferredSize(new java.awt.Dimension(250, 35));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.7;
+        gridBagConstraints.insets = new java.awt.Insets(10, 5, 10, 5);
+        formPanel.add(endDateField, gridBagConstraints);
 
-        createdByLabel = new JLabel("-");
-        createdAtLabel = new JLabel("-");
+        statusLabel.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        statusLabel.setText("Status");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.3;
+        gridBagConstraints.insets = new java.awt.Insets(10, 5, 10, 5);
+        formPanel.add(statusLabel, gridBagConstraints);
 
-        int row = 0;
-        addFormField(formPanel, "Project Name *", nameField, gbc, row++);
-        addFormField(formPanel, "Location *", locationField, gbc, row++);
-        
-        gbc.gridx = 0; gbc.gridy = row; gbc.weightx = 0.3;
-        formPanel.add(new JLabel("Description"), gbc);
-        gbc.gridx = 1; gbc.weightx = 0.7;
-        formPanel.add(new JScrollPane(descArea), gbc);
-        row++;
+        statusCombo.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        statusCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "PLANNING", "ONGOING", "COMPLETED", "CANCELLED" }));
+        statusCombo.setPreferredSize(new java.awt.Dimension(0, 35));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.7;
+        gridBagConstraints.insets = new java.awt.Insets(10, 5, 10, 5);
+        formPanel.add(statusCombo, gridBagConstraints);
 
-        addFormField(formPanel, "Start Date *", startDateField, gbc, row++);
-        addFormField(formPanel, "Expected End Date *", endDateField, gbc, row++);
-        addFormField(formPanel, "Status", statusCombo, gbc, row++);
-        addFormField(formPanel, "Created By", createdByLabel, gbc, row++);
-        addFormField(formPanel, "Created At", createdAtLabel, gbc, row++);
+        createdByTitleLabel.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        createdByTitleLabel.setText("Created By");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.3;
+        gridBagConstraints.insets = new java.awt.Insets(10, 5, 10, 5);
+        formPanel.add(createdByTitleLabel, gridBagConstraints);
 
-        mainPanel.add(new JScrollPane(formPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER);
+        createdByLabel.setText("-");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.7;
+        gridBagConstraints.insets = new java.awt.Insets(10, 5, 10, 5);
+        formPanel.add(createdByLabel, gridBagConstraints);
 
-        // Buttons
-        JPanel buttonPanel = new JPanel(new BorderLayout());
-        
-        JPanel leftButtons = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
-        deleteBtn = new JButton("Delete Project");
-        deleteBtn.setForeground(Color.RED);
-        deleteBtn.setVisible(false); // Only for EDIT mode and ADMIN
-        deleteBtn.addActionListener(e -> deleteProject());
-        
-        manageManagersBtn = new JButton("Manage Managers");
+        createdAtTitleLabel.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
+        createdAtTitleLabel.setText("Created At");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 7;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.3;
+        gridBagConstraints.insets = new java.awt.Insets(10, 5, 10, 5);
+        formPanel.add(createdAtTitleLabel, gridBagConstraints);
+
+        createdAtLabel.setText("-");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 7;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.7;
+        gridBagConstraints.insets = new java.awt.Insets(10, 5, 10, 5);
+        formPanel.add(createdAtLabel, gridBagConstraints);
+
+        mainScrollPane.setViewportView(formPanel);
+
+        mainPanel.add(mainScrollPane, java.awt.BorderLayout.CENTER);
+
+        buttonPanel.setLayout(new java.awt.BorderLayout());
+
+        leftButtons.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 10));
+
+        manageManagersBtn.setText("Manage Managers");
         manageManagersBtn.setVisible(false);
-        manageManagersBtn.addActionListener(e -> openManageManagers());
-        
+        manageManagersBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                manageManagersBtnActionPerformed(evt);
+            }
+        });
         leftButtons.add(manageManagersBtn);
+
+        deleteBtn.setForeground(new java.awt.Color(255, 0, 0));
+        deleteBtn.setText("Delete Project");
+        deleteBtn.setVisible(false);
+        deleteBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteBtnActionPerformed(evt);
+            }
+        });
         leftButtons.add(deleteBtn);
-        
-        JPanel rightButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 10));
-        JButton cancelBtn = new JButton("Cancel");
-        cancelBtn.addActionListener(e -> dispose());
-        
-        saveBtn = new JButton("Save Project");
-        saveBtn.setBackground(Color.decode("#FF5E14"));
-        saveBtn.setForeground(Color.WHITE);
-        saveBtn.addActionListener(e -> saveProject());
-        
+
+        buttonPanel.add(leftButtons, java.awt.BorderLayout.WEST);
+
+        rightButtons.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 10, 10));
+
+        cancelBtn.setText("Cancel");
+        cancelBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelBtnActionPerformed(evt);
+            }
+        });
         rightButtons.add(cancelBtn);
+
+        saveBtn.setBackground(new java.awt.Color(255, 94, 20));
+        saveBtn.setForeground(new java.awt.Color(255, 255, 255));
+        saveBtn.setText("Save Project");
+        saveBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveBtnActionPerformed(evt);
+            }
+        });
         rightButtons.add(saveBtn);
-        
-        buttonPanel.add(leftButtons, BorderLayout.WEST);
-        buttonPanel.add(rightButtons, BorderLayout.EAST);
-        
-        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
-        setContentPane(mainPanel);
-    }
 
-    private JTextField createTextField() {
-        JTextField tf = new JTextField();
-        tf.setPreferredSize(new Dimension(0, 35));
-        tf.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        return tf;
-    }
+        buttonPanel.add(rightButtons, java.awt.BorderLayout.EAST);
 
-    private void addFormField(JPanel panel, String label, JComponent comp, GridBagConstraints gbc, int row) {
-        gbc.gridy = row;
-        
-        gbc.gridx = 0;
-        gbc.weightx = 0.3;
-        JLabel lbl = new JLabel(label);
-        lbl.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        panel.add(lbl, gbc);
-        
-        gbc.gridx = 1;
-        gbc.weightx = 0.7;
-        panel.add(comp, gbc);
+        mainPanel.add(buttonPanel, java.awt.BorderLayout.SOUTH);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
     }
+    // </editor-fold>//GEN-END:initComponents
+
+    private void manageManagersBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageManagersBtnActionPerformed
+        openManageManagers();
+    }//GEN-LAST:event_manageManagersBtnActionPerformed
+
+    private void deleteBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBtnActionPerformed
+        deleteProject();
+    }//GEN-LAST:event_deleteBtnActionPerformed
+
+    private void cancelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelBtnActionPerformed
+        dispose();
+    }//GEN-LAST:event_cancelBtnActionPerformed
+
+    private void saveBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveBtnActionPerformed
+        saveProject();
+    }//GEN-LAST:event_saveBtnActionPerformed
 
     private void populateData() {
         if (project == null) {
@@ -200,6 +370,15 @@ public class ProjectFormPanel extends JDialog {
             String name = nameField.getText().trim();
             String location = locationField.getText().trim();
             String desc = descArea.getText().trim();
+            
+            if (name.length() < 2) {
+                JOptionPane.showMessageDialog(this, "Project name must be at least 2 characters long.", "Validation Error", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            if (name.matches("^[0-9]+$")) {
+                JOptionPane.showMessageDialog(this, "Project name cannot only contain numbers.", "Validation Error", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
             
             if (startDateField.getDate() == null || endDateField.getDate() == null) {
                 JOptionPane.showMessageDialog(this, "Please select both Start Date and End Date.", "Validation Error", JOptionPane.WARNING_MESSAGE);
@@ -256,4 +435,34 @@ public class ProjectFormPanel extends JDialog {
     public boolean isSaved() {
         return isSaved;
     }
+
+    // Variables declaration - do not modify//GEN-BEGIN:initComponents
+    private javax.swing.JPanel buttonPanel;
+    private javax.swing.JButton cancelBtn;
+    private javax.swing.JLabel createdAtLabel;
+    private javax.swing.JLabel createdAtTitleLabel;
+    private javax.swing.JLabel createdByLabel;
+    private javax.swing.JLabel createdByTitleLabel;
+    private javax.swing.JButton deleteBtn;
+    private javax.swing.JTextArea descArea;
+    private javax.swing.JLabel descLabel;
+    private javax.swing.JScrollPane descScrollPane;
+    private com.toedter.calendar.JDateChooser endDateField;
+    private javax.swing.JLabel endDateLabel;
+    private javax.swing.JPanel formPanel;
+    private javax.swing.JPanel leftButtons;
+    private javax.swing.JTextField locationField;
+    private javax.swing.JLabel locationLabel;
+    private javax.swing.JPanel mainPanel;
+    private javax.swing.JScrollPane mainScrollPane;
+    private javax.swing.JButton manageManagersBtn;
+    private javax.swing.JTextField nameField;
+    private javax.swing.JLabel nameLabel;
+    private javax.swing.JPanel rightButtons;
+    private javax.swing.JButton saveBtn;
+    private com.toedter.calendar.JDateChooser startDateField;
+    private javax.swing.JLabel startDateLabel;
+    private javax.swing.JComboBox<String> statusCombo;
+    private javax.swing.JLabel statusLabel;
+    // End of variables declaration//GEN-END:initComponents
 }

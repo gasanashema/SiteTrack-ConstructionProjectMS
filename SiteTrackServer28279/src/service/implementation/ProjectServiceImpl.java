@@ -50,8 +50,15 @@ public class ProjectServiceImpl extends UnicastRemoteObject implements ProjectSe
     @Override
     public ProjectDTO createProject(ProjectDTO dto) throws RemoteException {
         try {
+            if (dto.getProjectName() == null || dto.getProjectName().trim().length() < 2) {
+                throw new IllegalArgumentException("Project name must be at least 2 characters long.");
+            }
+            if (dto.getProjectName().trim().matches("^[0-9]+$")) {
+                throw new IllegalArgumentException("Project name cannot only contain numbers.");
+            }
+            
             Project entity = new Project();
-            entity.setProjectName(dto.getProjectName());
+            entity.setProjectName(dto.getProjectName().trim());
             entity.setLocation(dto.getLocation());
             entity.setDescription(dto.getDescription());
             entity.setStartDate(dto.getStartDate());
@@ -80,10 +87,17 @@ public class ProjectServiceImpl extends UnicastRemoteObject implements ProjectSe
     @Override
     public ProjectDTO updateProject(ProjectDTO dto) throws RemoteException {
         try {
+            if (dto.getProjectName() == null || dto.getProjectName().trim().length() < 2) {
+                throw new IllegalArgumentException("Project name must be at least 2 characters long.");
+            }
+            if (dto.getProjectName().trim().matches("^[0-9]+$")) {
+                throw new IllegalArgumentException("Project name cannot only contain numbers.");
+            }
+            
             Project entity = dao.findById(dto.getId());
             if (entity == null) throw new IllegalArgumentException("Project not found");
             
-            entity.setProjectName(dto.getProjectName());
+            entity.setProjectName(dto.getProjectName().trim());
             entity.setLocation(dto.getLocation());
             entity.setDescription(dto.getDescription());
             entity.setStartDate(dto.getStartDate());
