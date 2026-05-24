@@ -262,6 +262,7 @@ public class AttendancePanel extends JPanel {
                     dto.setWorkDate(workDate);
                     dto.setAttendanceStatus(status);
                     dto.setWorkDescription(desc);
+                    dto.setRecordedByName(SessionManager.getInstance().getCurrentUserId());
                     
                     if (payrollController.recordAttendance(dto) != null) {
                         successCount++;

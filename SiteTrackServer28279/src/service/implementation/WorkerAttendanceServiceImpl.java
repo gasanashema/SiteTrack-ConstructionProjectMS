@@ -64,6 +64,9 @@ public class WorkerAttendanceServiceImpl extends UnicastRemoteObject implements 
             User u = userDao.findById(dto.getRecordedByName()); // Assuming username/id is passed here
             if (u != null) entity.setRecordedBy(u);
             
+            entity.setCreatedAt(java.time.LocalDateTime.now());
+            entity.setUpdatedAt(java.time.LocalDateTime.now());
+            
             entity = dao.save(entity);
             return toDTO(entity);
         } catch (Exception e) {
@@ -81,6 +84,7 @@ public class WorkerAttendanceServiceImpl extends UnicastRemoteObject implements 
             entity.setWorkDate(dto.getWorkDate());
             entity.setAttendanceStatus(EAttendanceStatus.valueOf(dto.getAttendanceStatus()));
             entity.setWorkDescription(dto.getWorkDescription());
+            entity.setUpdatedAt(java.time.LocalDateTime.now());
             
             entity = dao.update(entity);
             return toDTO(entity);

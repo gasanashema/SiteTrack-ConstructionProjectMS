@@ -78,6 +78,9 @@ public class WorkerPaymentServiceImpl extends UnicastRemoteObject implements Wor
                 if (a != null) entity.setAttendance(a);
             }
             
+            entity.setCreatedAt(java.time.LocalDateTime.now());
+            entity.setUpdatedAt(java.time.LocalDateTime.now());
+            
             entity = dao.save(entity);
             return toDTO(entity);
         } catch (Exception e) {
@@ -97,6 +100,8 @@ public class WorkerPaymentServiceImpl extends UnicastRemoteObject implements Wor
             
             User u = userDao.findById(paidById);
             if (u != null) entity.setPaidBy(u);
+            
+            entity.setUpdatedAt(java.time.LocalDateTime.now());
             
             entity = dao.update(entity);
             NotificationProducer.sendNotification("ADMIN", "PAYMENT_PROCESSED", "Payment processed for worker " + entity.getWorker().getFullName() + " amount: " + amountPaid, "SYSTEM");
