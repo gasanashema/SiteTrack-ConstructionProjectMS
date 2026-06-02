@@ -23,10 +23,17 @@ public class CustomIdGenerator implements IdentifierGenerator, Configurable {
 
     @Override
     public Serializable generate(SessionImplementor session, Object object) throws HibernateException {
-        String sql = String.format("SELECT nextval('%s')", sequenceName);
+        String sequenceNameLower = sequenceName.toLowerCase();
+        String checkSql = "SELECT count(*) FROM pg_class WHERE relkind = 'S' AND relname = '" + sequenceNameLower + "'";
         
-        // Cast to Session to use standard query methods
         org.hibernate.Session hSession = (org.hibernate.Session) session;
+        Number count = (Number) hSession.createSQLQuery(checkSql).uniqueResult();
+        
+        if (count != null && count.intValue() == 0) {
+            hSession.createSQLQuery("CREATE SEQUENCE " + sequenceName).executeUpdate();
+        }
+
+        String sql = String.format("SELECT nextval('%s')", sequenceName);
         Number nextValue = (Number) hSession.createSQLQuery(sql).uniqueResult();
         
         // Format the ID as PREFIX-00X

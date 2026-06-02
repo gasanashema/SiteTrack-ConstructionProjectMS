@@ -8,8 +8,9 @@ import org.hibernate.*;
 public class OtpVerificationDao {
     public OtpVerification save(OtpVerification obj) {
         Session ss = null;
+        Transaction tr = null;
         try {
-            ss = HibernateUtil.getSessionFactory().openSession(); Transaction tr = ss.beginTransaction(); ss.save(obj); tr.commit(); return obj; } catch (Exception e) { e.printStackTrace(); } finally {
+            ss = HibernateUtil.getSessionFactory().openSession(); tr = ss.beginTransaction(); ss.save(obj); tr.commit(); return obj; } catch (Exception e) { if (tr != null && tr.isActive()) { tr.rollback(); } e.printStackTrace(); } finally {
             if (ss != null && ss.isOpen()) {
                 ss.close();
             }
@@ -17,8 +18,9 @@ public class OtpVerificationDao {
     }
     public OtpVerification update(OtpVerification obj) {
         Session ss = null;
+        Transaction tr = null;
         try {
-            ss = HibernateUtil.getSessionFactory().openSession(); Transaction tr = ss.beginTransaction(); ss.update(obj); tr.commit(); return obj; } catch (Exception e) { e.printStackTrace(); } finally {
+            ss = HibernateUtil.getSessionFactory().openSession(); tr = ss.beginTransaction(); ss.update(obj); tr.commit(); return obj; } catch (Exception e) { if (tr != null && tr.isActive()) { tr.rollback(); } e.printStackTrace(); } finally {
             if (ss != null && ss.isOpen()) {
                 ss.close();
             }
@@ -35,8 +37,9 @@ public class OtpVerificationDao {
     }
     public OtpVerification delete(String id) {
         Session ss = null;
+        Transaction tr = null;
         try {
-            ss = HibernateUtil.getSessionFactory().openSession(); Transaction tr = ss.beginTransaction(); OtpVerification obj = (OtpVerification) ss.get(OtpVerification.class, id); if(obj != null) { ss.delete(obj); } tr.commit(); return obj; } catch (Exception e) { e.printStackTrace(); } finally {
+            ss = HibernateUtil.getSessionFactory().openSession(); tr = ss.beginTransaction(); OtpVerification obj = (OtpVerification) ss.get(OtpVerification.class, id); if(obj != null) { ss.delete(obj); } tr.commit(); return obj; } catch (Exception e) { if (tr != null && tr.isActive()) { tr.rollback(); } e.printStackTrace(); } finally {
             if (ss != null && ss.isOpen()) {
                 ss.close();
             }
@@ -89,8 +92,9 @@ public class OtpVerificationDao {
     }
     public void markAllUsedForUser(String userId) {
         Session ss = null;
+        Transaction tr = null;
         try {
-            ss = HibernateUtil.getSessionFactory().openSession(); Transaction tr = ss.beginTransaction(); Query q = ss.createQuery("UPDATE OtpVerification SET isUsed = true WHERE user.id = :uid AND isUsed = false"); q.setParameter("uid", userId); q.executeUpdate(); tr.commit(); } catch (Exception e) { e.printStackTrace(); } finally {
+            ss = HibernateUtil.getSessionFactory().openSession(); tr = ss.beginTransaction(); Query q = ss.createQuery("UPDATE OtpVerification SET isUsed = true WHERE user.id = :uid AND isUsed = false"); q.setParameter("uid", userId); q.executeUpdate(); tr.commit(); } catch (Exception e) { if (tr != null && tr.isActive()) { tr.rollback(); } e.printStackTrace(); } finally {
             if (ss != null && ss.isOpen()) {
                 ss.close();
             }

@@ -10,13 +10,14 @@ public class ProjectDao {
 
     public Project save(Project obj) {
         Session ss = null;
+        Transaction tr = null;
         try {
             ss = HibernateUtil.getSessionFactory().openSession();
-            Transaction tr = ss.beginTransaction();
+            tr = ss.beginTransaction();
             ss.save(obj);
             tr.commit();
             return obj;
-        } catch (Exception e) {
+        } catch (Exception e) { if (tr != null && tr.isActive()) { tr.rollback(); }
             e.printStackTrace();
         } finally {
             if (ss != null && ss.isOpen()) {
@@ -28,13 +29,14 @@ public class ProjectDao {
 
     public Project update(Project obj) {
         Session ss = null;
+        Transaction tr = null;
         try {
             ss = HibernateUtil.getSessionFactory().openSession();
-            Transaction tr = ss.beginTransaction();
+            tr = ss.beginTransaction();
             ss.update(obj);
             tr.commit();
             return obj;
-        } catch (Exception e) {
+        } catch (Exception e) { if (tr != null && tr.isActive()) { tr.rollback(); }
             e.printStackTrace();
         } finally {
             if (ss != null && ss.isOpen()) {
@@ -62,12 +64,13 @@ public class ProjectDao {
 
     public Project delete(String id) {
         Session ss = null;
+        Transaction tr = null;
         try {
             if (hasAssociatedRecords(id)) {
                 throw new RuntimeException("Cannot delete project with existing purchases, usage, or attendance records.");
             }
             ss = HibernateUtil.getSessionFactory().openSession();
-            Transaction tr = ss.beginTransaction();
+            tr = ss.beginTransaction();
             Project obj = (Project) ss.get(Project.class, id);
             if (obj != null) {
                 Query q = ss.createQuery("DELETE FROM ProjectManager WHERE project.id = :pid");
@@ -78,7 +81,7 @@ public class ProjectDao {
             }
             tr.commit();
             return obj;
-        } catch (Exception e) {
+        } catch (Exception e) { if (tr != null && tr.isActive()) { tr.rollback(); }
             e.printStackTrace();
             throw new RuntimeException(e.getMessage());
         } finally {

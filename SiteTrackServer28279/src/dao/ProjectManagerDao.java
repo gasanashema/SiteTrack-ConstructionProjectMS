@@ -10,13 +10,14 @@ public class ProjectManagerDao {
 
     public ProjectManager save(ProjectManager obj) {
         Session ss = null;
+        Transaction tr = null;
         try {
             ss = HibernateUtil.getSessionFactory().openSession();
-            Transaction tr = ss.beginTransaction();
+            tr = ss.beginTransaction();
             ss.save(obj);
             tr.commit();
             return obj;
-        } catch (Exception e) {
+        } catch (Exception e) { if (tr != null && tr.isActive()) { tr.rollback(); }
             e.printStackTrace();
             throw new RuntimeException("Save failed: " + e.getMessage(), e);
         } finally {
@@ -28,13 +29,14 @@ public class ProjectManagerDao {
 
     public ProjectManager update(ProjectManager obj) {
         Session ss = null;
+        Transaction tr = null;
         try {
             ss = HibernateUtil.getSessionFactory().openSession();
-            Transaction tr = ss.beginTransaction();
+            tr = ss.beginTransaction();
             ss.update(obj);
             tr.commit();
             return obj;
-        } catch (Exception e) {
+        } catch (Exception e) { if (tr != null && tr.isActive()) { tr.rollback(); }
             e.printStackTrace();
             throw new RuntimeException("Update failed: " + e.getMessage(), e);
         } finally {
@@ -62,9 +64,10 @@ public class ProjectManagerDao {
 
     public ProjectManager delete(String id) {
         Session ss = null;
+        Transaction tr = null;
         try {
             ss = HibernateUtil.getSessionFactory().openSession();
-            Transaction tr = ss.beginTransaction();
+            tr = ss.beginTransaction();
             ProjectManager obj = (ProjectManager) ss.get(ProjectManager.class, id);
             if (obj != null) {
                 obj.setStatus(EManagerStatus.REMOVED);
@@ -72,7 +75,7 @@ public class ProjectManagerDao {
             }
             tr.commit();
             return obj;
-        } catch (Exception e) {
+        } catch (Exception e) { if (tr != null && tr.isActive()) { tr.rollback(); }
             e.printStackTrace();
             throw new RuntimeException("Delete failed: " + e.getMessage(), e);
         } finally {

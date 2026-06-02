@@ -10,13 +10,14 @@ public class NotificationLogDao {
 
     public NotificationLog save(NotificationLog obj) {
         Session ss = null;
+        Transaction tr = null;
         try {
             ss = HibernateUtil.getSessionFactory().openSession();
-            Transaction tr = ss.beginTransaction();
+            tr = ss.beginTransaction();
             ss.save(obj);
             tr.commit();
             return obj;
-        } catch (Exception e) {
+        } catch (Exception e) { if (tr != null && tr.isActive()) { tr.rollback(); }
             e.printStackTrace();
         } finally {
             if (ss != null && ss.isOpen()) {
@@ -28,13 +29,14 @@ public class NotificationLogDao {
 
     public NotificationLog update(NotificationLog obj) {
         Session ss = null;
+        Transaction tr = null;
         try {
             ss = HibernateUtil.getSessionFactory().openSession();
-            Transaction tr = ss.beginTransaction();
+            tr = ss.beginTransaction();
             ss.update(obj);
             tr.commit();
             return obj;
-        } catch (Exception e) {
+        } catch (Exception e) { if (tr != null && tr.isActive()) { tr.rollback(); }
             e.printStackTrace();
         } finally {
             if (ss != null && ss.isOpen()) {
@@ -62,16 +64,17 @@ public class NotificationLogDao {
 
     public NotificationLog delete(String id) {
         Session ss = null;
+        Transaction tr = null;
         try {
             ss = HibernateUtil.getSessionFactory().openSession();
-            Transaction tr = ss.beginTransaction();
+            tr = ss.beginTransaction();
             NotificationLog obj = (NotificationLog) ss.get(NotificationLog.class, id);
             if (obj != null) {
                 ss.delete(obj);
             }
             tr.commit();
             return obj;
-        } catch (Exception e) {
+        } catch (Exception e) { if (tr != null && tr.isActive()) { tr.rollback(); }
             e.printStackTrace();
         } finally {
             if (ss != null && ss.isOpen()) {

@@ -10,13 +10,14 @@ public class MaterialDao {
 
     public Material save(Material obj) {
         Session ss = null;
+        Transaction tr = null;
         try {
             ss = HibernateUtil.getSessionFactory().openSession();
-            Transaction tr = ss.beginTransaction();
+            tr = ss.beginTransaction();
             ss.save(obj);
             tr.commit();
             return obj;
-        } catch (Exception e) {
+        } catch (Exception e) { if (tr != null && tr.isActive()) { tr.rollback(); }
             e.printStackTrace();
         } finally {
             if (ss != null && ss.isOpen()) {
@@ -28,13 +29,14 @@ public class MaterialDao {
 
     public Material update(Material obj) {
         Session ss = null;
+        Transaction tr = null;
         try {
             ss = HibernateUtil.getSessionFactory().openSession();
-            Transaction tr = ss.beginTransaction();
+            tr = ss.beginTransaction();
             ss.update(obj);
             tr.commit();
             return obj;
-        } catch (Exception e) {
+        } catch (Exception e) { if (tr != null && tr.isActive()) { tr.rollback(); }
             e.printStackTrace();
         } finally {
             if (ss != null && ss.isOpen()) {
@@ -62,9 +64,10 @@ public class MaterialDao {
 
     public Material delete(String id) {
         Session ss = null;
+        Transaction tr = null;
         try {
             ss = HibernateUtil.getSessionFactory().openSession();
-            Transaction tr = ss.beginTransaction();
+            tr = ss.beginTransaction();
             Material obj = (Material) ss.get(Material.class, id);
             if (obj != null) {
                 obj.setStatus(EMaterialStatus.INACTIVE);
@@ -72,7 +75,7 @@ public class MaterialDao {
             }
             tr.commit();
             return obj;
-        } catch (Exception e) {
+        } catch (Exception e) { if (tr != null && tr.isActive()) { tr.rollback(); }
             e.printStackTrace();
         } finally {
             if (ss != null && ss.isOpen()) {

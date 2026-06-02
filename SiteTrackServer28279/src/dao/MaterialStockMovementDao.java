@@ -9,8 +9,9 @@ import org.hibernate.*;
 public class MaterialStockMovementDao {
     public MaterialStockMovement save(MaterialStockMovement obj) {
         Session ss = null;
+        Transaction tr = null;
         try {
-            ss = HibernateUtil.getSessionFactory().openSession(); Transaction tr = ss.beginTransaction(); ss.save(obj); tr.commit(); return obj; } catch (Exception e) { e.printStackTrace(); } finally {
+            ss = HibernateUtil.getSessionFactory().openSession(); tr = ss.beginTransaction(); ss.save(obj); tr.commit(); return obj; } catch (Exception e) { if (tr != null && tr.isActive()) { tr.rollback(); } e.printStackTrace(); } finally {
             if (ss != null && ss.isOpen()) {
                 ss.close();
             }
@@ -18,8 +19,9 @@ public class MaterialStockMovementDao {
     }
     public MaterialStockMovement update(MaterialStockMovement obj) {
         Session ss = null;
+        Transaction tr = null;
         try {
-            ss = HibernateUtil.getSessionFactory().openSession(); Transaction tr = ss.beginTransaction(); ss.update(obj); tr.commit(); return obj; } catch (Exception e) { e.printStackTrace(); } finally {
+            ss = HibernateUtil.getSessionFactory().openSession(); tr = ss.beginTransaction(); ss.update(obj); tr.commit(); return obj; } catch (Exception e) { if (tr != null && tr.isActive()) { tr.rollback(); } e.printStackTrace(); } finally {
             if (ss != null && ss.isOpen()) {
                 ss.close();
             }
@@ -36,8 +38,9 @@ public class MaterialStockMovementDao {
     }
     public MaterialStockMovement delete(String id) {
         Session ss = null;
+        Transaction tr = null;
         try {
-            ss = HibernateUtil.getSessionFactory().openSession(); Transaction tr = ss.beginTransaction(); MaterialStockMovement obj = (MaterialStockMovement) ss.get(MaterialStockMovement.class, id); if(obj != null) { ss.delete(obj); } tr.commit(); return obj; } catch (Exception e) { e.printStackTrace(); } finally {
+            ss = HibernateUtil.getSessionFactory().openSession(); tr = ss.beginTransaction(); MaterialStockMovement obj = (MaterialStockMovement) ss.get(MaterialStockMovement.class, id); if(obj != null) { ss.delete(obj); } tr.commit(); return obj; } catch (Exception e) { if (tr != null && tr.isActive()) { tr.rollback(); } e.printStackTrace(); } finally {
             if (ss != null && ss.isOpen()) {
                 ss.close();
             }

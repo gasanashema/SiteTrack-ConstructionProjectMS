@@ -8,8 +8,9 @@ import org.hibernate.*;
 public class ProjectMaterialStockDao {
     public ProjectMaterialStock save(ProjectMaterialStock obj) {
         Session ss = null;
+        Transaction tr = null;
         try {
-            ss = HibernateUtil.getSessionFactory().openSession(); Transaction tr = ss.beginTransaction(); ss.save(obj); tr.commit(); return obj; } catch (Exception e) { e.printStackTrace(); } finally {
+            ss = HibernateUtil.getSessionFactory().openSession(); tr = ss.beginTransaction(); ss.save(obj); tr.commit(); return obj; } catch (Exception e) { if (tr != null && tr.isActive()) { tr.rollback(); } e.printStackTrace(); } finally {
             if (ss != null && ss.isOpen()) {
                 ss.close();
             }
@@ -17,8 +18,9 @@ public class ProjectMaterialStockDao {
     }
     public ProjectMaterialStock update(ProjectMaterialStock obj) {
         Session ss = null;
+        Transaction tr = null;
         try {
-            ss = HibernateUtil.getSessionFactory().openSession(); Transaction tr = ss.beginTransaction(); ss.update(obj); tr.commit(); return obj; } catch (Exception e) { e.printStackTrace(); } finally {
+            ss = HibernateUtil.getSessionFactory().openSession(); tr = ss.beginTransaction(); ss.update(obj); tr.commit(); return obj; } catch (Exception e) { if (tr != null && tr.isActive()) { tr.rollback(); } e.printStackTrace(); } finally {
             if (ss != null && ss.isOpen()) {
                 ss.close();
             }
@@ -35,8 +37,9 @@ public class ProjectMaterialStockDao {
     }
     public ProjectMaterialStock delete(String id) {
         Session ss = null;
+        Transaction tr = null;
         try {
-            ss = HibernateUtil.getSessionFactory().openSession(); Transaction tr = ss.beginTransaction(); ProjectMaterialStock obj = (ProjectMaterialStock) ss.get(ProjectMaterialStock.class, id); if(obj != null) { ss.delete(obj); } tr.commit(); return obj; } catch (Exception e) { e.printStackTrace(); } finally {
+            ss = HibernateUtil.getSessionFactory().openSession(); tr = ss.beginTransaction(); ProjectMaterialStock obj = (ProjectMaterialStock) ss.get(ProjectMaterialStock.class, id); if(obj != null) { ss.delete(obj); } tr.commit(); return obj; } catch (Exception e) { if (tr != null && tr.isActive()) { tr.rollback(); } e.printStackTrace(); } finally {
             if (ss != null && ss.isOpen()) {
                 ss.close();
             }

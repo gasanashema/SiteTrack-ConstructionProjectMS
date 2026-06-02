@@ -10,126 +10,182 @@ import java.net.URL;
 public class LoginPanel extends JPanel {
     private MainFrame mainFrame;
     private AuthController authController;
-    
-    private JTextField usernameField;
-    private JPasswordField passwordField;
-    private JLabel errorLabel;
-    private JButton loginButton;
+    private boolean forgotPasswordPanelAdded = false;
 
     public LoginPanel(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
         this.authController = new AuthController();
         
-        setLayout(new GridBagLayout());
+        initComponents();
         
-        JPanel formPanel = new JPanel(new GridBagLayout());
-        formPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(UIManager.getColor("Component.borderColor"), 1, true),
-                BorderFactory.createEmptyBorder(40, 40, 40, 40)));
-        
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(10, 0, 10, 0);
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 2;
-        
-        // LOGO
+        // Dynamically load and scale logo image if it exists
         try {
             URL logoUrl = getClass().getResource("/resources/logo_colored.png");
             if (logoUrl != null) {
                 ImageIcon originalIcon = new ImageIcon(logoUrl);
                 Image img = originalIcon.getImage();
                 Image resizedImg = img.getScaledInstance(180, -1, Image.SCALE_SMOOTH);
-                JLabel logoLabel = new JLabel(new ImageIcon(resizedImg));
-                logoLabel.setHorizontalAlignment(SwingConstants.CENTER);
-                formPanel.add(logoLabel, gbc);
-                gbc.gridy++;
+                logoLabel.setIcon(new ImageIcon(resizedImg));
             }
         } catch (Exception e) {}
         
-        JLabel title = new JLabel("SiteTrack Construction", SwingConstants.CENTER);
-        title.setFont(new Font("Ubuntu", Font.BOLD, 22));
-        title.setForeground(UIManager.getColor("Label.foreground"));
-        formPanel.add(title, gbc);
-        gbc.gridy++;
-        
-        JLabel subtitle = new JLabel("Login to your account", SwingConstants.CENTER);
-        subtitle.setFont(new Font("Ubuntu", Font.PLAIN, 14));
-        subtitle.setForeground(Color.GRAY);
-        gbc.insets = new Insets(0, 0, 30, 0);
-        formPanel.add(subtitle, gbc);
-        gbc.gridy++;
-        
-        gbc.gridwidth = 1;
-        gbc.insets = new Insets(5, 0, 5, 10);
-        
-        JLabel userLabel = new JLabel("Username:");
-        userLabel.setFont(new Font("Ubuntu", Font.BOLD, 14));
-        userLabel.setForeground(UIManager.getColor("Label.foreground"));
-        formPanel.add(userLabel, gbc);
-        
-        gbc.gridx = 1;
-        gbc.insets = new Insets(5, 0, 5, 0);
-        usernameField = new JTextField(20);
-        usernameField.setPreferredSize(new Dimension(250, 40));
-        formPanel.add(usernameField, gbc);
-        
-        gbc.gridx = 0;
-        gbc.gridy++;
-        gbc.insets = new Insets(15, 0, 5, 10);
-        JLabel passLabel = new JLabel("Password:");
-        passLabel.setFont(new Font("Ubuntu", Font.BOLD, 14));
-        passLabel.setForeground(UIManager.getColor("Label.foreground"));
-        formPanel.add(passLabel, gbc);
-        
-        gbc.gridx = 1;
-        gbc.insets = new Insets(15, 0, 5, 0);
-        passwordField = new JPasswordField(20);
-        passwordField.setPreferredSize(new Dimension(250, 40));
-        formPanel.add(passwordField, gbc);
-        
-        gbc.gridx = 0;
-        gbc.gridy++;
-        gbc.gridwidth = 2;
-        gbc.insets = new Insets(30, 0, 10, 0);
-        loginButton = new JButton("Login");
-        loginButton.setPreferredSize(new Dimension(0, 45));
-        loginButton.setBackground(Color.decode("#FF5E14"));
-        loginButton.setForeground(Color.WHITE);
-        loginButton.setFont(new Font("Ubuntu", Font.BOLD, 16));
-        loginButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        loginButton.addActionListener(e -> attemptLogin());
-        formPanel.add(loginButton, gbc);
-        
-        gbc.gridy++;
-        gbc.insets = new Insets(10, 0, 10, 0);
-        JLabel forgotPasswordLabel = new JLabel("Forgot Password?");
-        forgotPasswordLabel.setFont(new Font("Ubuntu", Font.PLAIN, 13));
-        forgotPasswordLabel.setForeground(Color.decode("#0056b3"));
-        forgotPasswordLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        forgotPasswordLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        forgotPasswordLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-            private boolean added = false;
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                if (!added) {
-                    mainFrame.addPanel("ForgotPasswordPanel", new ForgotPasswordPanel(mainFrame, authController));
-                    added = true;
-                }
-                mainFrame.switchPanel("ForgotPasswordPanel");
+        // Dynamic compound border
+        formPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(UIManager.getColor("Component.borderColor"), 1, true),
+                BorderFactory.createEmptyBorder(40, 40, 40, 40)));
+    }
+
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
+
+        formPanel = new javax.swing.JPanel();
+        logoLabel = new javax.swing.JLabel();
+        title = new javax.swing.JLabel();
+        subtitle = new javax.swing.JLabel();
+        userLabel = new javax.swing.JLabel();
+        usernameField = new javax.swing.JTextField();
+        passLabel = new javax.swing.JLabel();
+        passwordField = new javax.swing.JPasswordField();
+        loginButton = new javax.swing.JButton();
+        forgotPasswordLabel = new javax.swing.JLabel();
+        errorLabel = new javax.swing.JLabel();
+
+        setLayout(new java.awt.GridBagLayout());
+
+        formPanel.setLayout(new java.awt.GridBagLayout());
+
+        logoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(10, 0, 10, 0);
+        formPanel.add(logoLabel, gridBagConstraints);
+
+        title.setFont(new java.awt.Font("Ubuntu", 1, 22)); // NOI18N
+        title.setText("SiteTrack Construction");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(10, 0, 10, 0);
+        formPanel.add(title, gridBagConstraints);
+
+        subtitle.setFont(new java.awt.Font("Ubuntu", 0, 14)); // NOI18N
+        subtitle.setForeground(java.awt.Color.GRAY);
+        subtitle.setText("Login to your account");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(0, 0, 30, 0);
+        formPanel.add(subtitle, gridBagConstraints);
+
+        userLabel.setFont(new java.awt.Font("Ubuntu", 1, 14)); // NOI18N
+        userLabel.setText("Username:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 10);
+        formPanel.add(userLabel, gridBagConstraints);
+
+        usernameField.setColumns(20);
+        usernameField.setPreferredSize(new java.awt.Dimension(250, 40));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 5, 0);
+        formPanel.add(usernameField, gridBagConstraints);
+
+        passLabel.setFont(new java.awt.Font("Ubuntu", 1, 14)); // NOI18N
+        passLabel.setText("Password:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(15, 0, 5, 10);
+        formPanel.add(passLabel, gridBagConstraints);
+
+        passwordField.setColumns(20);
+        passwordField.setPreferredSize(new java.awt.Dimension(250, 40));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(15, 0, 5, 0);
+        formPanel.add(passwordField, gridBagConstraints);
+
+        loginButton.setBackground(new java.awt.Color(255, 94, 20));
+        loginButton.setFont(new java.awt.Font("Ubuntu", 1, 16)); // NOI18N
+        loginButton.setForeground(new java.awt.Color(255, 255, 255));
+        loginButton.setText("Login");
+        loginButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        loginButton.setPreferredSize(new java.awt.Dimension(0, 45));
+        loginButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loginButtonActionPerformed(evt);
             }
         });
-        formPanel.add(forgotPasswordLabel, gbc);
-        
-        gbc.gridy++;
-        gbc.insets = new Insets(0, 0, 0, 0);
-        errorLabel = new JLabel(" ");
-        errorLabel.setForeground(Color.RED);
-        errorLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        formPanel.add(errorLabel, gbc);
-        
-        add(formPanel);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(30, 0, 10, 0);
+        formPanel.add(loginButton, gridBagConstraints);
+
+        forgotPasswordLabel.setFont(new java.awt.Font("Ubuntu", 0, 13)); // NOI18N
+        forgotPasswordLabel.setForeground(new java.awt.Color(0, 86, 179));
+        forgotPasswordLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        forgotPasswordLabel.setText("Forgot Password?");
+        forgotPasswordLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        forgotPasswordLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                forgotPasswordLabelMouseClicked(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(10, 0, 10, 0);
+        formPanel.add(forgotPasswordLabel, gridBagConstraints);
+
+        errorLabel.setForeground(new java.awt.Color(255, 0, 0));
+        errorLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        errorLabel.setText(" ");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 7;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        formPanel.add(errorLabel, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = -1;
+        gridBagConstraints.gridy = -1;
+        add(formPanel, gridBagConstraints);
     }
+    // </editor-fold>//GEN-END:initComponents
+
+    private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
+        attemptLogin();
+    }//GEN-LAST:event_loginButtonActionPerformed
+
+    private void forgotPasswordLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_forgotPasswordLabelMouseClicked
+        if (!forgotPasswordPanelAdded) {
+            mainFrame.addPanel("ForgotPasswordPanel", new ForgotPasswordPanel(mainFrame, authController));
+            forgotPasswordPanelAdded = true;
+        }
+        mainFrame.switchPanel("ForgotPasswordPanel");
+    }//GEN-LAST:event_forgotPasswordLabelMouseClicked
     
     private void attemptLogin() {
         String username = usernameField.getText();
@@ -177,4 +233,18 @@ public class LoginPanel extends JPanel {
         };
         worker.execute();
     }
+
+    // Variables declaration - do not modify//GEN-BEGIN:initComponents
+    private javax.swing.JLabel errorLabel;
+    private javax.swing.JLabel forgotPasswordLabel;
+    private javax.swing.JPanel formPanel;
+    private javax.swing.JButton loginButton;
+    private javax.swing.JLabel logoLabel;
+    private javax.swing.JLabel passLabel;
+    private javax.swing.JPasswordField passwordField;
+    private javax.swing.JLabel subtitle;
+    private javax.swing.JLabel title;
+    private javax.swing.JLabel userLabel;
+    private javax.swing.JTextField usernameField;
+    // End of variables declaration//GEN-END:initComponents
 }
