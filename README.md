@@ -119,6 +119,39 @@ The client operates the graphical user interface. It communicates exclusively vi
 
 ---
 
+## 🐳 Running with Docker Compose
+
+You can boot the PostgreSQL database and the SiteTrack RMI Server automatically inside Docker containers. Since the client is a Java Swing GUI application, it runs on your host machine and connects to the server container.
+
+### Step 1: Spin up the Server and Database Containers
+1. Ensure **Docker** and **Docker Compose** are installed and running.
+2. From the project root directory, launch the services:
+   ```bash
+   docker compose up --build -d
+   ```
+3. This command will:
+   * Build the Java RMI Server (`SiteTrackServer28279`) from source using a multi-stage Maven build.
+   * Start a PostgreSQL container (`sitetrack_db`) and automatically run Hibernate schema updates on startup to generate all database tables.
+   * Run the RMI Server listening on port `4567`.
+
+### Step 2: Seed the Database
+Since the SQL script only contains insert statements (and requires the tables to be created first by the Hibernate startup on the Server container), run this command once both containers are active:
+```bash
+docker exec -i sitetrack_db psql -U postgres -d site_track_construction_manager < SiteTrackServer28279/seed.sql
+```
+
+### Step 3: Run the Desktop Client GUI
+Once the containers are running and seeded, you can run the Java Swing client locally:
+1. Make sure your local client configuration [SiteTrackClient28279/src/config/config.properties](file:///data/projects/other/SiteTrack-ConstructionProjectMS/SiteTrackClient28279/src/config/config.properties) points to the dockerized server (`localhost:4567`).
+2. Build and run the Client app:
+   ```bash
+   cd SiteTrackClient28279
+   ant compile
+   ant run
+   ```
+
+---
+
 ## 🔑 Testing Credentials & 2FA Bypass
 
 Once the application is running, you can log in using these pre-seeded accounts:

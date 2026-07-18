@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: sitetrack_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret_postgres_password
+      POSTGRES_DB: site_track_construction_manager
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  server:
+    build:
+      context: ./SiteTrackServer28279
+      dockerfile: Dockerfile
+    container_name: sitetrack_server
+    restart: always
+    ports:
+      - "4567:4567"
+    environment:
+      - DB_URL=jdbc:postgresql://db:5432/site_track_construction_manager
+      - DB_USER=postgres
+      - DB_PASSWORD=secret_postgres_password
+      - RMI_PORT=4567
+      - RMI_HOSTNAME=127.0.0.1
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pg_data:

@@ -56,8 +56,11 @@ public class Server {
             config.load(in);
             in.close();
 
-            int    port     = Integer.parseInt(config.getProperty("rmi.port",     "4567"));
-            String hostname = config.getProperty("rmi.hostname", "127.0.0.1");
+            String envPort = System.getenv("RMI_PORT");
+            int    port     = (envPort != null && !envPort.isEmpty()) ? Integer.parseInt(envPort) : Integer.parseInt(config.getProperty("rmi.port", "4567"));
+            
+            String envHost = System.getenv("RMI_HOSTNAME");
+            String hostname = (envHost != null && !envHost.isEmpty()) ? envHost : config.getProperty("rmi.hostname", "127.0.0.1");
 
             // ── Step 2: Configure RMI server hostname ────────────────────────
             System.setProperty("java.rmi.server.hostname", hostname);
